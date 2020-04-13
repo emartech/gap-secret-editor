@@ -1,3 +1,37 @@
 <div id="app">
-  <h1>{{ sayHello('World') }}</h1>
+  <div class="e-layout e-layout-without_navigation">
+    <header class="e-layout__header">
+      <h1 class="e-layout__title">GAP Secret Editor</h1>
+    </header>
+    <main class="e-layout__content">
+      <section class="e-layout__section e-padding-s">
+
+        <div style="position: relative; height: 300px;" v-if="loading">
+          <e-spinner data-fullscreen="true"></e-spinner>
+        </div>
+
+        <template v-if="!loading">
+          <div class="e-field e-field-inline">
+            <e-select
+                placeholder="Select your namespace"
+                :items="JSON.stringify(namespaces)"
+                @change="selectNamespace($event)"
+            ></e-select>
+          </div>
+          <div class="e-field e-field-inline">
+            <e-select
+                :disabled="secretNamespace === ''"
+                placeholder="Select your secret"
+                :items="JSON.stringify(secretsForSelectedNamespace)"
+                @change="selectSecret($event)"
+            ></e-select>
+          </div>
+          <div>
+            <p>{{ secretNamespace }}</p>
+            <p>{{ secretName }}</p>
+          </div>
+        </template>
+      </section>
+    </main>
+  </div>
 </div>

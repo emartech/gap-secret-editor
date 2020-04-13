@@ -4,12 +4,7 @@
     "main": {
       "presets": [
         [
-          "@babel/preset-env",
-          {
-            "targets": {
-              "node": 7
-            }
-          }
+          "@babel/preset-env"
         ]
       ],
       "plugins": [
@@ -116,14 +111,14 @@
         "@babel/plugin-proposal-do-expressions",
         "@babel/plugin-proposal-function-bind"
       ]
+    },
+    "test": {
+      "presets": ["@babel/preset-env"]
     }
   },
   "plugins": [
     [
-      "@babel/plugin-transform-runtime",
-      {
-        "corejs": 2
-      }
+      "@babel/plugin-transform-runtime"
     ]
   ]
 }
