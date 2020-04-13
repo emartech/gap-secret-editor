@@ -48,7 +48,7 @@
             </div>
           </div>
 
-          <secret-editor v-model="secret"></secret-editor>
+          <secret-editor v-if="secretLoaded" v-model="secret"></secret-editor>
         </template>
       </section>
     </main>

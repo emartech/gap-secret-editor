@@ -10,6 +10,7 @@ export default {
     secretNamespace: '',
     secret: [],
     loading: true,
+    secretLoaded: false,
     secretsByNamespace: {},
     loadInProgress: false,
     saveInProgress: false
@@ -37,6 +38,7 @@ export default {
       const tuples = Object.entries(secretAsObject);
       this.secret = tuples.map(([key, value]) => ({ key, value }));
       this.loadInProgress = false;
+      this.secretLoaded = true;
     },
     async saveSecret() {
       this.saveInProgress = true;
