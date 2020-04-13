@@ -1,4 +1,4 @@
-import { listNamespacedSecrets, loadSecret, saveSecret } from '../../lib/kubernetes-client';
+import { listNamespacedSecrets, loadSecret, saveSecret, patchDeployments } from '../../lib/kubernetes-client';
 import SecretEditor from '../secret-editor/secret-editor';
 
 export default {
@@ -39,6 +39,7 @@ export default {
       const secretAsObject = Object.fromEntries(tuples);
 
       await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
+      await patchDeployments(this.secretNamespace, this.secretName);
     },
     sayHello(name) {
       return `Hello ${name}!`;
