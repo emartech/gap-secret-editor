@@ -11,25 +11,34 @@
         </div>
 
         <template v-if="!loading">
-          <div class="e-field e-field-inline">
-            <e-select
-                placeholder="Select your namespace"
-                :items="JSON.stringify(namespaces)"
-                @change="selectNamespace($event)"
-            ></e-select>
+          <div class="e-grid e-grid-small">
+            <div class="e-cell e-cell-small">
+              <e-select
+                  placeholder="Select your namespace"
+                  :items="JSON.stringify(namespaces)"
+                  @change="selectNamespace($event)"
+              ></e-select>
+            </div>
+
+            <div class="e-cell e-cell-small">
+              <e-select
+                  :disabled="secretNamespace === ''"
+                  placeholder="Select your secret"
+                  :items="JSON.stringify(secretsForSelectedNamespace)"
+                  @change="selectSecret($event)"
+              ></e-select>
+            </div>
+
+            <div class="e-cell e-cell-small">
+              <button class="e-btn" @click="loadSecret()">Load Secret</button>
+            </div>
+
+            <div class="e-cell e-cell-small">
+              <button class="e-btn" @click="saveSecret()">Save Secret</button>
+            </div>
           </div>
-          <div class="e-field e-field-inline">
-            <e-select
-                :disabled="secretNamespace === ''"
-                placeholder="Select your secret"
-                :items="JSON.stringify(secretsForSelectedNamespace)"
-                @change="selectSecret($event)"
-            ></e-select>
-          </div>
-          <div>
-            <p>{{ secretNamespace }}</p>
-            <p>{{ secretName }}</p>
-          </div>
+
+          <secret-editor v-model="secret"></secret-editor>
         </template>
       </section>
     </main>
