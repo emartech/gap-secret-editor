@@ -25,5 +25,17 @@ module.exports = {
     'no-prototype-builtins': 'off',
     'jest/no-try-expect': 'off',
     'curly': ['error', 'multi-line']
-  }
+  },
+  overrides: [
+    {
+      files: ['*.spec.js'],
+      env: {
+        "mocha": true
+      },
+      globals: {
+        expect: true,
+        should: true
+      }
+    }
+  ]
 }
