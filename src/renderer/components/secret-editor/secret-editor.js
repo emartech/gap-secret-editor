@@ -13,6 +13,14 @@ export default {
     }
   },
   methods: {
+    changeSecretValue(index, event) {
+      this.resizeTextArea(event.target);
+      this.updateSecrets(index, { value: event.target.value });
+    },
+    resizeTextArea(element) {
+      element.style.height = 'auto';
+      element.style.height = `${element.scrollHeight}px`;
+    },
     updateSecrets(index, delta) {
       const updatedSecrets = [...this.displayedSecrets];
       Object.assign(updatedSecrets[index], delta);
