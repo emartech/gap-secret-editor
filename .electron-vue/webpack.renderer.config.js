@@ -1,16 +1,14 @@
-'use strict'
+process.env.BABEL_ENV = 'renderer';
 
-process.env.BABEL_ENV = 'renderer'
+const path = require('path');
+const { dependencies } = require('../package.json');
+const webpack = require('webpack');
 
-const path = require('path')
-const { dependencies } = require('../package.json')
-const webpack = require('webpack')
-
-const MinifyPlugin = require("babel-minify-webpack-plugin")
-const CopyWebpackPlugin = require('copy-webpack-plugin')
-const MiniCssExtractPlugin = require('mini-css-extract-plugin')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { VueLoaderPlugin } = require('vue-loader')
+const MinifyPlugin = require('babel-minify-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { VueLoaderPlugin } = require('vue-loader');
 
 /**
  * List of node_modules to include in webpack bundle
@@ -19,9 +17,9 @@ const { VueLoaderPlugin } = require('vue-loader')
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-let whiteListedModules = ['vue']
+const whiteListedModules = ['vue'];
 
-let rendererConfig = {
+const rendererConfig = {
   devtool: '#cheap-module-eval-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js')
@@ -78,6 +76,7 @@ let rendererConfig = {
         }
       },
       {
+        // eslint-disable-next-line security/detect-unsafe-regex
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         use: {
           loader: 'url-loader',
@@ -96,7 +95,7 @@ let rendererConfig = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({filename: 'styles.css'}),
+    new MiniCssExtractPlugin({ filename: 'styles.css' }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
@@ -105,9 +104,9 @@ let rendererConfig = {
         removeAttributeQuotes: true,
         removeComments: true
       },
-      nodeModules: process.env.NODE_ENV !== 'production'
-        ? path.resolve(__dirname, '../node_modules')
-        : false
+      nodeModules: process.env.NODE_ENV !== 'production' ?
+        path.resolve(__dirname, '../node_modules') :
+        false
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin()
@@ -125,7 +124,7 @@ let rendererConfig = {
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
   target: 'electron-renderer'
-}
+};
 
 /**
  * Adjust rendererConfig for development settings
@@ -135,14 +134,14 @@ if (process.env.NODE_ENV !== 'production') {
     new webpack.DefinePlugin({
       '__static': `"${path.join(__dirname, '../static').replace(/\\/g, '\\\\')}"`
     })
-  )
+  );
 }
 
 /**
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = ''
+  rendererConfig.devtool = '';
 
   rendererConfig.plugins.push(
     new MinifyPlugin(),
@@ -159,7 +158,7 @@ if (process.env.NODE_ENV === 'production') {
     new webpack.LoaderOptionsPlugin({
       minimize: true
     })
-  )
+  );
 }
 
-module.exports = rendererConfig
+module.exports = rendererConfig;

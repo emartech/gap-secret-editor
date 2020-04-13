@@ -1,21 +1,29 @@
 module.exports = {
   root: true,
-  parser: 'babel-eslint',
   parserOptions: {
+    parser: 'babel-eslint',
     sourceType: 'module'
   },
   env: {
     browser: true,
     node: true
   },
+  extends: [
+    'plugin:vue/strongly-recommended',
+    'eslint:recommended',
+    'emarsys'
+  ],
   globals: {
     __static: true
   },
   plugins: [
     'html'
   ],
-  'rules': {
-    // allow debugger during development
-    'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0
+  rules: {
+    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-prototype-builtins': 'off',
+    'jest/no-try-expect': 'off',
+    'curly': ['error', 'multi-line']
   }
 }
