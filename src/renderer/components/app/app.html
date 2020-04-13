@@ -30,11 +30,21 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button class="e-btn" @click="loadSecret()">Load Secret</button>
+              <button class="e-btn" @click="loadSecret()" :disabled="loadInProgress">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loadInProgress }">
+                  <e-spinner data-size="small"></e-spinner>
+                </div>
+                Load Secret
+              </button>
             </div>
 
             <div class="e-cell e-cell-small">
-              <button class="e-btn" @click="saveSecret()">Save Secret</button>
+              <button class="e-btn" @click="saveSecret()" :disabled="saveInProgress">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': saveInProgress }">
+                  <e-spinner data-size="small"></e-spinner>
+                </div>
+                Save Secret
+              </button>
             </div>
           </div>
 

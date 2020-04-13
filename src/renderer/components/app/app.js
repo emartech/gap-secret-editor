@@ -10,7 +10,9 @@ export default {
     secretNamespace: '',
     secret: [],
     loading: true,
-    secretsByNamespace: {}
+    secretsByNamespace: {},
+    loadInProgress: false,
+    saveInProgress: false
   }),
   computed: {
     namespaces() {
@@ -30,16 +32,20 @@ export default {
       this.secretName = event.target.value;
     },
     async loadSecret() {
+      this.loadInProgress = true;
       const secretAsObject = await loadSecret(this.secretNamespace, this.secretName);
       const tuples = Object.entries(secretAsObject);
       this.secret = tuples.map(([key, value]) => ({ key, value }));
+      this.loadInProgress = false;
     },
     async saveSecret() {
+      this.saveInProgress = true;
       const tuples = this.secret.map(({ key, value }) => ([key, value]));
       const secretAsObject = Object.fromEntries(tuples);
 
       await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
       await patchDeployments(this.secretNamespace, this.secretName);
+      this.saveInProgress = false;
     },
     sayHello(name) {
       return `Hello ${name}!`;
