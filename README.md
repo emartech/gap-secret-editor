@@ -1,4 +1,4 @@
-# gap-config-editor
+# gap-secret-editor
 
 > An electron-vue project
 

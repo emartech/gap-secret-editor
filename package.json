@@ -1,5 +1,5 @@
 {
-  "name": "gap-config-editor",
+  "name": "gap-secret-editor",
   "version": "0.0.1",
   "author": "rgargya <robert.gargya@emarsys.com>",
   "description": "An electron-vue project",
@@ -21,8 +21,8 @@
     "postinstall": "npm run lint:fix"
   },
   "build": {
-    "productName": "gap-config-editor",
-    "appId": "com.emarsys.gap-config-editor",
+    "productName": "gap-secret-editor",
+    "appId": "com.emarsys.gap-secret-editor",
     "directories": {
       "output": "build"
     },
