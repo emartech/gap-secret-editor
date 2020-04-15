@@ -1,6 +1,11 @@
+import SecretEditorTextarea from './secret-editor-textarea/secret-editor-textarea';
+
 export default {
   name: 'secret-editor',
   template: require('./secret-editor.html'),
+  components: {
+    SecretEditorTextarea
+  },
   props: {
     value: { type: Array, required: true, default: () => [] }
   },
@@ -13,13 +18,8 @@ export default {
     }
   },
   methods: {
-    changeSecretValue(index, event) {
-      this.resizeTextArea(event.target);
-      this.updateSecrets(index, { value: event.target.value });
-    },
-    resizeTextArea(element) {
-      element.style.height = 'auto';
-      element.style.height = `${element.scrollHeight}px`;
+    changeSecretValue(index, value) {
+      this.updateSecrets(index, { value });
     },
     updateSecrets(index, delta) {
       const updatedSecrets = [...this.displayedSecrets];
