@@ -30,6 +30,9 @@ export default {
     secretsForSelectedNamespace() {
       return (this.secretsByNamespace[this.secretNamespace] || [])
         .map(name => ({ type: 'option', content: name, value: name }));
+    },
+    saveEnabled() {
+      return this.secretLoaded && !this.saveInProgress;
     }
   },
   methods: {
@@ -48,6 +51,8 @@ export default {
       this.secretLoaded = true;
     },
     async saveSecret() {
+      if (!this.saveEnabled) return;
+
       this.saveInProgress = true;
       const tuples = this.secret.map(({ key, value }) => ([key, value]));
       const secretAsObject = Object.fromEntries(tuples);
@@ -56,17 +61,25 @@ export default {
       await patchDeployments(this.secretNamespace, this.secretName);
       this.saveInProgress = false;
     },
+    updateContext() {
+      const currentContext = getCurrentContext();
+      if (this.context !== currentContext) {
+        this.secretLoaded = false;
+        this.context = currentContext;
+        this.loadSecrets();
+      }
+    },
+    async loadSecrets() {
+      this.loading = true;
+      this.secretsByNamespace = await listNamespacedSecrets();
+      this.loading = false;
+    },
     sayHello(name) {
       return `Hello ${name}!`;
     }
   },
   async mounted() {
-    this.loading = true;
-    this.secretsByNamespace = await listNamespacedSecrets();
-    this.loading = false;
-
-    setInterval(() => {
-      this.context = getCurrentContext();
-    }, 1000);
+    await this.loadSecrets();
+    setInterval(this.updateContext, 1000);
   }
 };
