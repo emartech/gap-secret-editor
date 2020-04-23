@@ -67,6 +67,19 @@ export const patchDeployments = async (namespace, name) => {
   }
 };
 
+const contextAliases = {
+  'gke_ems-gap-stage_europe-west3_gap-staging': 'staging',
+  'gke_ems-gap-production_europe-west3_gap-production': 'production'
+};
+
+export const getCurrentContext = () => {
+  const kubeConfig = new KubeConfig();
+  kubeConfig.loadFromDefault();
+  const currentContext = kubeConfig.currentContext;
+
+  return contextAliases[currentContext] || currentContext;
+};
+
 const generateDeploymentPatch = () => {
   const patch = new V1Deployment();
   patch.spec = new V1DeploymentSpec();

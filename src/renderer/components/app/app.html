@@ -46,6 +46,10 @@
                 Save Secret
               </button>
             </div>
+
+            <div e-cell e-cell-small style="display: flex; align-items: center;">
+              <div class="e-label e-label-info">{{ context }}</div>
+            </div>
           </div>
 
           <secret-editor v-if="secretLoaded" v-model="secret"></secret-editor>
