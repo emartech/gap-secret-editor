@@ -1,4 +1,10 @@
-import { listNamespacedSecrets, loadSecret, saveSecret, patchDeployments } from '../../lib/kubernetes-client';
+import {
+  listNamespacedSecrets,
+  loadSecret,
+  saveSecret,
+  patchDeployments,
+  getCurrentContext
+} from '../../lib/kubernetes-client';
 import SecretEditor from '../secret-editor/secret-editor';
 
 export default {
@@ -13,7 +19,8 @@ export default {
     secretLoaded: false,
     secretsByNamespace: {},
     loadInProgress: false,
-    saveInProgress: false
+    saveInProgress: false,
+    context: getCurrentContext()
   }),
   computed: {
     namespaces() {
@@ -57,5 +64,9 @@ export default {
     this.loading = true;
     this.secretsByNamespace = await listNamespacedSecrets();
     this.loading = false;
+
+    setInterval(() => {
+      this.context = getCurrentContext();
+    }, 1000);
   }
 };

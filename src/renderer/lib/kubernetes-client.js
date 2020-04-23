@@ -67,6 +67,19 @@ export const patchDeployments = async (namespace, name) => {
   }
 };
 
+const contextAliases = {
+  '***REMOVED***': 'staging',
+  '***REMOVED***': 'production'
+};
+
+export const getCurrentContext = () => {
+  const kubeConfig = new KubeConfig();
+  kubeConfig.loadFromDefault();
+  const currentContext = kubeConfig.currentContext;
+
+  return contextAliases[currentContext] || currentContext;
+};
+
 const generateDeploymentPatch = () => {
   const patch = new V1Deployment();
   patch.spec = new V1DeploymentSpec();
