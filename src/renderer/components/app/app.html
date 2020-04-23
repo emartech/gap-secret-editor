@@ -39,7 +39,7 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button class="e-btn" @click="saveSecret()" :disabled="saveInProgress">
+              <button class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': saveInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>
