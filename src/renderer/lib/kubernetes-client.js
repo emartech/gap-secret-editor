@@ -72,7 +72,7 @@ const contextAliases = {
   '***REMOVED***': 'production'
 };
 
-export const getCurrentContext = () => {
+export const getCurrentContext = () => {
   const kubeConfig = new KubeConfig();
   kubeConfig.loadFromDefault();
   const currentContext = kubeConfig.currentContext;
