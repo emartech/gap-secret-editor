@@ -3,6 +3,10 @@ Vue.config.devtools = false;
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^e-/];
 
+afterEach(() => {
+  sinon.restore();
+});
+
 // require all test-helpers files (files that ends with .spec.js)
 const testsContext = require.context('./', true, /\.spec$/);
 testsContext.keys().forEach(testsContext);

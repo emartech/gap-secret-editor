@@ -28,13 +28,17 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.spec.js'],
+      files: ['*.spec.js', 'test-helpers/*.js'],
       env: {
-        "mocha": true
+        'mocha': true
+      },
+      rules: {
+        'no-unused-expressions': 'off'
       },
       globals: {
         expect: true,
-        should: true
+        should: true,
+        sinon: true
       }
     }
   ]

@@ -4,7 +4,7 @@ import {
   saveSecret,
   patchDeployments,
   getCurrentContext
-} from '../../lib/kubernetes-client';
+} from '../../lib/kubernetes-client/kubernetes-client';
 import SecretEditor from '../secret-editor/secret-editor';
 
 export default {
