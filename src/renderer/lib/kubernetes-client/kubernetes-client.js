@@ -7,7 +7,7 @@ import {
   V1ObjectMeta,
   V1PodTemplateSpec
 } from '@kubernetes/client-node';
-import { chain, get, mapValues, pick } from 'lodash-es';
+import { chain, get, mapValues, pick } from 'lodash';
 
 export const listNamespacedSecrets = async () => {
   const { body } = await getCoreApiClient().listSecretForAllNamespaces();
