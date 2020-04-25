@@ -18,10 +18,13 @@ export default {
     }
   },
   methods: {
-    changeSecretValue(index, value) {
-      this.updateSecrets(index, { value });
+    changeSecretKey(index, key) {
+      this._updateSecrets(index, { key });
     },
-    updateSecrets(index, delta) {
+    changeSecretValue(index, value) {
+      this._updateSecrets(index, { value });
+    },
+    _updateSecrets(index, delta) {
       const updatedSecrets = [...this.displayedSecrets];
       Object.assign(updatedSecrets[index], delta);
       this._emitSecretChange(updatedSecrets);
