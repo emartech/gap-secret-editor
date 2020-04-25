@@ -1,4 +1,4 @@
-import isValidJson from '../../../lib/is-valid-json';
+import isValidJson from '../../../lib/is-valid-json/is-valid-json';
 
 export default {
   name: 'secret-editor-textarea',
