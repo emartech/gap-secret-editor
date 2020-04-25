@@ -1,5 +1,6 @@
 const merge = require('webpack-merge');
 const webpack = require('webpack');
+const path = require('path');
 
 const baseConfig = require('../.electron-vue/webpack.renderer.config');
 
@@ -33,7 +34,8 @@ module.exports = config => {
     customLaunchers: {
       'visibleElectron': {
         base: 'Electron',
-        flags: ['--show']
+        flags: ['--show'],
+        require: path.join('test-helpers', 'test-setup-workaround.js')
       }
     },
     frameworks: ['mocha', 'chai'],

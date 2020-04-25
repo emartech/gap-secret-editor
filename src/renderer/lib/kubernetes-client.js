@@ -72,7 +72,7 @@ const contextAliases = {
   'gke_ems-gap-production_europe-west3_gap-production': 'production'
 };
 
-export const getCurrentContext = () => {
+export const getCurrentContext = () => {
   const kubeConfig = new KubeConfig();
   kubeConfig.loadFromDefault();
   const currentContext = kubeConfig.currentContext;
