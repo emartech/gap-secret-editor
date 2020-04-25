@@ -34,7 +34,7 @@ module.exports = config => {
     customLaunchers: {
       'visibleElectron': {
         base: 'Electron',
-        flags: ['--show'],
+        flags: ['--headless'],
         require: path.join('test-helpers', 'test-setup-workaround.js')
       }
     },
