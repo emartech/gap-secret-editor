@@ -73,9 +73,6 @@ export default {
       this.loading = true;
       this.secretsByNamespace = await listNamespacedSecrets();
       this.loading = false;
-    },
-    sayHello(name) {
-      return `Hello ${name}!`;
     }
   },
   async mounted() {
