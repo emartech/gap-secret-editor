@@ -90,7 +90,7 @@ describe('KubernetesClient', () => {
         }
       });
       const patchMethodMock = sinon.stub().resolves();
-      sinon.stub(KubeConfig.prototype, 'makeApiClient').returns({
+      KubeConfig.prototype.makeApiClient.returns({
         listNamespacedDeployment: listMethodMock,
         patchNamespacedDeployment: patchMethodMock
       });
@@ -112,7 +112,7 @@ describe('KubernetesClient', () => {
 
     it('should not patch anything when no deployment found', async () => {
       const patchMethodMock = sinon.stub().resolves();
-      sinon.stub(KubeConfig.prototype, 'makeApiClient').returns({
+      KubeConfig.prototype.makeApiClient.returns({
         listNamespacedDeployment: sinon.stub().resolves(),
         patchNamespacedDeployment: patchMethodMock
       });
@@ -126,7 +126,7 @@ describe('KubernetesClient', () => {
 
   describe('#getCurrentContext', () => {
     it('should return context from default config', () => {
-      sinon.stub(KubeConfig.prototype, 'loadFromDefault').callsFake(function() {
+      KubeConfig.prototype.loadFromDefault.callsFake(function() {
         this.currentContext = 'magnificent-context';
       });
 
@@ -134,7 +134,7 @@ describe('KubernetesClient', () => {
     });
 
     it('should return context alias for staging', () => {
-      sinon.stub(KubeConfig.prototype, 'loadFromDefault').callsFake(function() {
+      KubeConfig.prototype.loadFromDefault.callsFake(function() {
         this.currentContext = 'gke_ems-gap-stage_europe-west3_gap-staging';
       });
 
@@ -142,7 +142,7 @@ describe('KubernetesClient', () => {
     });
 
     it('should return context alias for production', () => {
-      sinon.stub(KubeConfig.prototype, 'loadFromDefault').callsFake(function() {
+      KubeConfig.prototype.loadFromDefault.callsFake(function() {
         this.currentContext = 'gke_ems-gap-production_europe-west3_gap-production';
       });
 
@@ -152,10 +152,8 @@ describe('KubernetesClient', () => {
 });
 
 const stubApiClient = (method, responseBody = null) => {
-  sinon.stub(KubeConfig.prototype, 'loadFromDefault');
-
   const clientMethodStub = sinon.stub().resolves({ body: responseBody });
-  sinon.stub(KubeConfig.prototype, 'makeApiClient').returns({
+  KubeConfig.prototype.makeApiClient.returns({
     [method]: clientMethodStub
   });
 

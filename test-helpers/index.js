@@ -1,7 +1,14 @@
 import Vue from 'vue';
+import { KubeConfig } from '@kubernetes/client-node';
+
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^e-/];
+
+beforeEach(() => {
+  sinon.stub(KubeConfig.prototype, 'loadFromDefault');
+  sinon.stub(KubeConfig.prototype, 'makeApiClient');
+});
 
 afterEach(() => {
   sinon.restore();
