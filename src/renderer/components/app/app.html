@@ -6,7 +6,7 @@
     <main class="e-layout__content">
       <section class="e-layout__section e-padding-s">
 
-        <div style="position: relative; height: 300px;" v-if="loading">
+        <div id="page-loading-indicator" style="position: relative; height: 300px;" v-if="loading">
           <e-spinner data-fullscreen="true"></e-spinner>
         </div>
 
@@ -14,6 +14,7 @@
           <div class="e-grid e-grid-small">
             <div class="e-cell e-cell-small">
               <e-select
+                  id="namespace-selector"
                   placeholder="Select your namespace"
                   :items="JSON.stringify(namespaces)"
                   @change="selectNamespace($event)"
@@ -22,6 +23,7 @@
 
             <div class="e-cell e-cell-small">
               <e-select
+                  id="secret-selector"
                   :disabled="secretNamespace === ''"
                   placeholder="Select your secret"
                   :items="JSON.stringify(secretsForSelectedNamespace)"
@@ -30,7 +32,7 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button class="e-btn" @click="loadSecret()" :disabled="loadInProgress">
+              <button id="load-button" class="e-btn" @click="loadSecret()" :disabled="loadInProgress">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loadInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>
@@ -39,7 +41,7 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
+              <button id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': saveInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>
@@ -47,7 +49,7 @@
               </button>
             </div>
 
-            <div e-cell e-cell-small style="display: flex; align-items: center;">
+            <div class="e-cell e-cell-small" style="display: flex; align-items: center;">
               <div class="e-label e-label-info">{{ context }}</div>
             </div>
           </div>
