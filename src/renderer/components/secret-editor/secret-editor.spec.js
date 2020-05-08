@@ -30,9 +30,7 @@ describe('SecretEditor', () => {
     it('should emit modified secrets when a key changes', async () => {
       const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
 
-      const input = wrapper.vm.$el.querySelectorAll('input')[1];
-      input.value = 'kod';
-      input.dispatchEvent(new Event('input'));
+      wrapper.findAll('input').at(1).setValue('kod');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -43,9 +41,7 @@ describe('SecretEditor', () => {
     it('should emit modified secrets when a value changes', async () => {
       const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
 
-      const input = wrapper.vm.$el.querySelectorAll('textarea')[0];
-      input.value = 'James Bandi';
-      input.dispatchEvent(new Event('input'));
+      wrapper.findAll('textarea').at(0).setValue('James Bandi');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bandi' },
@@ -56,9 +52,7 @@ describe('SecretEditor', () => {
     it('should emit modified secrets when a new key entered', () => {
       const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
 
-      const input = wrapper.vm.$el.querySelectorAll('input')[2];
-      input.value = 'drink';
-      input.dispatchEvent(new Event('input'));
+      wrapper.findAll('input').at(2).setValue('drink');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -70,9 +64,7 @@ describe('SecretEditor', () => {
     it('should emit modified secrets when a new value entered', () => {
       const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
 
-      const input = wrapper.vm.$el.querySelectorAll('textarea')[2];
-      input.value = 'Martini';
-      input.dispatchEvent(new Event('input'));
+      wrapper.findAll('textarea').at(2).setValue('Martini');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -84,8 +76,7 @@ describe('SecretEditor', () => {
     it('should emit modified secrets when a secret is deleted', () => {
       const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
 
-      const deleteButton = wrapper.vm.$el.querySelectorAll('.e-btn')[1];
-      deleteButton.dispatchEvent(new Event('click'));
+      wrapper.findAll('.e-btn').at(1).trigger('click');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' }
