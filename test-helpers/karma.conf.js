@@ -43,7 +43,7 @@ module.exports = config => {
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
-    reporters: ['spec'],
+    reporters: ['dots'],
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true

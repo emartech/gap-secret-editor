@@ -79,9 +79,9 @@ describe('App', () => {
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
     });
 
-    it('should save secret when save button clicked', async () => {
+    it('should save secret when save button clicked and loaded secret not changed in the meantime', async () => {
       stubSecretList(secretList);
-      stubSelectedSecret({});
+      stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
       const saveMethodMock = stubApiClient('replaceNamespacedSecret');
       stubDeploymentListForSelectedSecret();
       const patchMethodMock = stubPatchMethod();
@@ -101,6 +101,39 @@ describe('App', () => {
       );
       expect(patchMethodMock).to.have.been.called;
     });
+
+    describe('when loaded secret has changed since load', () => {
+      it('should not save secret when save button clicked', async () => {
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
+        const saveMethodMock = stubApiClient('replaceNamespacedSecret');
+        stubDeploymentListForSelectedSecret();
+        const patchMethodMock = stubPatchMethod();
+        const wrapper = await loadApp();
+
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        await clickButton(wrapper, '#save-button');
+
+        expect(saveMethodMock).to.not.have.been.called;
+        expect(patchMethodMock).to.not.have.been.called;
+      });
+
+      it('should display error notification', async () => {
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
+        sinon.stub(window.e.utils, 'openNotification');
+        const wrapper = await loadApp();
+
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        await clickButton(wrapper, '#save-button');
+
+        expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Save failed' }));
+      });
+    });
   });
 
   const stubSecretList = secrets => {
@@ -109,6 +142,13 @@ describe('App', () => {
 
   const stubSelectedSecret = secret => {
     stubApiClient('readNamespacedSecret', { data: secret });
+  };
+
+  const stubChangedSelectedSecret = (firstSecret, secondSecret) => {
+    const clientMethodStub = sinon.stub();
+    clientMethodStub.onFirstCall().resolves({ body: { data: firstSecret } });
+    clientMethodStub.onSecondCall().resolves({ body: { data: secondSecret } });
+    fakeKubernetesApiClient.readNamespacedSecret = clientMethodStub;
   };
 
   const stubDeploymentListForSelectedSecret = () => {

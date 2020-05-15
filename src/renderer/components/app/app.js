@@ -1,3 +1,4 @@
+import { isEqual } from 'lodash';
 import {
   listNamespacedSecrets,
   loadSecret,
@@ -5,6 +6,7 @@ import {
   patchDeployments,
   getCurrentContext
 } from '../../lib/kubernetes-client/kubernetes-client';
+import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
 
 export default {
@@ -14,6 +16,7 @@ export default {
   data: () => ({
     secretName: '',
     secretNamespace: '',
+    originalSecret: {},
     secret: [],
     loading: true,
     secretLoaded: false,
@@ -44,8 +47,8 @@ export default {
     },
     async loadSecret() {
       this.loadInProgress = true;
-      const secretAsObject = await loadSecret(this.secretNamespace, this.secretName);
-      const tuples = Object.entries(secretAsObject);
+      this.originalSecret = await loadSecret(this.secretNamespace, this.secretName);
+      const tuples = Object.entries(this.originalSecret);
       this.secret = tuples.map(([key, value]) => ({ key, value }));
       this.loadInProgress = false;
       this.secretLoaded = true;
@@ -54,11 +57,16 @@ export default {
       if (!this.saveEnabled) return;
 
       this.saveInProgress = true;
-      const tuples = this.secret.map(({ key, value }) => ([key, value]));
-      const secretAsObject = Object.fromEntries(tuples);
+      const currentlySavedSecret = await loadSecret(this.secretNamespace, this.secretName);
+      if (isEqual(currentlySavedSecret, this.originalSecret)) {
+        const tuples = this.secret.map(({ key, value }) => ([key, value]));
+        const secretAsObject = Object.fromEntries(tuples);
 
-      await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
-      await patchDeployments(this.secretNamespace, this.secretName);
+        await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
+        await patchDeployments(this.secretNamespace, this.secretName);
+      } else {
+        notificationDisplayer.saveFailedDueToModifiedSecret();
+      }
       this.saveInProgress = false;
     },
     updateContext() {

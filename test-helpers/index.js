@@ -8,6 +8,11 @@ Vue.config.ignoredElements = [/^e-/];
 beforeEach(() => {
   sinon.stub(KubeConfig.prototype, 'loadFromDefault');
   sinon.stub(KubeConfig.prototype, 'makeApiClient');
+  window.e = {
+    utils: {
+      openNotification: () => {}
+    }
+  };
 });
 
 afterEach(() => {
