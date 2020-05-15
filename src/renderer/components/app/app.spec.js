@@ -35,6 +35,14 @@ describe('App', () => {
         { type: 'option', content: 'lame-team', value: 'lame-team' }
       ]);
     });
+
+    it('should disable load/save buttons', async () => {
+      stubSecretList(secretList);
+      const wrapper = await loadApp();
+
+      expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
+      expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
+    });
   });
 
   describe('when namespace selected', () => {
@@ -50,9 +58,29 @@ describe('App', () => {
         { type: 'option', content: 'wonderful-app', value: 'wonderful-app' }
       ]);
     });
+
+    it('should disable load/save buttons', async () => {
+      stubSecretList(secretList);
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+
+      expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
+      expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
+    });
   });
 
   describe('when namespace and secret selected', () => {
+    it('should enable load button', async () => {
+      stubSecretList(secretList);
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+      await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+
+      expect(wrapper.find('#load-button').attributes('disabled')).to.be.undefined;
+    });
+
     it('should disable save button when secret not loaded', async () => {
       stubSecretList(secretList);
       const wrapper = await loadApp();
