@@ -74,17 +74,17 @@ export default {
       if (this.context !== currentContext) {
         this.secretLoaded = false;
         this.context = currentContext;
-        this.loadSecrets();
+        this.loadAvailableSecrets();
       }
     },
-    async loadSecrets() {
+    async loadAvailableSecrets() {
       this.loading = true;
       this.secretsByNamespace = await listNamespacedSecrets();
       this.loading = false;
     }
   },
   async mounted() {
-    await this.loadSecrets();
+    await this.loadAvailableSecrets();
     setInterval(this.updateContext, 1000);
   }
 };
