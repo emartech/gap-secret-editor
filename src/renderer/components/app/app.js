@@ -67,6 +67,8 @@ export default {
 
         await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
         await patchDeployments(this.secretNamespace, this.secretName);
+
+        notificationDisplayer.saveSuccess();
       } else {
         notificationDisplayer.saveFailedDueToModifiedSecret();
       }
