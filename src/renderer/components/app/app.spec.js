@@ -107,27 +107,45 @@ describe('App', () => {
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
     });
 
-    it('should save secret when save button clicked and loaded secret not changed in the meantime', async () => {
-      stubSecretList(secretList);
-      stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
-      const saveMethodMock = stubApiClient('replaceNamespacedSecret');
-      stubDeploymentListForSelectedSecret();
-      const patchMethodMock = stubPatchMethod();
-      const wrapper = await loadApp();
+    describe('when loaded secret has not changed since load', () => {
+      it('should save secret when save button clicked', async () => {
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
+        const saveMethodMock = stubApiClient('replaceNamespacedSecret');
+        stubDeploymentListForSelectedSecret();
+        const patchMethodMock = stubPatchMethod();
+        const wrapper = await loadApp();
 
-      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
-      await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-      await clickButton(wrapper, '#load-button');
-      wrapper.find('input').setValue('DRINK');
-      wrapper.find('textarea').setValue('coke');
-      await clickButton(wrapper, '#save-button');
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        wrapper.find('input').setValue('DRINK');
+        wrapper.find('textarea').setValue('coke');
+        await clickButton(wrapper, '#save-button');
 
-      expect(saveMethodMock).to.have.been.calledWith(
-        'best-app',
-        'cool-team',
-        { stringData: { DRINK: 'coke' }, metadata: { name: 'best-app' } }
-      );
-      expect(patchMethodMock).to.have.been.called;
+        expect(saveMethodMock).to.have.been.calledWith(
+          'best-app',
+          'cool-team',
+          { stringData: { DRINK: 'coke' }, metadata: { name: 'best-app' } }
+        );
+        expect(patchMethodMock).to.have.been.called;
+      });
+
+      it('should display success notification when save button clicked', async () => {
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
+        sinon.stub(window.e.utils, 'openNotification');
+        const wrapper = await loadApp();
+
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        wrapper.find('input').setValue('DRINK');
+        wrapper.find('textarea').setValue('coke');
+        await clickButton(wrapper, '#save-button');
+
+        expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Secret saved' }));
+      });
     });
 
     describe('when loaded secret has changed since load', () => {
@@ -148,7 +166,7 @@ describe('App', () => {
         expect(patchMethodMock).to.not.have.been.called;
       });
 
-      it('should display error notification', async () => {
+      it('should display error notification when save button clicked', async () => {
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
         sinon.stub(window.e.utils, 'openNotification');

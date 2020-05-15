@@ -1,4 +1,13 @@
 export default {
+  saveSuccess: () => {
+    window.e.utils.openNotification({
+      title: 'Secret saved',
+      content: 'Secret saved successfully.',
+      placement: 'top',
+      type: 'success',
+      autoClose: true
+    });
+  },
   saveFailedDueToModifiedSecret: () => {
     window.e.utils.openNotification({
       title: 'Save failed',
