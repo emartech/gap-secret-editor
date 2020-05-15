@@ -32,7 +32,7 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button id="load-button" class="e-btn" @click="loadSecret()" :disabled="loadInProgress">
+              <button id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loadInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>

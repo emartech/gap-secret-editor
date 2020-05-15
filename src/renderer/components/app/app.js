@@ -34,6 +34,9 @@ export default {
       return (this.secretsByNamespace[this.secretNamespace] || [])
         .map(name => ({ type: 'option', content: name, value: name }));
     },
+    loadEnabled() {
+      return this.secretNamespace && this.secretName && !this.loadInProgress;
+    },
     saveEnabled() {
       return this.secretLoaded && !this.saveInProgress;
     }
