@@ -4,7 +4,7 @@ const path = require('path');
 const { dependencies } = require('../package.json');
 const webpack = require('webpack');
 
-const MinifyPlugin = require('babel-minify-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const mainConfig = {
   entry: {
@@ -59,8 +59,11 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust mainConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
+  mainConfig.optimization = {
+    minimize: true,
+    minimizer: [new TerserPlugin()]
+  };
   mainConfig.plugins.push(
-    new MinifyPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     })
