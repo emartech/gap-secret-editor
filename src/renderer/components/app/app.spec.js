@@ -39,6 +39,16 @@ describe('App', () => {
       expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
       expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
     });
+
+    it('should display error notification when namespace list loading fails', async () => {
+      sinon.stub(window.e.utils, 'openNotification');
+      stubFailingNamespaceList();
+      const wrapper = await loadApp();
+
+      const items = wrapper.find('#namespace-selector').attributes('items');
+      expect(JSON.parse(items)).to.eql([]);
+      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
+    });
   });
 
   describe('when namespace selected', () => {
@@ -65,6 +75,19 @@ describe('App', () => {
 
       expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
       expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
+    });
+
+    it('should display error notification when secret list loading fails', async () => {
+      sinon.stub(window.e.utils, 'openNotification');
+      stubNamespaceList(namespaceList);
+      stubFailingSecretList();
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+
+      const items = wrapper.find('#secret-selector').attributes('items');
+      expect(JSON.parse(items)).to.eql([]);
+      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
     });
   });
 
@@ -108,6 +131,20 @@ describe('App', () => {
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
     });
 
+    it('should display error notification when secret loading fails', async () => {
+      sinon.stub(window.e.utils, 'openNotification');
+      stubNamespaceList(namespaceList);
+      stubSecretList(secretList);
+      stubFailingSelectedSecret();
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+      await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+      await clickButton(wrapper, '#load-button');
+
+      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
+    });
+
     describe('when loaded secret has not changed since load', () => {
       it('should save secret when save button clicked', async () => {
         stubNamespaceList(namespaceList);
@@ -148,6 +185,22 @@ describe('App', () => {
         await clickButton(wrapper, '#save-button');
 
         expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Secret saved' }));
+      });
+
+      it('should display error notification when save fails', async () => {
+        stubNamespaceList(namespaceList);
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
+        stubFailingDeploymentListForSelectedSecret();
+        sinon.stub(window.e.utils, 'openNotification');
+        const wrapper = await loadApp();
+
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        await clickButton(wrapper, '#save-button');
+
+        expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Save failed' }));
       });
     });
 
@@ -193,12 +246,24 @@ describe('App', () => {
     });
   };
 
+  const stubFailingNamespaceList = () => {
+    stubFailingApiClient('listNamespace');
+  };
+
   const stubSecretList = secrets => {
     stubApiClient('listNamespacedSecret', { items: secrets.map(name => ({ metadata: { name } })) });
   };
 
+  const stubFailingSecretList = () => {
+    stubFailingApiClient('listNamespacedSecret');
+  };
+
   const stubSelectedSecret = secret => {
     stubApiClient('readNamespacedSecret', { data: secret });
+  };
+
+  const stubFailingSelectedSecret = () => {
+    stubFailingApiClient('readNamespacedSecret');
   };
 
   const stubChangedSelectedSecret = (firstSecret, secondSecret) => {
@@ -212,12 +277,22 @@ describe('App', () => {
     stubApiClient('listNamespacedDeployment', { items: [{ metadata: { name: 'best-app-web' } }] });
   };
 
+  const stubFailingDeploymentListForSelectedSecret = () => {
+    stubFailingApiClient('listNamespacedDeployment');
+  };
+
   const stubPatchMethod = () => {
     return stubApiClient('patchNamespacedDeployment');
   };
 
   const stubApiClient = (method, responseBody = null) => {
     const clientMethodStub = sinon.stub().resolves({ body: responseBody });
+    fakeKubernetesApiClient[method] = clientMethodStub;
+    return clientMethodStub;
+  };
+
+  const stubFailingApiClient = method => {
+    const clientMethodStub = sinon.stub().rejects({ response: { body: { message: 'Oh no!' } } });
     fakeKubernetesApiClient[method] = clientMethodStub;
     return clientMethodStub;
   };

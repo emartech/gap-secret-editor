@@ -7,6 +7,7 @@ import {
   patchDeployments,
   saveSecret
 } from './kubernetes-client';
+import KubernetesError from './kubernetes-error';
 
 describe('KubernetesClient', () => {
   describe('#listNamespaces', () => {
@@ -22,6 +23,19 @@ describe('KubernetesClient', () => {
       const secrets = await listNamespaces();
 
       expect(secrets).to.eql(['cool-team', 'bad-team']);
+    });
+
+    it('should throw Kubernetes error when request fails', async () => {
+      stubFailingApiClient('listNamespace', {
+        message: 'The Four Horsemen of the Apocalypse have arrived'
+      });
+
+      try {
+        await listNamespaces();
+        expect.fail('exception should have been thrown');
+      } catch (e) {
+        expect(e).to.be.an.instanceof(KubernetesError);
+      }
     });
   });
 
@@ -56,6 +70,19 @@ describe('KubernetesClient', () => {
       const secrets = await listSecrets('cool-team');
 
       expect(secrets).to.eql(['best-app', 'wonderful-app']);
+    });
+
+    it('should throw Kubernetes error when request fails', async () => {
+      stubFailingApiClient('listNamespacedSecret', {
+        message: 'The Four Horsemen of the Apocalypse have arrived'
+      });
+
+      try {
+        await listSecrets('cool-team');
+        expect.fail('exception should have been thrown');
+      } catch (e) {
+        expect(e).to.be.an.instanceof(KubernetesError);
+      }
     });
   });
 
@@ -166,6 +193,15 @@ describe('KubernetesClient', () => {
 
 const stubApiClient = (method, responseBody = null) => {
   const clientMethodStub = sinon.stub().resolves({ body: responseBody });
+  KubeConfig.prototype.makeApiClient.returns({
+    [method]: clientMethodStub
+  });
+
+  return clientMethodStub;
+};
+
+export const stubFailingApiClient = (method, responseBody = null) => {
+  const clientMethodStub = sinon.stub().rejects({ response: { body: responseBody } });
   KubeConfig.prototype.makeApiClient.returns({
     [method]: clientMethodStub
   });
