@@ -32,5 +32,14 @@ export default {
       placement: 'top',
       type: 'danger'
     });
+  },
+  loadFailedDueToUnauthorizedAccess: () => {
+    window.e.utils.openNotification({
+      title: 'Load failed',
+      content: 'You do not have enough permission to edit secrets in the selected namespace. Select another namespace.',
+      placement: 'top',
+      type: 'danger',
+      autoClose: true
+    });
   }
 };
