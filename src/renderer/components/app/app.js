@@ -1,6 +1,7 @@
 import { isEqual } from 'lodash';
 import {
-  listNamespacedSecrets,
+  listNamespaces,
+  listSecrets,
   loadSecret,
   saveSecret,
   patchDeployments,
@@ -20,19 +21,18 @@ export default {
     secret: [],
     loading: true,
     secretLoaded: false,
-    secretsByNamespace: {},
+    namespaceList: [],
+    secretList: [],
     loadInProgress: false,
     saveInProgress: false,
     context: getCurrentContext()
   }),
   computed: {
     namespaces() {
-      return Object.keys(this.secretsByNamespace)
-        .map(namespace => ({ type: 'option', content: namespace, value: namespace }));
+      return this.namespaceList.map(namespace => ({ type: 'option', content: namespace, value: namespace }));
     },
     secretsForSelectedNamespace() {
-      return (this.secretsByNamespace[this.secretNamespace] || [])
-        .map(name => ({ type: 'option', content: name, value: name }));
+      return this.secretList.map(name => ({ type: 'option', content: name, value: name }));
     },
     loadEnabled() {
       return this.secretNamespace && this.secretName && !this.loadInProgress;
@@ -42,8 +42,9 @@ export default {
     }
   },
   methods: {
-    selectNamespace(event) {
+    async selectNamespace(event) {
       this.secretNamespace = event.target.value;
+      this.secretList = await listSecrets(this.secretNamespace);
     },
     selectSecret(event) {
       this.secretName = event.target.value;
@@ -79,17 +80,17 @@ export default {
       if (this.context !== currentContext) {
         this.secretLoaded = false;
         this.context = currentContext;
-        this.loadAvailableSecrets();
+        this.loadAvailableNamespaces();
       }
     },
-    async loadAvailableSecrets() {
+    async loadAvailableNamespaces() {
       this.loading = true;
-      this.secretsByNamespace = await listNamespacedSecrets();
+      this.namespaceList = await listNamespaces();
       this.loading = false;
     }
   },
   async mounted() {
-    await this.loadAvailableSecrets();
+    await this.loadAvailableNamespaces();
     setInterval(this.updateContext, 1000);
   }
 };

@@ -1,48 +1,61 @@
 import { KubeConfig } from '@kubernetes/client-node';
 import {
   getCurrentContext,
-  listNamespacedSecrets,
+  listNamespaces,
+  listSecrets,
   loadSecret,
   patchDeployments,
   saveSecret
 } from './kubernetes-client';
 
 describe('KubernetesClient', () => {
-  describe('#listNamespacedSecrets', () => {
-    it('should return secret names grouped by namespaces', async () => {
-      stubApiClient('listSecretForAllNamespaces', {
+  describe('#listNamespaces', () => {
+    it('should list active namespaces', async () => {
+      stubApiClient('listNamespace', {
         items: [
-          { metadata: { name: 'best-app', namespace: 'cool-team' } },
-          { metadata: { name: 'wonderful-app', namespace: 'cool-team' } },
-          { metadata: { name: 'terrible-app', namespace: 'lame-team' } },
-          { metadata: { name: 'worst-app', namespace: 'lame-team' } }
+          { metadata: { name: 'cool-team' }, status: { phase: 'Active' } },
+          { metadata: { name: 'bad-team' }, status: { phase: 'Active' } },
+          { metadata: { name: 'dead-team' }, status: { phase: 'Terminating' } }
         ]
       });
 
-      const secrets = await listNamespacedSecrets();
+      const secrets = await listNamespaces();
 
-      expect(secrets).to.eql({
-        'cool-team': ['best-app', 'wonderful-app'],
-        'lame-team': ['terrible-app', 'worst-app']
+      expect(secrets).to.eql(['cool-team', 'bad-team']);
+    });
+  });
+
+  describe('#listSecrets', () => {
+    it('should return secret names', async () => {
+      const listMethodMock = stubApiClient('listNamespacedSecret', {
+        items: [
+          { metadata: { name: 'best-app' } },
+          { metadata: { name: 'wonderful-app' } },
+          { metadata: { name: 'terrible-app' } },
+          { metadata: { name: 'worst-app' } }
+        ]
       });
+
+      const secrets = await listSecrets('cool-team');
+
+      expect(secrets).to.eql(['best-app', 'wonderful-app', 'terrible-app', 'worst-app']);
+      expect(listMethodMock).to.have.been.calledWith('cool-team');
     });
 
     it('should not return irrelevant secrets', async () => {
-      stubApiClient('listSecretForAllNamespaces', {
+      stubApiClient('listNamespacedSecret', {
         items: [
-          { metadata: { name: 'best-app', namespace: 'cool-team' } },
-          { metadata: { name: 'best-app-web-tls', namespace: 'cool-team' } },
-          { metadata: { name: 'wonderful-app', namespace: 'cool-team' } },
-          { metadata: { name: 'wonderful-app-web-tls', namespace: 'cool-team' } },
-          { metadata: { name: 'default-token-a1b2c', namespace: 'cool-team' } }
+          { metadata: { name: 'best-app' } },
+          { metadata: { name: 'best-app-web-tls' } },
+          { metadata: { name: 'wonderful-app' } },
+          { metadata: { name: 'wonderful-app-web-tls' } },
+          { metadata: { name: 'default-token-a1b2c' } }
         ]
       });
 
-      const secrets = await listNamespacedSecrets();
+      const secrets = await listSecrets('cool-team');
 
-      expect(secrets).to.eql({
-        'cool-team': ['best-app', 'wonderful-app']
-      });
+      expect(secrets).to.eql(['best-app', 'wonderful-app']);
     });
   });
 

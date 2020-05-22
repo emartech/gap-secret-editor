@@ -7,20 +7,21 @@ import {
   V1ObjectMeta,
   V1PodTemplateSpec
 } from '@kubernetes/client-node';
-import { chain, get, mapValues, pick } from 'lodash';
+import { get, mapValues } from 'lodash';
 
-export const listNamespacedSecrets = async () => {
-  const { body } = await getCoreApiClient().listSecretForAllNamespaces();
+export const listNamespaces = async () => {
+  const { body } = await getCoreApiClient().listNamespace();
 
-  return chain(body.items)
-    .map(item => pick(item.metadata, ['name', 'namespace']))
-    .groupBy('namespace')
-    .mapValues(secrets =>
-      secrets
-        .map(secret => secret.name)
-        .filter(secretName => !secretName.startsWith('default-token') && !secretName.endsWith('web-tls'))
-    )
-    .value();
+  return body.items
+    .filter(item => item.status.phase === 'Active')
+    .map(item => item.metadata.name);
+};
+
+export const listSecrets = async (namespace) => {
+  const { body } = await getCoreApiClient().listNamespacedSecret(namespace);
+  return body.items
+    .filter(item => !item.metadata.name.startsWith('default-token') && !item.metadata.name.endsWith('web-tls'))
+    .map(item => item.metadata.name);
 };
 
 export const loadSecret = async (namespace, name) => {
