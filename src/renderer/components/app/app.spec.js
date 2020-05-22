@@ -47,7 +47,8 @@ describe('App', () => {
 
       const items = wrapper.find('#namespace-selector').attributes('items');
       expect(JSON.parse(items)).to.eql([]);
-      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
+      const expectedNotificationParams = sinon.match({ title: 'Load failed', content: 'Oh no!' });
+      expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
     });
   });
 
@@ -87,7 +88,22 @@ describe('App', () => {
 
       const items = wrapper.find('#secret-selector').attributes('items');
       expect(JSON.parse(items)).to.eql([]);
-      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
+      const expectedNotificationParams = sinon.match({ title: 'Load failed', content: 'Oh no!' });
+      expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
+    });
+
+    it('should display error notification when secret list loading fails do to not having access', async () => {
+      sinon.stub(window.e.utils, 'openNotification');
+      stubNamespaceList(namespaceList);
+      stubUnauthorizedSecretList();
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+
+      const items = wrapper.find('#secret-selector').attributes('items');
+      expect(JSON.parse(items)).to.eql([]);
+      const expectedNotificationParams = sinon.match({ title: 'Load failed', content: sinon.match('permission') });
+      expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
     });
   });
 
@@ -142,7 +158,8 @@ describe('App', () => {
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
       await clickButton(wrapper, '#load-button');
 
-      expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Load failed' }));
+      const expectedNotificationParams = sinon.match({ title: 'Load failed', content: 'Oh no!' });
+      expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
     });
 
     describe('when loaded secret has not changed since load', () => {
@@ -200,7 +217,8 @@ describe('App', () => {
         await clickButton(wrapper, '#load-button');
         await clickButton(wrapper, '#save-button');
 
-        expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Save failed' }));
+        const expectedNotificationParams = sinon.match({ title: 'Save failed', content: 'Oh no!' });
+        expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
       });
     });
 
@@ -235,7 +253,11 @@ describe('App', () => {
         await clickButton(wrapper, '#load-button');
         await clickButton(wrapper, '#save-button');
 
-        expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Save failed' }));
+        const expectedNotificationParams = sinon.match({
+          title: 'Save failed',
+          content: sinon.match('Secret has been modified')
+        });
+        expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
       });
     });
   });
@@ -256,6 +278,10 @@ describe('App', () => {
 
   const stubFailingSecretList = () => {
     stubFailingApiClient('listNamespacedSecret');
+  };
+
+  const stubUnauthorizedSecretList = () => {
+    stubFailingApiClient('listNamespacedSecret', { code: 403 });
   };
 
   const stubSelectedSecret = secret => {
@@ -291,8 +317,8 @@ describe('App', () => {
     return clientMethodStub;
   };
 
-  const stubFailingApiClient = method => {
-    const clientMethodStub = sinon.stub().rejects({ response: { body: { message: 'Oh no!' } } });
+  const stubFailingApiClient = (method, responseBody = { message: 'Oh no!' }) => {
+    const clientMethodStub = sinon.stub().rejects({ response: { body: responseBody } });
     fakeKubernetesApiClient[method] = clientMethodStub;
     return clientMethodStub;
   };

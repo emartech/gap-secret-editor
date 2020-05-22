@@ -47,7 +47,11 @@ export default {
       try {
         this.secretList = await listSecrets(this.secretNamespace);
       } catch (e) {
-        notificationDisplayer.loadFailed(e.message);
+        if (e.data.code === 403) {
+          notificationDisplayer.loadFailedDueToUnauthorizedAccess();
+        } else {
+          notificationDisplayer.loadFailed(e.message);
+        }
         this.secretList = [];
       }
     },
