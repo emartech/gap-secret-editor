@@ -5,12 +5,8 @@ import App from './app';
 
 describe('App', () => {
   const fakeKubernetesApiClient = {};
-  const secretList = [
-    { name: 'best-app', namespace: 'cool-team' },
-    { name: 'wonderful-app', namespace: 'cool-team' },
-    { name: 'terrible-app', namespace: 'lame-team' },
-    { name: 'worst-app', namespace: 'lame-team' }
-  ];
+  const namespaceList = ['cool-team', 'lame-team'];
+  const secretList = ['best-app', 'wonderful-app'];
 
   beforeEach(() => {
     KubeConfig.prototype.makeApiClient.returns(fakeKubernetesApiClient);
@@ -18,7 +14,7 @@ describe('App', () => {
 
   describe('when loaded', () => {
     it('should indicate loading', async () => {
-      stubSecretList(secretList);
+      stubNamespaceList(namespaceList);
       const wrapper = shallowMount(App);
       expect(wrapper.find('#page-loading-indicator').exists()).to.be.true;
       await flushPromises();
@@ -26,7 +22,7 @@ describe('App', () => {
     });
 
     it('should list available namespaces', async () => {
-      stubSecretList(secretList);
+      stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
       const items = wrapper.find('#namespace-selector').attributes('items');
@@ -37,7 +33,7 @@ describe('App', () => {
     });
 
     it('should disable load/save buttons', async () => {
-      stubSecretList(secretList);
+      stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
       expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
@@ -47,6 +43,7 @@ describe('App', () => {
 
   describe('when namespace selected', () => {
     it('should list available secrets', async () => {
+      stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
 
@@ -60,6 +57,7 @@ describe('App', () => {
     });
 
     it('should disable load/save buttons', async () => {
+      stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
 
@@ -72,6 +70,7 @@ describe('App', () => {
 
   describe('when namespace and secret selected', () => {
     it('should enable load button', async () => {
+      stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
 
@@ -82,6 +81,7 @@ describe('App', () => {
     });
 
     it('should disable save button when secret not loaded', async () => {
+      stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
 
@@ -92,6 +92,7 @@ describe('App', () => {
     });
 
     it('should load secret when load button clicked', async () => {
+      stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       stubSelectedSecret({
         NUMBER_42: 'NDI=',
@@ -109,6 +110,7 @@ describe('App', () => {
 
     describe('when loaded secret has not changed since load', () => {
       it('should save secret when save button clicked', async () => {
+        stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
         const saveMethodMock = stubApiClient('replaceNamespacedSecret');
@@ -132,6 +134,7 @@ describe('App', () => {
       });
 
       it('should display success notification when save button clicked', async () => {
+        stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
         sinon.stub(window.e.utils, 'openNotification');
@@ -150,6 +153,7 @@ describe('App', () => {
 
     describe('when loaded secret has changed since load', () => {
       it('should not save secret when save button clicked', async () => {
+        stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
         const saveMethodMock = stubApiClient('replaceNamespacedSecret');
@@ -167,6 +171,7 @@ describe('App', () => {
       });
 
       it('should display error notification when save button clicked', async () => {
+        stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
         sinon.stub(window.e.utils, 'openNotification');
@@ -182,8 +187,14 @@ describe('App', () => {
     });
   });
 
+  const stubNamespaceList = namespaces => {
+    stubApiClient('listNamespace', {
+      items: namespaces.map(name => ({ metadata: { name }, status: { phase: 'Active' } }))
+    });
+  };
+
   const stubSecretList = secrets => {
-    stubApiClient('listSecretForAllNamespaces', { items: secrets.map(metadata => ({ metadata })) });
+    stubApiClient('listNamespacedSecret', { items: secrets.map(name => ({ metadata: { name } })) });
   };
 
   const stubSelectedSecret = secret => {
@@ -222,6 +233,7 @@ const changeSelectValue = async (wrapper, selector, value) => {
   const namespaceSelector = wrapper.find(selector);
   namespaceSelector.element.value = value;
   namespaceSelector.trigger('change');
+  await flushPromises();
   await wrapper.vm.$nextTick();
 };
 
