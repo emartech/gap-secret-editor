@@ -8,37 +8,38 @@ import {
   V1PodTemplateSpec
 } from '@kubernetes/client-node';
 import { get, mapValues } from 'lodash';
+import KubernetesError from './kubernetes-error';
 
-export const listNamespaces = async () => {
+export const listNamespaces = async () => mapErrorToKubernetesError(async () => {
   const { body } = await getCoreApiClient().listNamespace();
 
   return body.items
     .filter(item => item.status.phase === 'Active')
     .map(item => item.metadata.name);
-};
+});
 
-export const listSecrets = async (namespace) => {
+export const listSecrets = async (namespace) => mapErrorToKubernetesError(async () => {
   const { body } = await getCoreApiClient().listNamespacedSecret(namespace);
   return body.items
     .filter(item => !item.metadata.name.startsWith('default-token') && !item.metadata.name.endsWith('web-tls'))
     .map(item => item.metadata.name);
-};
+});
 
-export const loadSecret = async (namespace, name) => {
+export const loadSecret = async (namespace, name) => mapErrorToKubernetesError(async () => {
   const { body } = await getCoreApiClient().readNamespacedSecret(name, namespace);
   return mapValues(body.data, value => Buffer.from(value, 'base64').toString());
-};
+});
 
-export const saveSecret = async (namespace, name, secret) => {
+export const saveSecret = async (namespace, name, secret) => mapErrorToKubernetesError(async () => {
   const secretConfig = {
     stringData: secret,
     metadata: { name }
   };
 
   await getCoreApiClient().replaceNamespacedSecret(name, namespace, secretConfig);
-};
+});
 
-export const patchDeployments = async (namespace, name) => {
+export const patchDeployments = async (namespace, name) => mapErrorToKubernetesError(async () => {
   const labelSelector = `applicationName=${name}`;
   const deploymentListResponse = await getAppsApiClient().listNamespacedDeployment(
     namespace,
@@ -66,7 +67,7 @@ export const patchDeployments = async (namespace, name) => {
       { headers: { 'Content-Type': 'application/merge-patch+json' } }
     );
   }
-};
+});
 
 const contextAliases = {
   '***REMOVED***': 'staging',
@@ -102,4 +103,12 @@ const getAppsApiClient = () => {
   const kubeConfig = new KubeConfig();
   kubeConfig.loadFromDefault();
   return kubeConfig.makeApiClient(AppsV1Api);
+};
+
+const mapErrorToKubernetesError = async func => {
+  try {
+    return await func();
+  } catch (e) {
+    throw new KubernetesError(e);
+  }
 };

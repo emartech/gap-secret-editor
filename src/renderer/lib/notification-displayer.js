@@ -16,5 +16,21 @@ export default {
       type: 'danger',
       autoClose: true
     });
+  },
+  saveFailed: (reason) => {
+    window.e.utils.openNotification({
+      title: 'Save failed',
+      content: reason,
+      placement: 'top',
+      type: 'danger'
+    });
+  },
+  loadFailed: (reason) => {
+    window.e.utils.openNotification({
+      title: 'Load failed',
+      content: reason,
+      placement: 'top',
+      type: 'danger'
+    });
   }
 };
