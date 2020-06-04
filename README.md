@@ -14,9 +14,14 @@ npm run dev
 # build electron application for production
 npm run build
 
+# run all tests
+npm test
 
-# lint all JS/Vue component files in `src/`
-npm run lint
+#run unit tests once
+npm run test:unit
+
+#run unit tests in watch mode
+npm run test:unit:watch
 
 ```
 
