@@ -55,7 +55,7 @@ export default {
         this.secretList = [];
       }
     },
-    selectSecret(event) {
+    selectName(event) {
       this.secretName = event.target.value;
     },
     async loadSecret() {
