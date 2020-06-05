@@ -18,17 +18,27 @@ export default {
     loading: true,
     secretLoaded: false,
     namespaceList: [],
-    secretList: [],
+    nameList: [],
     loadInProgress: false,
     saveInProgress: false,
     context: kubernetesClient.getCurrentContext()
   }),
   computed: {
     namespaces() {
-      return this.namespaceList.map(namespace => ({ type: 'option', content: namespace, value: namespace }));
+      return this.namespaceList.map(namespace => ({
+        type: 'option',
+        content: namespace,
+        value: namespace,
+        selected: namespace === this.secretNamespace
+      }));
     },
-    secretsForSelectedNamespace() {
-      return this.secretList.map(name => ({ type: 'option', content: name, value: name }));
+    namesForSelectedNamespace() {
+      return this.nameList.map(name => ({
+        type: 'option',
+        content: name,
+        value: name,
+        selected: name === this.secretName
+      }));
     },
     loadEnabled() {
       return this.secretNamespace && this.secretName && !this.loadInProgress;
@@ -41,7 +51,7 @@ export default {
     async selectNamespace(namespace) {
       this.secretNamespace = namespace;
       try {
-        this.secretList = await kubernetesClient.listSecrets(this.secretNamespace);
+        this.nameList = await kubernetesClient.listSecrets(this.secretNamespace);
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = this.secretNamespace;
       } catch (e) {
         if (get(e, 'data.code') === 403) {
@@ -49,7 +59,7 @@ export default {
         } else {
           notificationDisplayer.loadFailed(e.message);
         }
-        this.secretList = [];
+        this.nameList = [];
       }
     },
     selectName(name) {
@@ -116,7 +126,7 @@ export default {
       if (lastSelectedNamespace && this.namespaceList.includes(lastSelectedNamespace)) {
         await this.selectNamespace(lastSelectedNamespace);
         const lastSelectedName = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME];
-        if (lastSelectedName && this.secretList.includes(lastSelectedName)) {
+        if (lastSelectedName && this.nameList.includes(lastSelectedName)) {
           this.selectName(lastSelectedName);
         }
       }

@@ -26,7 +26,7 @@
                   id="secret-selector"
                   :disabled="secretNamespace === ''"
                   placeholder="Select your secret"
-                  :items="JSON.stringify(secretsForSelectedNamespace)"
+                  :items="JSON.stringify(namesForSelectedNamespace)"
                   @change="selectName($event.target.value)"
               ></e-select>
             </div>
