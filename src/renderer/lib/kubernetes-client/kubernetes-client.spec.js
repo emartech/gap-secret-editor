@@ -1,12 +1,5 @@
 import { KubeConfig } from '@kubernetes/client-node';
-import {
-  getCurrentContext,
-  listNamespaces,
-  listSecrets,
-  loadSecret,
-  patchDeployments,
-  saveSecret
-} from './kubernetes-client';
+import kubernetesClient from './kubernetes-client';
 import KubernetesError from './kubernetes-error';
 
 describe('KubernetesClient', () => {
@@ -20,7 +13,7 @@ describe('KubernetesClient', () => {
         ]
       });
 
-      const secrets = await listNamespaces();
+      const secrets = await kubernetesClient.listNamespaces();
 
       expect(secrets).to.eql(['cool-team', 'bad-team']);
     });
@@ -31,7 +24,7 @@ describe('KubernetesClient', () => {
       });
 
       try {
-        await listNamespaces();
+        await kubernetesClient.listNamespaces();
         expect.fail('exception should have been thrown');
       } catch (e) {
         expect(e).to.be.an.instanceof(KubernetesError);
@@ -50,7 +43,7 @@ describe('KubernetesClient', () => {
         ]
       });
 
-      const secrets = await listSecrets('cool-team');
+      const secrets = await kubernetesClient.listSecrets('cool-team');
 
       expect(secrets).to.eql(['best-app', 'wonderful-app', 'terrible-app', 'worst-app']);
       expect(listMethodMock).to.have.been.calledWith('cool-team');
@@ -67,7 +60,7 @@ describe('KubernetesClient', () => {
         ]
       });
 
-      const secrets = await listSecrets('cool-team');
+      const secrets = await kubernetesClient.listSecrets('cool-team');
 
       expect(secrets).to.eql(['best-app', 'wonderful-app']);
     });
@@ -78,7 +71,7 @@ describe('KubernetesClient', () => {
       });
 
       try {
-        await listSecrets('cool-team');
+        await kubernetesClient.listSecrets('cool-team');
         expect.fail('exception should have been thrown');
       } catch (e) {
         expect(e).to.be.an.instanceof(KubernetesError);
@@ -95,7 +88,7 @@ describe('KubernetesClient', () => {
         }
       });
 
-      const secret = await loadSecret('cool-team', 'best-app');
+      const secret = await kubernetesClient.loadSecret('cool-team', 'best-app');
 
       expect(secret).to.eql({
         NUMBER_42: '42',
@@ -108,7 +101,7 @@ describe('KubernetesClient', () => {
     it('should save secret', async () => {
       const saveMethodMock = stubApiClient('replaceNamespacedSecret');
 
-      await saveSecret('cool-team', 'best-app', { JOHN: 'Lennon' });
+      await kubernetesClient.saveSecret('cool-team', 'best-app', { JOHN: 'Lennon' });
 
       expect(saveMethodMock).to.have.been.calledWith(
         'best-app',
@@ -135,7 +128,7 @@ describe('KubernetesClient', () => {
         patchNamespacedDeployment: patchMethodMock
       });
 
-      await patchDeployments('cool-team', 'best-app');
+      await kubernetesClient.patchDeployments('cool-team', 'best-app');
 
       expect(listMethodMock).to.have.been.calledWith(
         'cool-team',
@@ -157,7 +150,7 @@ describe('KubernetesClient', () => {
         patchNamespacedDeployment: patchMethodMock
       });
 
-      await patchDeployments('cool-team', 'best-app');
+      await kubernetesClient.patchDeployments('cool-team', 'best-app');
 
       expect(patchMethodMock).to.not.have.been.called;
     });
@@ -170,7 +163,7 @@ describe('KubernetesClient', () => {
         this.currentContext = 'magnificent-context';
       });
 
-      expect(getCurrentContext()).to.eql('magnificent-context');
+      expect(kubernetesClient.getCurrentContext()).to.eql('magnificent-context');
     });
 
     it('should return context alias for staging', () => {
@@ -178,7 +171,7 @@ describe('KubernetesClient', () => {
         this.currentContext = 'gke_ems-gap-stage_europe-west3_gap-staging';
       });
 
-      expect(getCurrentContext()).to.eql('staging');
+      expect(kubernetesClient.getCurrentContext()).to.eql('staging');
     });
 
     it('should return context alias for production', () => {
@@ -186,7 +179,7 @@ describe('KubernetesClient', () => {
         this.currentContext = 'gke_ems-gap-production_europe-west3_gap-production';
       });
 
-      expect(getCurrentContext()).to.eql('production');
+      expect(kubernetesClient.getCurrentContext()).to.eql('production');
     });
   });
 });

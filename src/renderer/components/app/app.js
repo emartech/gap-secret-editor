@@ -1,12 +1,5 @@
 import { isEqual } from 'lodash';
-import {
-  listNamespaces,
-  listSecrets,
-  loadSecret,
-  saveSecret,
-  patchDeployments,
-  getCurrentContext
-} from '../../lib/kubernetes-client/kubernetes-client';
+import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
 
@@ -25,7 +18,7 @@ export default {
     secretList: [],
     loadInProgress: false,
     saveInProgress: false,
-    context: getCurrentContext()
+    context: kubernetesClient.getCurrentContext()
   }),
   computed: {
     namespaces() {
@@ -45,7 +38,7 @@ export default {
     async selectNamespace(event) {
       this.secretNamespace = event.target.value;
       try {
-        this.secretList = await listSecrets(this.secretNamespace);
+        this.secretList = await kubernetesClient.listSecrets(this.secretNamespace);
       } catch (e) {
         if (e.data.code === 403) {
           notificationDisplayer.loadFailedDueToUnauthorizedAccess();
@@ -61,7 +54,7 @@ export default {
     async loadSecret() {
       this.loadInProgress = true;
       try {
-        this.originalSecret = await loadSecret(this.secretNamespace, this.secretName);
+        this.originalSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         const tuples = Object.entries(this.originalSecret);
         this.secret = tuples.map(([key, value]) => ({ key, value }));
       } catch (e) {
@@ -77,13 +70,13 @@ export default {
 
       this.saveInProgress = true;
       try {
-        const currentlySavedSecret = await loadSecret(this.secretNamespace, this.secretName);
+        const currentlySavedSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         if (isEqual(currentlySavedSecret, this.originalSecret)) {
           const tuples = this.secret.map(({ key, value }) => ([key, value]));
           const secretAsObject = Object.fromEntries(tuples);
 
-          await saveSecret(this.secretNamespace, this.secretName, secretAsObject);
-          await patchDeployments(this.secretNamespace, this.secretName);
+          await kubernetesClient.saveSecret(this.secretNamespace, this.secretName, secretAsObject);
+          await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
 
           notificationDisplayer.saveSuccess();
         } else {
@@ -95,7 +88,7 @@ export default {
       this.saveInProgress = false;
     },
     updateContext() {
-      const currentContext = getCurrentContext();
+      const currentContext = kubernetesClient.getCurrentContext();
       if (this.context !== currentContext) {
         this.secretLoaded = false;
         this.context = currentContext;
@@ -105,7 +98,7 @@ export default {
     async loadAvailableNamespaces() {
       this.loading = true;
       try {
-        this.namespaceList = await listNamespaces();
+        this.namespaceList = await kubernetesClient.listNamespaces();
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
         this.namespaceList = [];
