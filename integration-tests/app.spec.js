@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
-import App from './app';
+import App from '../src/renderer/components/app/app';
 
 describe('App', () => {
   const fakeKubernetesApiClient = {};
