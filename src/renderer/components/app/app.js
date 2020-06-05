@@ -1,7 +1,10 @@
-import { isEqual } from 'lodash';
+import { isEqual, get } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
+
+export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
+export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 
 export default {
   name: 'app',
@@ -35,12 +38,13 @@ export default {
     }
   },
   methods: {
-    async selectNamespace(event) {
-      this.secretNamespace = event.target.value;
+    async selectNamespace(namespace) {
+      this.secretNamespace = namespace;
       try {
         this.secretList = await kubernetesClient.listSecrets(this.secretNamespace);
+        localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = this.secretNamespace;
       } catch (e) {
-        if (e.data.code === 403) {
+        if (get(e, 'data.code') === 403) {
           notificationDisplayer.loadFailedDueToUnauthorizedAccess();
         } else {
           notificationDisplayer.loadFailed(e.message);
@@ -48,8 +52,9 @@ export default {
         this.secretList = [];
       }
     },
-    selectName(event) {
-      this.secretName = event.target.value;
+    selectName(name) {
+      this.secretName = name;
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
     },
     async loadSecret() {
       this.loadInProgress = true;
@@ -92,22 +97,33 @@ export default {
       if (this.context !== currentContext) {
         this.secretLoaded = false;
         this.context = currentContext;
-        this.loadAvailableNamespaces();
+        this.initialize();
       }
     },
-    async loadAvailableNamespaces() {
+    async initialize() {
       this.loading = true;
       try {
         this.namespaceList = await kubernetesClient.listNamespaces();
+        await this.selectLastUsedNamespaceAndName();
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
         this.namespaceList = [];
       }
       this.loading = false;
+    },
+    async selectLastUsedNamespaceAndName() {
+      const lastSelectedNamespace = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE];
+      if (lastSelectedNamespace && this.namespaceList.includes(lastSelectedNamespace)) {
+        await this.selectNamespace(lastSelectedNamespace);
+        const lastSelectedName = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME];
+        if (lastSelectedName && this.secretList.includes(lastSelectedName)) {
+          this.selectName(lastSelectedName);
+        }
+      }
     }
   },
   async mounted() {
-    await this.loadAvailableNamespaces();
+    await this.initialize();
     setInterval(this.updateContext, 1000);
   }
 };

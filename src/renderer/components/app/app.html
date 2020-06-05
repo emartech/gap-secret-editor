@@ -17,7 +17,7 @@
                   id="namespace-selector"
                   placeholder="Select your namespace"
                   :items="JSON.stringify(namespaces)"
-                  @change="selectNamespace($event)"
+                  @change="selectNamespace($event.target.value)"
               ></e-select>
             </div>
 
@@ -27,7 +27,7 @@
                   :disabled="secretNamespace === ''"
                   placeholder="Select your secret"
                   :items="JSON.stringify(secretsForSelectedNamespace)"
-                  @change="selectName($event)"
+                  @change="selectName($event.target.value)"
               ></e-select>
             </div>
 
