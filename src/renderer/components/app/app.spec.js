@@ -8,6 +8,33 @@ describe('App', () => {
     localStorage.clear();
   });
 
+  describe('#namespaces', () => {
+    it('should return available namespaces in UI Kit select format', async () => {
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'team2';
+
+      expect(vm.namespaces).to.eql([
+        { type: 'option', content: 'team1', value: 'team1', selected: false },
+        { type: 'option', content: 'team2', value: 'team2', selected: true }
+      ]);
+    });
+  });
+
+  describe('#namesForSelectedNamespace', () => {
+    it('should return available names in UI Kit select format', async () => {
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.secretName = 'secret2';
+      vm.nameList = ['secret1', 'secret2'];
+
+      expect(vm.namesForSelectedNamespace).to.eql([
+        { type: 'option', content: 'secret1', value: 'secret1', selected: false },
+        { type: 'option', content: 'secret2', value: 'secret2', selected: true }
+      ]);
+    });
+  });
+
   describe('#selectNamespace', () => {
     it('should store selection to local storage when secret list loading succeeds', async () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);

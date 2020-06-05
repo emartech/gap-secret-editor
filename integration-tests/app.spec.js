@@ -1,7 +1,7 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
-import App from '../src/renderer/components/app/app';
+import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/components/app/app';
 
 describe('App', () => {
   const fakeKubernetesApiClient = {};
@@ -10,6 +10,7 @@ describe('App', () => {
 
   beforeEach(() => {
     KubeConfig.prototype.makeApiClient.returns(fakeKubernetesApiClient);
+    localStorage.clear();
   });
 
   describe('when loaded', () => {
@@ -27,8 +28,20 @@ describe('App', () => {
 
       const items = wrapper.find('#namespace-selector').attributes('items');
       expect(JSON.parse(items)).to.eql([
-        { type: 'option', content: 'cool-team', value: 'cool-team' },
-        { type: 'option', content: 'lame-team', value: 'lame-team' }
+        { type: 'option', content: 'cool-team', value: 'cool-team', selected: false },
+        { type: 'option', content: 'lame-team', value: 'lame-team', selected: false }
+      ]);
+    });
+
+    it('should automatically select last used namespace', async () => {
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'cool-team';
+      stubNamespaceList(namespaceList);
+      const wrapper = await loadApp();
+
+      const items = wrapper.find('#namespace-selector').attributes('items');
+      expect(JSON.parse(items)).to.eql([
+        { type: 'option', content: 'cool-team', value: 'cool-team', selected: true },
+        { type: 'option', content: 'lame-team', value: 'lame-team', selected: false }
       ]);
     });
 
@@ -62,8 +75,8 @@ describe('App', () => {
 
       const items = wrapper.find('#secret-selector').attributes('items');
       expect(JSON.parse(items)).to.eql([
-        { type: 'option', content: 'best-app', value: 'best-app' },
-        { type: 'option', content: 'wonderful-app', value: 'wonderful-app' }
+        { type: 'option', content: 'best-app', value: 'best-app', selected: false },
+        { type: 'option', content: 'wonderful-app', value: 'wonderful-app', selected: false }
       ]);
     });
 
