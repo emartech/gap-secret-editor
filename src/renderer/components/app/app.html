@@ -52,9 +52,16 @@
             <div class="e-cell e-cell-small" style="display: flex; align-items: center;">
               <div class="e-label e-label-info">{{ context }}</div>
             </div>
+
+            <div class="e-cell e-cell-small" style="margin-left: auto">
+              <div style="position: relative">
+                <input id="search-input" class="e-input e-input-large" type="search" placeholder="Search" v-model="searchTerm" style="padding-left: 40px" />
+                <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
+              </div>
+            </div>
           </div>
 
-          <secret-editor v-if="secretLoaded" v-model="secret"></secret-editor>
+          <secret-editor id="secret-editor" v-if="secretLoaded" v-model="secret" :search-term="searchTerm"></secret-editor>
         </template>
       </section>
     </main>
