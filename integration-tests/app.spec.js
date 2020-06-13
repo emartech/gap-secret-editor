@@ -188,8 +188,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        wrapper.find('input').setValue('DRINK');
-        wrapper.find('textarea').setValue('coke');
+        await changeInputValue(wrapper, 'input', 'DRINK');
+        await changeInputValue(wrapper, 'textarea', 'coke');
         await clickButton(wrapper, '#save-button');
 
         expect(saveMethodMock).to.have.been.calledWith(
@@ -210,8 +210,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        wrapper.find('input').setValue('DRINK');
-        wrapper.find('textarea').setValue('coke');
+        await changeInputValue(wrapper, 'input', 'DRINK');
+        await changeInputValue(wrapper, 'textarea', 'coke');
         await clickButton(wrapper, '#save-button');
 
         expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Secret saved' }));
@@ -348,6 +348,11 @@ const changeSelectValue = async (wrapper, selector, value) => {
   namespaceSelector.element.value = value;
   namespaceSelector.trigger('change');
   await flushPromises();
+  await wrapper.vm.$nextTick();
+};
+
+const changeInputValue = async (wrapper, selector, value) => {
+  wrapper.find(selector).setValue(value);
   await wrapper.vm.$nextTick();
 };
 
