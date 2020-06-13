@@ -1,4 +1,4 @@
-<div id="app">
+<div id="app" @keydown.meta.f="activateSearch()" tabindex="-1" style="height: inherit; outline: none;">
   <div class="e-layout e-layout-without_navigation">
     <header class="e-layout__header">
       <h1 class="e-layout__title">GAP Secret Editor</h1>
@@ -32,21 +32,21 @@
             </div>
 
             <div class="e-cell e-cell-small">
-              <button id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
+              <div id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loadInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>
                 Load Secret
-              </button>
+              </div>
             </div>
 
             <div class="e-cell e-cell-small">
-              <button id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
+              <div id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': saveInProgress }">
                   <e-spinner data-size="small"></e-spinner>
                 </div>
                 Save Secret
-              </button>
+              </div>
             </div>
 
             <div class="e-cell e-cell-small" style="display: flex; align-items: center;">
@@ -55,7 +55,15 @@
 
             <div class="e-cell e-cell-small" style="margin-left: auto">
               <div style="position: relative">
-                <input id="search-input" class="e-input e-input-large" type="search" placeholder="Search" v-model="searchTerm" style="padding-left: 40px" />
+                <input
+                    id="search-input"
+                    ref="searchInput"
+                    class="e-input e-input-large"
+                    type="search"
+                    placeholder="Search"
+                    v-model="searchTerm"
+                    style="padding-left: 40px"
+                />
                 <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
               </div>
             </div>
