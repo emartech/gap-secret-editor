@@ -131,6 +131,9 @@ export default {
           this.selectName(lastSelectedName);
         }
       }
+    },
+    activateSearch() {
+      this.$refs.searchInput.select();
     }
   },
   async mounted() {
