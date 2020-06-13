@@ -10,33 +10,33 @@ export default {
     value: { type: Array, required: true, default: () => [] }
   },
   computed: {
-    displayedSecrets() {
+    fields() {
       return this.value.concat({ key: '', value: '' });
     },
-    isLastSecret() {
-      return (index) => index === this.displayedSecrets.length - 1;
+    isLastField() {
+      return (index) => index === this.fields.length - 1;
     }
   },
   methods: {
-    changeSecretKey(index, key) {
-      this._updateSecrets(index, { key });
+    changeFieldKey(index, key) {
+      this._updateFields(index, { key });
     },
-    changeSecretValue(index, value) {
-      this._updateSecrets(index, { value });
+    changeFieldValue(index, value) {
+      this._updateFields(index, { value });
     },
-    _updateSecrets(index, delta) {
-      const updatedSecrets = [...this.displayedSecrets];
-      Object.assign(updatedSecrets[index], delta);
-      this._emitSecretChange(updatedSecrets);
+    _updateFields(index, delta) {
+      const updatedFields = [...this.fields];
+      Object.assign(updatedFields[index], delta);
+      this._emitSecretChange(updatedFields);
     },
-    deleteSecret(index) {
-      const updatedSecrets = [...this.displayedSecrets];
-      updatedSecrets.splice(index, 1);
-      this._emitSecretChange(updatedSecrets);
+    deleteField(index) {
+      const updatedFields = [...this.fields];
+      updatedFields.splice(index, 1);
+      this._emitSecretChange(updatedFields);
     },
-    _emitSecretChange(secrets) {
-      const nonEmptySecrets = secrets.filter(secret => secret.key || secret.value);
-      this.$emit('input', nonEmptySecrets);
+    _emitSecretChange(fields) {
+      const nonEmptyFields = fields.filter(secret => secret.key || secret.value);
+      this.$emit('input', nonEmptyFields);
     }
   }
 };

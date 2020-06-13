@@ -2,13 +2,13 @@ import { mount } from '@vue/test-utils';
 import SecretEditor from './secret-editor';
 
 describe('SecretEditor', () => {
-  const secrets = () => [
+  const fields = () => [
     { key: 'name', value: 'James Bond' },
     { key: 'code', value: '007' }
   ];
 
-  it('should display secrets with an extra empty row', () => {
-    const { vm } = mount(SecretEditor, { propsData: { value: secrets() } });
+  it('should display fields with an extra empty row', () => {
+    const { vm } = mount(SecretEditor, { propsData: { value: fields() } });
 
     const renderedKeys = Array.from(vm.$el.querySelectorAll('input')).map(input => input.value);
     expect(renderedKeys).to.eql(['name', 'code', '']);
@@ -16,8 +16,8 @@ describe('SecretEditor', () => {
     expect(renderedValues).to.eql(['James Bond', '007', '']);
   });
 
-  it('should display delete buttons for every secret, and disable the last one', () => {
-    const { vm } = mount(SecretEditor, { propsData: { value: secrets() } });
+  it('should display delete buttons for every field, and disable the last one', () => {
+    const { vm } = mount(SecretEditor, { propsData: { value: fields() } });
 
     const isButtonDisabled = button => Array.from(button.classList).includes('e-btn-disabled');
     const deleteButtons = Array.from(vm.$el.querySelectorAll('.e-btn'));
@@ -27,8 +27,8 @@ describe('SecretEditor', () => {
   });
 
   describe('change emitting', () => {
-    it('should emit modified secrets when a key changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
+    it('should emit modified secret when a key changes', async () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('input').at(1).setValue('kod');
 
@@ -38,8 +38,8 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit modified secrets when a value changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
+    it('should emit modified secret when a value changes', async () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('textarea').at(0).setValue('James Bandi');
 
@@ -49,8 +49,8 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit modified secrets when a new key entered', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
+    it('should emit modified secret when a new key entered', () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('input').at(2).setValue('drink');
 
@@ -61,8 +61,8 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit modified secrets when a new value entered', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
+    it('should emit modified secret when a new value entered', () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('textarea').at(2).setValue('Martini');
 
@@ -73,8 +73,8 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit modified secrets when a secret is deleted', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: secrets() } });
+    it('should emit modified secret when a field is deleted', () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('.e-btn').at(1).trigger('click');
 
