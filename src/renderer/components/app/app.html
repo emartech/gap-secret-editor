@@ -6,7 +6,7 @@
     <main class="e-layout__content">
       <section class="e-layout__section e-padding-s">
 
-        <div id="page-loading-indicator" style="position: relative; height: 300px;" v-if="loading">
+        <div id="page-loading-indicator" style="position: relative; height: 414px;" v-if="loading">
           <e-spinner data-fullscreen="true"></e-spinner>
         </div>
 
@@ -69,7 +69,13 @@
             </div>
           </div>
 
-          <secret-editor id="secret-editor" v-if="secretLoaded" v-model="secret" :search-term="searchTerm"></secret-editor>
+          <div class="e-margin-top-l" style="height: 350px">
+            <div class="e-scrollable">
+              <div class="e-scrollable__content">
+                <secret-editor id="secret-editor" v-if="secretLoaded" v-model="secret" :search-term="searchTerm"></secret-editor>
+              </div>
+            </div>
+          </div>
         </template>
       </section>
     </main>
