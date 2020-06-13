@@ -156,8 +156,28 @@ describe('App', () => {
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
       await clickButton(wrapper, '#load-button');
 
-      const renderedSecretKeys = wrapper.findAll('input').wrappers.map(wrapper => wrapper.element.value);
+      const renderedSecretKeys = wrapper.findAll('#secret-editor input').wrappers
+        .map(wrapper => wrapper.element.value);
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
+    });
+
+    it('should load secret and filter its fields when load button clicked and filter provided', async () => {
+      stubNamespaceList(namespaceList);
+      stubSecretList(secretList);
+      stubSelectedSecret({
+        NUMBER_42: 'NDI=',
+        SUPER_SECRET_JSON: 'eyJzdXBlciI6ICJzZWNyZXQifQ=='
+      });
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+      await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+      await clickButton(wrapper, '#load-button');
+      await changeInputValue(wrapper, '#search-input', 'super');
+
+      const renderedSecretKeys = wrapper.findAll('#secret-editor input').wrappers
+        .map(wrapper => wrapper.element.value);
+      expect(renderedSecretKeys).to.eql(['SUPER_SECRET_JSON']);
     });
 
     it('should display error notification when secret loading fails', async () => {
@@ -188,8 +208,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, 'input', 'DRINK');
-        await changeInputValue(wrapper, 'textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
 
         expect(saveMethodMock).to.have.been.calledWith(
@@ -210,8 +230,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, 'input', 'DRINK');
-        await changeInputValue(wrapper, 'textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
 
         expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Secret saved' }));

@@ -21,7 +21,8 @@ export default {
     nameList: [],
     loadInProgress: false,
     saveInProgress: false,
-    context: kubernetesClient.getCurrentContext()
+    context: kubernetesClient.getCurrentContext(),
+    searchTerm: ''
   }),
   computed: {
     namespaces() {
