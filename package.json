@@ -3,6 +3,10 @@
   "version": "0.0.1",
   "author": "rgargya <robert.gargya@emarsys.com>",
   "description": "An electron-vue project",
+  "repository": {
+    "type" : "git",
+    "url" : "https://github.com/emartech/gap-secret-editor.git"
+  },
   "main": "./dist/electron/main.js",
   "scripts": {
     "audit": "npm audit --json | audit-filter",
@@ -19,7 +23,8 @@
     "test": "npm run audit && npm run lint && npm run test:unit",
     "test:unit": "karma start test-helpers/karma.conf.js --single-run",
     "test:unit:watch": "karma start test-helpers/karma.conf.js",
-    "postinstall": "npm run lint:fix"
+    "postinstall": "npm run lint:fix",
+    "release": "build"
   },
   "build": {
     "productName": "gap-secret-editor",
@@ -46,13 +51,11 @@
       ]
     },
     "mac": {
-      "icon": "build/icons/settings.png"
-    },
-    "win": {
-      "icon": "build/icons/icon.ico"
-    },
-    "linux": {
-      "icon": "build/icons"
+      "icon": "build/icons/settings.png",
+      "publish": {
+        "provider": "github",
+        "private": true
+      }
     }
   },
   "dependencies": {
