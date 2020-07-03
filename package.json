@@ -1,6 +1,6 @@
 {
   "name": "gap-secret-editor",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "rgargya <robert.gargya@emarsys.com>",
   "description": "An electron-vue project",
   "repository": {
