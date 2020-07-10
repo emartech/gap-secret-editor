@@ -27,7 +27,7 @@
     "release": "node .electron-vue/build.js && electron-builder --publish always"
   },
   "build": {
-    "productName": "gap-secret-editor",
+    "productName": "GAP Secret Editor",
     "appId": "com.emarsys.gap-secret-editor",
     "directories": {
       "output": "build"
