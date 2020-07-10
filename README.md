@@ -4,7 +4,8 @@
 
 ## Installation
 
-Download the application from the [releases](releases) page of the GitHub repository.
+Download the application from the [releases](https://github.com/emartech/gap-secret-editor/releases) page of the GitHub 
+repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
 
@@ -77,7 +78,8 @@ and run `npm run release`.
 (Note: the scripts usually hangs for a couple of minutes at the notarization step (just after "signing"),
 be patient and wait for the apple servers to do their job)
 
-The script will create a draft release under the [releases](releases) page, which you have to edit and publish manually.
+The script will create a draft release under the [releases](https://github.com/emartech/gap-secret-editor/releases)
+page, which you have to edit and publish manually.
 
 ---
 
