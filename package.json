@@ -20,9 +20,9 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "test": "npm run audit && npm run lint && npm run test:unit",
-    "test:unit": "karma start test-helpers/karma.conf.js --single-run",
-    "test:unit:watch": "karma start test-helpers/karma.conf.js",
+    "test": "npm run audit && npm run lint && npm run test:once",
+    "test:once": "karma start test-helpers/karma.conf.js --single-run",
+    "test:watch": "karma start test-helpers/karma.conf.js",
     "postinstall": "npm run lint:fix",
     "release": "node .electron-vue/build.js && electron-builder --publish always"
   },
