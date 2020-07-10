@@ -10,7 +10,7 @@
   "main": "./dist/electron/main.js",
   "scripts": {
     "audit": "npm audit --json | audit-filter",
-    "build": "node .electron-vue/build.js && electron-builder",
+    "build": "node .electron-vue/build.js && electron-builder -c.mac.identity=null",
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
@@ -24,7 +24,7 @@
     "test:unit": "karma start test-helpers/karma.conf.js --single-run",
     "test:unit:watch": "karma start test-helpers/karma.conf.js",
     "postinstall": "npm run lint:fix",
-    "release": "electron-builder --publish always"
+    "release": "node .electron-vue/build.js && electron-builder --publish always"
   },
   "build": {
     "productName": "gap-secret-editor",
@@ -36,6 +36,7 @@
       "dist/electron/**/*"
     ],
     "dmg": {
+      "sign": false,
       "contents": [
         {
           "x": 410,
@@ -55,8 +56,13 @@
       "publish": {
         "provider": "github",
         "private": true
-      }
-    }
+      },
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false,
+      "entitlements": "build/entitlements.mac.plist",
+      "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "afterSign": "scripts/notarize.js"
   },
   "dependencies": {
     "vue": "2.6.11",
@@ -101,6 +107,7 @@
     "electron-builder": "22.7.0",
     "electron-debug": "3.1.0",
     "electron-devtools-installer": "3.1.0",
+    "electron-notarize": "1.0.0",
     "electron-updater": "4.3.1",
     "eslint": "7.3.1",
     "eslint-config-emarsys": "5.1.0",
