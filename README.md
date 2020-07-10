@@ -1,29 +1,83 @@
-# gap-secret-editor
+# GAP Secret Editor
 
-> An electron-vue project
+> Secret and config editor with GUI for Emarsys applications in Google Application Platform
 
-#### Build Setup
+## Installation
+
+Download the application from the [releases](releases) page of the GitHub repository.
+
+For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
+
+## Kubernetes context
+
+When the application runs, it automatically uses your current kubernetes context.
+To switch between staging and production click on the Docker icon on the menu bar and select the desired context under
+the *Kubernetes* menu, or use one of the following commands in your terminal:
+
+```bash
+kubectl config use-context ***REMOVED***
+kubectl config use-context ***REMOVED***
+```
+
+The currently used context is indicated by the **production** or **staging** label.
+
+## For developers
 
 ``` bash
-# install dependencies
-npm install
+# set appropriate NodeJS version
+nvm use
 
-# serve with hot reload at localhost:9080
+# install dependencies
+npm ci
+
+# start application locally
 npm run dev
 
-# build electron application for production
-npm run build
-
-# run all tests
+# run all tests (with npm audit and linter checks)
 npm test
 
-#run unit tests once
-npm run test:unit
+# run only unit tests once
+npm run test:once
 
-#run unit tests in watch mode
-npm run test:unit:watch
+# run only unit tests in watch mode
+npm run test:watch
+
+# build electron application
+npm run build
+
+# build, sign and release electron application
+npm run release
 
 ```
+
+#### Releasing a new version
+
+To build the application locally, you only need to run `npm run build`.
+However, to sign and release it, some additional setup is required:
+* to sign the application you need a certificate
+  * download the certificate from [secret server](https://secret.emarsys.net/cred/detail/7636/)
+    * DO NOT download into the project directory, so you will not commit it accidentally
+  * set the `CSC_LINK` environment variable to the path of the downloaded certificate
+  * set the `CSC_KEY_PASSWORD` environment variable to the password of the certificate
+* after the application is signed, it has to be notarized by apple
+  * make sure you have a personal [Apple ID](https://appleid.apple.com), and with that you are a member of the team 
+    (at https://developer.apple.com) who issued the certificate above
+  * set the `APPLEID` environment variable to your apple id
+  * set the `APPLEIDPASS` environment variable to the password of your apple id
+    * it is highly recommended to [generate](https://appleid.apple.com/account/manage) and use an application specific 
+      password
+  * install the latest Xcode
+* after the application is signed and notarized, you have to publish it as a new release
+  * set the `GH_TOKEN` environment variable to you [GitHub Token](https://github.com/settings/tokens)
+    * make sure the token has access to the *repo* role (and all its sub-roles)
+    
+If you set all the environment variables above, increase the version number in [package.json](package.json)
+and run `npm run release`.
+
+(Note: the scripts usually hangs for a couple of minutes at the notarization step (just after "signing"),
+be patient and wait for the apple servers to do their job)
+
+The script will create a draft release under the [releases](releases) page, which you have to edit and publish manually.
 
 ---
 
