@@ -71,6 +71,37 @@ describe('App', () => {
     });
   });
 
+  describe('#saveSecret', () => {
+    it('should store successfully saved secret as original secret', async () => {
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(kubernetesClient, 'saveSecret').resolves();
+      sinon.stub(kubernetesClient, 'patchDeployments').resolves();
+      const { vm } = await loadApp();
+      vm.secretLoaded = true;
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.saveSecret();
+
+      expect(vm.originalSecret).to.eql({ FIELD: 'new-value' });
+    });
+
+    it('should not modify original secret when save fails', async () => {
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(kubernetesClient, 'saveSecret').rejects(new Error('oh no!'));
+      const { vm } = await loadApp();
+      vm.secretLoaded = true;
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.saveSecret();
+
+      expect(vm.originalSecret).to.eql({ FIELD: 'value' });
+    });
+  });
+
   describe('#initialize', () => {
     it('should load available namespaces', async () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
