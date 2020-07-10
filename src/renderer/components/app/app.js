@@ -94,6 +94,7 @@ export default {
           await kubernetesClient.saveSecret(this.secretNamespace, this.secretName, secretAsObject);
           await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
 
+          this.originalSecret = secretAsObject;
           notificationDisplayer.saveSuccess();
         } else {
           notificationDisplayer.saveFailedDueToModifiedSecret();
