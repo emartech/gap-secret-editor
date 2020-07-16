@@ -1,12 +1,12 @@
 <div id="app" @keydown.meta.f="activateSearch()" tabindex="-1" style="height: inherit; outline: none;">
-  <div class="e-layout e-layout-without_navigation">
+  <div class="e-layout e-layout-without_navigation e-fullheight" style="display: flex;">
     <header class="e-layout__header">
       <h1 class="e-layout__title">GAP Secret Editor</h1>
     </header>
-    <main class="e-layout__content">
-      <section class="e-layout__section e-padding-s">
+    <main class="e-layout__content" style="flex-grow: 1;">
+      <section class="e-layout__section e-padding-s" style="display: flex; flex-direction: column;">
 
-        <div id="page-loading-indicator" style="position: relative; height: 414px;" v-if="loading">
+        <div id="page-loading-indicator" style="flex-grow: 1;" v-if="loading">
           <e-spinner data-fullscreen="true"></e-spinner>
         </div>
 
@@ -69,10 +69,11 @@
             </div>
           </div>
 
-          <div class="e-margin-top-l" style="height: 350px">
+          <div class="e-margin-top-l" style="flex-grow: 1;">
             <div class="e-scrollable">
               <div class="e-scrollable__content">
-                <secret-editor id="secret-editor" v-if="secretLoaded" v-model="secret" :search-term="searchTerm"></secret-editor>
+                <secret-editor id="secret-editor" class="e-padding-s" v-if="secretLoaded" v-model="secret" :search-term="searchTerm">
+                </secret-editor>
               </div>
             </div>
           </div>
