@@ -9,19 +9,6 @@ repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
 
-## Kubernetes context
-
-When the application runs, it automatically uses your current kubernetes context.
-To switch between staging and production click on the Docker icon on the menu bar and select the desired context under
-the *Kubernetes* menu, or use one of the following commands in your terminal:
-
-```bash
-kubectl config use-context ***REMOVED***
-kubectl config use-context ***REMOVED***
-```
-
-The currently used context is indicated by the **production** or **staging** label.
-
 ## For developers
 
 ``` bash
