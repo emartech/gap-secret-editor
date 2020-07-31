@@ -94,13 +94,13 @@ export default {
         this.originalSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         const tuples = Object.entries(this.originalSecret);
         this.secret = tuples.map(([key, value]) => ({ key, value }));
+        this.secretLoaded = true;
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
         this.originalSecret = [];
-        this.secret = [];
+        this.clearSecret();
       }
       this.loadInProgress = false;
-      this.secretLoaded = true;
     },
     async saveSecret() {
       if (!this.saveEnabled) return;

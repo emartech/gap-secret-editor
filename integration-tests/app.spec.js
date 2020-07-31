@@ -210,6 +210,21 @@ describe('App', () => {
       expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
     });
 
+    it('should not display empty secret when secret loading fails', async () => {
+      stubContextList(contextList);
+      stubNamespaceList(namespaceList);
+      stubSecretList(secretList);
+      stubFailingSelectedSecret();
+      const wrapper = await loadApp();
+
+      await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+      await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+      await clickButton(wrapper, '#load-button');
+
+      const renderedSecretKeys = wrapper.findAll('#secret-editor input');
+      expect(renderedSecretKeys).to.have.lengthOf(0);
+    });
+
     describe('when loaded secret has not changed since load', () => {
       it('should save secret when save button clicked', async () => {
         stubContextList(contextList);
