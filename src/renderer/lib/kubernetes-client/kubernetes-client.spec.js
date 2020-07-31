@@ -3,6 +3,33 @@ import kubernetesClient from './kubernetes-client';
 import KubernetesError from './kubernetes-error';
 
 describe('KubernetesClient', () => {
+  describe('#listContexts', () => {
+    it('should return available contexts', async () => {
+      KubeConfig.prototype.getContexts.returns([
+        { name: 'staging' },
+        { name: 'production' }
+      ]);
+
+      const contexts = await kubernetesClient.listContexts();
+
+      expect(contexts).to.eql(['staging', 'production']);
+    });
+  });
+  describe('#getContext', () => {
+    it('should return current context', async () => {
+      KubeConfig.prototype.getCurrentContext.returns('amazing-context');
+
+      const context = await kubernetesClient.getContext();
+
+      expect(context).to.eql('amazing-context');
+    });
+  });
+  describe('#setContext', () => {
+    it('should set current context', async () => {
+      await kubernetesClient.setContext('magnificent-context');
+      expect(KubeConfig.prototype.setCurrentContext).to.have.been.calledWith('magnificent-context');
+    });
+  });
   describe('#listNamespaces', () => {
     it('should list active namespaces', async () => {
       stubApiClient('listNamespace', {

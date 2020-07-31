@@ -6,6 +6,9 @@ Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^e-/];
 
 beforeEach(() => {
+  sinon.stub(KubeConfig.prototype, 'getContexts');
+  sinon.stub(KubeConfig.prototype, 'getCurrentContext');
+  sinon.stub(KubeConfig.prototype, 'setCurrentContext');
   sinon.stub(KubeConfig.prototype, 'loadFromDefault');
   sinon.stub(KubeConfig.prototype, 'makeApiClient');
   window.e = {

@@ -10,7 +10,20 @@ import {
 import { get, mapValues } from 'lodash';
 import KubernetesError from './kubernetes-error';
 
+const kubeConfig = new KubeConfig();
+kubeConfig.loadFromDefault();
+
 export default {
+  listContexts: async () => mapErrorToKubernetesError(() => {
+    return kubeConfig.getContexts()
+      .map(context => context.name);
+  }),
+  getContext: async () => mapErrorToKubernetesError(() => {
+    return kubeConfig.getCurrentContext();
+  }),
+  setContext: async context => mapErrorToKubernetesError(() => {
+    kubeConfig.setCurrentContext(context);
+  }),
   listNamespaces: async () => mapErrorToKubernetesError(async () => {
     const { body } = await getCoreApiClient().listNamespace();
 
@@ -96,14 +109,10 @@ const generateDeploymentPatch = () => {
 };
 
 const getCoreApiClient = () => {
-  const kubeConfig = new KubeConfig();
-  kubeConfig.loadFromDefault();
   return kubeConfig.makeApiClient(CoreV1Api);
 };
 
 const getAppsApiClient = () => {
-  const kubeConfig = new KubeConfig();
-  kubeConfig.loadFromDefault();
   return kubeConfig.makeApiClient(AppsV1Api);
 };
 
