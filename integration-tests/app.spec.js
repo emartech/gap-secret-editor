@@ -5,6 +5,7 @@ import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/c
 
 describe('App', () => {
   const fakeKubernetesApiClient = {};
+  const contextList = ['staging', 'production'];
   const namespaceList = ['cool-team', 'lame-team'];
   const secretList = ['best-app', 'wonderful-app'];
 
@@ -15,6 +16,7 @@ describe('App', () => {
 
   describe('when loaded', () => {
     it('should indicate loading', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       const wrapper = shallowMount(App);
       expect(wrapper.find('#page-loading-indicator').exists()).to.be.true;
@@ -23,6 +25,7 @@ describe('App', () => {
     });
 
     it('should list available namespaces', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
@@ -35,6 +38,7 @@ describe('App', () => {
 
     it('should automatically select last used namespace', async () => {
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'cool-team';
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
@@ -46,6 +50,7 @@ describe('App', () => {
     });
 
     it('should disable load/save buttons', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
@@ -55,6 +60,7 @@ describe('App', () => {
 
     it('should display error notification when namespace list loading fails', async () => {
       sinon.stub(window.e.utils, 'openNotification');
+      stubContextList(contextList);
       stubFailingNamespaceList();
       const wrapper = await loadApp();
 
@@ -67,6 +73,7 @@ describe('App', () => {
 
   describe('when namespace selected', () => {
     it('should list available secrets', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
@@ -81,6 +88,7 @@ describe('App', () => {
     });
 
     it('should disable load/save buttons', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
@@ -93,6 +101,7 @@ describe('App', () => {
 
     it('should display error notification when secret list loading fails', async () => {
       sinon.stub(window.e.utils, 'openNotification');
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubFailingSecretList();
       const wrapper = await loadApp();
@@ -107,6 +116,7 @@ describe('App', () => {
 
     it('should display error notification when secret list loading fails do to not having access', async () => {
       sinon.stub(window.e.utils, 'openNotification');
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubUnauthorizedSecretList();
       const wrapper = await loadApp();
@@ -122,6 +132,7 @@ describe('App', () => {
 
   describe('when namespace and secret selected', () => {
     it('should enable load button', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
@@ -133,6 +144,7 @@ describe('App', () => {
     });
 
     it('should disable save button when secret not loaded', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       const wrapper = await loadApp();
@@ -144,6 +156,7 @@ describe('App', () => {
     });
 
     it('should load secret when load button clicked', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       stubSelectedSecret({
@@ -162,6 +175,7 @@ describe('App', () => {
     });
 
     it('should load secret and filter its fields when load button clicked and filter provided', async () => {
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       stubSelectedSecret({
@@ -182,6 +196,7 @@ describe('App', () => {
 
     it('should display error notification when secret loading fails', async () => {
       sinon.stub(window.e.utils, 'openNotification');
+      stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
       stubFailingSelectedSecret();
@@ -197,6 +212,7 @@ describe('App', () => {
 
     describe('when loaded secret has not changed since load', () => {
       it('should save secret when save button clicked', async () => {
+        stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
@@ -221,6 +237,7 @@ describe('App', () => {
       });
 
       it('should display success notification when save button clicked', async () => {
+        stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
@@ -238,6 +255,7 @@ describe('App', () => {
       });
 
       it('should display error notification when save fails', async () => {
+        stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
@@ -257,6 +275,7 @@ describe('App', () => {
 
     describe('when loaded secret has changed since load', () => {
       it('should not save secret when save button clicked', async () => {
+        stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
@@ -275,6 +294,7 @@ describe('App', () => {
       });
 
       it('should display error notification when save button clicked', async () => {
+        stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
         stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'bcOha29zIG5va2VkbGk=' });
@@ -294,6 +314,10 @@ describe('App', () => {
       });
     });
   });
+
+  const stubContextList = contexts => {
+    KubeConfig.prototype.getContexts.returns(contexts.map(context => ({ name: context })));
+  };
 
   const stubNamespaceList = namespaces => {
     stubApiClient('listNamespace', {

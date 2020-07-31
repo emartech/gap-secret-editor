@@ -8,8 +8,26 @@ describe('App', () => {
     localStorage.clear();
   });
 
+  describe('#availableContexts', () => {
+    it('should return available contexts in UI Kit select format and with a short name', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([
+        'some-prefix_useless-middle-part_gap-stage',
+        'some-prefix_useless-middle-part_gap-prod'
+      ]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.context = 'some-prefix_useless-middle-part_gap-stage';
+
+      expect(vm.availableContexts).to.eql([
+        { type: 'option', content: 'gap-stage', value: 'some-prefix_useless-middle-part_gap-stage', selected: true },
+        { type: 'option', content: 'gap-prod', value: 'some-prefix_useless-middle-part_gap-prod', selected: false }
+      ]);
+    });
+  });
+
   describe('#namespaces', () => {
     it('should return available namespaces in UI Kit select format', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
       const { vm } = await loadApp();
       vm.secretNamespace = 'team2';
@@ -23,6 +41,7 @@ describe('App', () => {
 
   describe('#namesForSelectedNamespace', () => {
     it('should return available names in UI Kit select format', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
       vm.secretName = 'secret2';
@@ -35,8 +54,47 @@ describe('App', () => {
     });
   });
 
+  describe('#selectContext', () => {
+    it('should set context field on component', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+      vm.context = 'production';
+
+      await vm.selectContext('staging');
+
+      expect(vm.context).to.eql('staging');
+    });
+
+    it('should set kubernetes context', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'setContext');
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+
+      await vm.selectContext('staging');
+
+      expect(kubernetesClient.setContext).to.have.been.calledWith('staging');
+    });
+
+    it('should reload namespaces', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'setContext');
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+
+      await vm.selectContext('staging');
+
+      expect(kubernetesClient.listNamespaces).to.have.been.calledTwice;
+    });
+  });
+
   describe('#selectNamespace', () => {
     it('should store selection to local storage when secret list loading succeeds', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
       sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'some old value';
@@ -48,6 +106,7 @@ describe('App', () => {
     });
 
     it('should not store selection to local storage when secret list loading fails', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
       sinon.stub(kubernetesClient, 'listSecrets').rejects(new Error('baj van'));
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'some old value';
@@ -61,6 +120,7 @@ describe('App', () => {
 
   describe('#selectName', () => {
     it('should store selection to local storage', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = 'some old value';
       const { vm } = await loadApp();
@@ -73,6 +133,7 @@ describe('App', () => {
 
   describe('#saveSecret', () => {
     it('should store successfully saved secret as original secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
       sinon.stub(kubernetesClient, 'saveSecret').resolves();
@@ -88,6 +149,7 @@ describe('App', () => {
     });
 
     it('should not modify original secret when save fails', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
       sinon.stub(kubernetesClient, 'saveSecret').rejects(new Error('oh no!'));
@@ -103,7 +165,19 @@ describe('App', () => {
   });
 
   describe('#initialize', () => {
+    it('should load context data', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production', 'test']);
+      sinon.stub(kubernetesClient, 'getContext').resolves('staging');
+      const { vm } = await loadApp();
+
+      await vm.initialize();
+
+      expect(vm.contextList).to.eql(['staging', 'production', 'test']);
+      expect(vm.context).to.eql('staging');
+    });
+
     it('should load available namespaces', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
       const { vm } = await loadApp();
 
@@ -115,6 +189,7 @@ describe('App', () => {
     it('should select last used namespace and name', async () => {
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'namespace2';
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = 'secret1';
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
       sinon.stub(kubernetesClient, 'listSecrets').resolves(['secret1', 'secret2']);
       const { vm } = await loadApp();
@@ -128,6 +203,7 @@ describe('App', () => {
 
   describe('#selectLastUsedNamespaceAndName', () => {
     it('should not select anything when local storage is empty', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
 
@@ -139,6 +215,7 @@ describe('App', () => {
 
     it('should not select anything when namespace is present in local storage but it is not available', async () => {
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'namespace666';
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
       const { vm } = await loadApp();
 
@@ -151,6 +228,7 @@ describe('App', () => {
     describe('when namespace is present in local storage and it is available', () => {
       it('should select only namespace when name is not present in local storage', async () => {
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'namespace2';
+        sinon.stub(kubernetesClient, 'listContexts').resolves([]);
         sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
         const { vm } = await loadApp();
 
@@ -163,6 +241,7 @@ describe('App', () => {
       it('should select only namespace when name is present in local storage but it is not available', async () => {
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'namespace2';
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = 'secret666';
+        sinon.stub(kubernetesClient, 'listContexts').resolves([]);
         sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
         sinon.stub(kubernetesClient, 'listSecrets').resolves(['secret1', 'secret2']);
         const { vm } = await loadApp();
@@ -176,6 +255,7 @@ describe('App', () => {
       it('should select namespace and name when name is present in local storage and it is available', async () => {
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = 'namespace2';
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = 'secret1';
+        sinon.stub(kubernetesClient, 'listContexts').resolves([]);
         sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
         sinon.stub(kubernetesClient, 'listSecrets').resolves(['secret1', 'secret2']);
         const { vm } = await loadApp();

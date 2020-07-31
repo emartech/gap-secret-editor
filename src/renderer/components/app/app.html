@@ -14,6 +14,12 @@
           <div class="e-grid e-grid-small">
             <div class="e-cell e-cell-small">
               <e-select
+                  :items="JSON.stringify(availableContexts)"
+                  @change="selectContext($event.target.value)"
+              ></e-select>
+            </div>
+            <div class="e-cell e-cell-small">
+              <e-select
                   id="namespace-selector"
                   placeholder="Select your namespace"
                   :items="JSON.stringify(namespaces)"
@@ -47,10 +53,6 @@
                 </div>
                 Save Secret
               </div>
-            </div>
-
-            <div class="e-cell e-cell-small" style="display: flex; align-items: center;">
-              <div class="e-label e-label-info">{{ context }}</div>
             </div>
 
             <div class="e-cell e-cell-small" style="margin-left: auto">

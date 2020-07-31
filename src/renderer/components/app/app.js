@@ -1,4 +1,4 @@
-import { isEqual, get } from 'lodash';
+import { isEqual, get, last } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
@@ -21,10 +21,19 @@ export default {
     nameList: [],
     loadInProgress: false,
     saveInProgress: false,
-    context: kubernetesClient.getCurrentContext(),
+    contextList: [],
+    context: '',
     searchTerm: ''
   }),
   computed: {
+    availableContexts() {
+      return this.contextList.map(context => ({
+        type: 'option',
+        content: last(context.split('_')),
+        value: context,
+        selected: context === this.context
+      }));
+    },
     namespaces() {
       return this.namespaceList.map(namespace => ({
         type: 'option',
@@ -49,6 +58,11 @@ export default {
     }
   },
   methods: {
+    async selectContext(context) {
+      this.context = context;
+      await kubernetesClient.setContext(context);
+      await this.initializeNamespacesAndSecrets();
+    },
     async selectNamespace(namespace) {
       this.secretNamespace = namespace;
       try {
@@ -104,16 +118,14 @@ export default {
       }
       this.saveInProgress = false;
     },
-    updateContext() {
-      const currentContext = kubernetesClient.getCurrentContext();
-      if (this.context !== currentContext) {
-        this.secretLoaded = false;
-        this.context = currentContext;
-        this.initialize();
-      }
-    },
     async initialize() {
       this.loading = true;
+      this.contextList = await kubernetesClient.listContexts();
+      this.context = await kubernetesClient.getContext();
+      await this.initializeNamespacesAndSecrets();
+      this.loading = false;
+    },
+    async initializeNamespacesAndSecrets() {
       try {
         this.namespaceList = await kubernetesClient.listNamespaces();
         await this.selectLastUsedNamespaceAndName();
@@ -121,7 +133,6 @@ export default {
         notificationDisplayer.loadFailed(e.message);
         this.namespaceList = [];
       }
-      this.loading = false;
     },
     async selectLastUsedNamespaceAndName() {
       const lastSelectedNamespace = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE];
@@ -139,6 +150,5 @@ export default {
   },
   async mounted() {
     await this.initialize();
-    setInterval(this.updateContext, 1000);
   }
 };
