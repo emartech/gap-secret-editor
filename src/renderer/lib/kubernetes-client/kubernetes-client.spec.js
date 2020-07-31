@@ -181,33 +181,6 @@ describe('KubernetesClient', () => {
 
       expect(patchMethodMock).to.not.have.been.called;
     });
-
-  });
-
-  describe('#getCurrentContext', () => {
-    it('should return context from default config', () => {
-      KubeConfig.prototype.loadFromDefault.callsFake(function() {
-        this.currentContext = 'magnificent-context';
-      });
-
-      expect(kubernetesClient.getCurrentContext()).to.eql('magnificent-context');
-    });
-
-    it('should return context alias for staging', () => {
-      KubeConfig.prototype.loadFromDefault.callsFake(function() {
-        this.currentContext = '***REMOVED***';
-      });
-
-      expect(kubernetesClient.getCurrentContext()).to.eql('staging');
-    });
-
-    it('should return context alias for production', () => {
-      KubeConfig.prototype.loadFromDefault.callsFake(function() {
-        this.currentContext = '***REMOVED***';
-      });
-
-      expect(kubernetesClient.getCurrentContext()).to.eql('production');
-    });
   });
 });
 

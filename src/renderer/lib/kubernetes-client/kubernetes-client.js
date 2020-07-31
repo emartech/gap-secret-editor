@@ -81,20 +81,7 @@ export default {
         { headers: { 'Content-Type': 'application/merge-patch+json' } }
       );
     }
-  }),
-
-  getCurrentContext: () => {
-    const contextAliases = {
-      '***REMOVED***': 'staging',
-      '***REMOVED***': 'production'
-    };
-
-    const kubeConfig = new KubeConfig();
-    kubeConfig.loadFromDefault();
-    const currentContext = kubeConfig.currentContext;
-
-    return contextAliases[currentContext] || currentContext;
-  }
+  })
 };
 
 const generateDeploymentPatch = () => {
