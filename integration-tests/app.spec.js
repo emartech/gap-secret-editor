@@ -1,4 +1,4 @@
-import { shallowMount, mount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
 import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/components/app/app';
@@ -15,15 +15,6 @@ describe('App', () => {
   });
 
   describe('when loaded', () => {
-    it('should indicate loading', async () => {
-      stubContextList(contextList);
-      stubNamespaceList(namespaceList);
-      const wrapper = shallowMount(App);
-      expect(wrapper.find('#page-loading-indicator').exists()).to.be.true;
-      await flushPromises();
-      expect(wrapper.find('#page-loading-indicator').exists()).to.be.false;
-    });
-
     it('should list available namespaces', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);

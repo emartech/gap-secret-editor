@@ -6,80 +6,77 @@
     <main class="e-layout__content" style="flex-grow: 1;">
       <section class="e-layout__section e-padding-s" style="display: flex; flex-direction: column;">
 
-        <div id="page-loading-indicator" style="flex-grow: 1;" v-if="loading">
-          <e-spinner data-fullscreen="true"></e-spinner>
+        <div class="e-grid e-grid-small">
+          <div class="e-cell e-cell-small">
+            <e-select
+                :items="JSON.stringify(availableContexts)"
+                :loading="loading.contextList"
+                @change="selectContext($event.target.value)"
+            ></e-select>
+          </div>
+          <div class="e-cell e-cell-small">
+            <e-select
+                id="namespace-selector"
+                placeholder="Select your namespace"
+                :items="JSON.stringify(namespaces)"
+                :loading="loading.namespaceList"
+                @change="selectNamespace($event.target.value)"
+            ></e-select>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <e-select
+                id="secret-selector"
+                :disabled="secretNamespace === ''"
+                placeholder="Select your secret"
+                :items="JSON.stringify(namesForSelectedNamespace)"
+                :loading="loading.nameList"
+                @change="selectName($event.target.value)"
+            ></e-select>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <div id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
+              <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
+                <e-spinner data-size="small"></e-spinner>
+              </div>
+              Load Secret
+            </div>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <div id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
+              <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
+                <e-spinner data-size="small"></e-spinner>
+              </div>
+              Save Secret
+            </div>
+          </div>
+
+          <div class="e-cell e-cell-small" style="margin-left: auto">
+            <div style="position: relative">
+              <input
+                  id="search-input"
+                  ref="searchInput"
+                  class="e-input e-input-large"
+                  type="search"
+                  placeholder="Search"
+                  v-model="searchTerm"
+                  style="padding-left: 40px"
+              />
+              <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
+            </div>
+          </div>
         </div>
 
-        <template v-if="!loading">
-          <div class="e-grid e-grid-small">
-            <div class="e-cell e-cell-small">
-              <e-select
-                  :items="JSON.stringify(availableContexts)"
-                  @change="selectContext($event.target.value)"
-              ></e-select>
-            </div>
-            <div class="e-cell e-cell-small">
-              <e-select
-                  id="namespace-selector"
-                  placeholder="Select your namespace"
-                  :items="JSON.stringify(namespaces)"
-                  @change="selectNamespace($event.target.value)"
-              ></e-select>
-            </div>
-
-            <div class="e-cell e-cell-small">
-              <e-select
-                  id="secret-selector"
-                  :disabled="secretNamespace === ''"
-                  placeholder="Select your secret"
-                  :items="JSON.stringify(namesForSelectedNamespace)"
-                  @change="selectName($event.target.value)"
-              ></e-select>
-            </div>
-
-            <div class="e-cell e-cell-small">
-              <div id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loadInProgress }">
-                  <e-spinner data-size="small"></e-spinner>
-                </div>
-                Load Secret
-              </div>
-            </div>
-
-            <div class="e-cell e-cell-small">
-              <div id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': saveInProgress }">
-                  <e-spinner data-size="small"></e-spinner>
-                </div>
-                Save Secret
-              </div>
-            </div>
-
-            <div class="e-cell e-cell-small" style="margin-left: auto">
-              <div style="position: relative">
-                <input
-                    id="search-input"
-                    ref="searchInput"
-                    class="e-input e-input-large"
-                    type="search"
-                    placeholder="Search"
-                    v-model="searchTerm"
-                    style="padding-left: 40px"
-                />
-                <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
-              </div>
+        <div class="e-margin-top-l" style="flex-grow: 1;">
+          <div class="e-scrollable">
+            <div class="e-scrollable__content">
+              <secret-editor id="secret-editor" class="e-padding-s" v-if="secretLoaded" v-model="secret" :search-term="searchTerm">
+              </secret-editor>
             </div>
           </div>
-
-          <div class="e-margin-top-l" style="flex-grow: 1;">
-            <div class="e-scrollable">
-              <div class="e-scrollable__content">
-                <secret-editor id="secret-editor" class="e-padding-s" v-if="secretLoaded" v-model="secret" :search-term="searchTerm">
-                </secret-editor>
-              </div>
-            </div>
-          </div>
-        </template>
+        </div>
       </section>
     </main>
   </div>

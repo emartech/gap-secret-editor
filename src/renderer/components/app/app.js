@@ -15,12 +15,16 @@ export default {
     secretNamespace: '',
     originalSecret: {},
     secret: [],
-    loading: true,
+    loading: {
+      contextList: false,
+      namespaceList: false,
+      nameList: false,
+      secretLoad: false,
+      secretSave: false
+    },
     secretLoaded: false,
     namespaceList: [],
     nameList: [],
-    loadInProgress: false,
-    saveInProgress: false,
     contextList: [],
     context: '',
     searchTerm: ''
@@ -51,10 +55,10 @@ export default {
       }));
     },
     loadEnabled() {
-      return this.secretNamespace && this.secretName && !this.loadInProgress;
+      return this.secretNamespace && this.secretName && !this.loading.secretLoad;
     },
     saveEnabled() {
-      return this.secretLoaded && !this.saveInProgress;
+      return this.secretLoaded && !this.loading.secretSave;
     }
   },
   methods: {
@@ -67,6 +71,7 @@ export default {
     async selectNamespace(namespace) {
       this.clearSecret();
       this.secretNamespace = namespace;
+      this.loading.nameList = true;
       try {
         this.nameList = await kubernetesClient.listSecrets(this.secretNamespace);
         localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE] = this.secretNamespace;
@@ -78,6 +83,7 @@ export default {
         }
         this.nameList = [];
       }
+      this.loading.nameList = false;
     },
     selectName(name) {
       this.clearSecret();
@@ -89,7 +95,7 @@ export default {
       this.secretLoaded = false;
     },
     async loadSecret() {
-      this.loadInProgress = true;
+      this.loading.secretLoad = true;
       try {
         this.originalSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         const tuples = Object.entries(this.originalSecret);
@@ -100,12 +106,12 @@ export default {
         this.originalSecret = [];
         this.clearSecret();
       }
-      this.loadInProgress = false;
+      this.loading.secretLoad = false;
     },
     async saveSecret() {
       if (!this.saveEnabled) return;
 
-      this.saveInProgress = true;
+      this.loading.secretSave = true;
       try {
         const currentlySavedSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         if (isEqual(currentlySavedSecret, this.originalSecret)) {
@@ -123,16 +129,17 @@ export default {
       } catch (e) {
         notificationDisplayer.saveFailed(e.message);
       }
-      this.saveInProgress = false;
+      this.loading.secretSave = false;
     },
     async initialize() {
-      this.loading = true;
+      this.loading.contextList = true;
       this.contextList = await kubernetesClient.listContexts();
       this.context = await kubernetesClient.getContext();
+      this.loading.contextList = false;
       await this.initializeNamespacesAndSecrets();
-      this.loading = false;
     },
     async initializeNamespacesAndSecrets() {
+      this.loading.namespaceList = true;
       try {
         this.namespaceList = await kubernetesClient.listNamespaces();
         await this.selectLastUsedNamespaceAndName();
@@ -140,6 +147,7 @@ export default {
         notificationDisplayer.loadFailed(e.message);
         this.namespaceList = [];
       }
+      this.loading.namespaceList = false;
     },
     async selectLastUsedNamespaceAndName() {
       const lastSelectedNamespace = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE];
