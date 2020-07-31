@@ -59,11 +59,13 @@ export default {
   },
   methods: {
     async selectContext(context) {
+      this.clearSecret();
       this.context = context;
       await kubernetesClient.setContext(context);
       await this.initializeNamespacesAndSecrets();
     },
     async selectNamespace(namespace) {
+      this.clearSecret();
       this.secretNamespace = namespace;
       try {
         this.nameList = await kubernetesClient.listSecrets(this.secretNamespace);
@@ -78,8 +80,13 @@ export default {
       }
     },
     selectName(name) {
+      this.clearSecret();
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
+    },
+    clearSecret() {
+      this.secret = [];
+      this.secretLoaded = false;
     },
     async loadSecret() {
       this.loadInProgress = true;

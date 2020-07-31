@@ -90,6 +90,21 @@ describe('App', () => {
 
       expect(kubernetesClient.listNamespaces).to.have.been.calledTwice;
     });
+
+    it('should clear loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'setContext');
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+      vm.secret = [{ key: 'doesnt', value: 'matter' }];
+      vm.secretLoaded = true;
+
+      await vm.selectContext('staging');
+
+      expect(vm.secret).to.eql([]);
+      expect(vm.secretLoaded).to.be.false;
+    });
   });
 
   describe('#selectNamespace', () => {
@@ -116,6 +131,20 @@ describe('App', () => {
 
       expect(localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE]).to.eql('some old value');
     });
+
+    it('should clear loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+      vm.secret = [{ key: 'doesnt', value: 'matter' }];
+      vm.secretLoaded = true;
+
+      await vm.selectNamespace('team1');
+
+      expect(vm.secret).to.eql([]);
+      expect(vm.secretLoaded).to.be.false;
+    });
   });
 
   describe('#selectName', () => {
@@ -128,6 +157,19 @@ describe('App', () => {
       await vm.selectName('cool-app');
 
       expect(localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME]).to.eql('cool-app');
+    });
+
+    it('should clear loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.secret = [{ key: 'doesnt', value: 'matter' }];
+      vm.secretLoaded = true;
+
+      await vm.selectName('cool-app');
+
+      expect(vm.secret).to.eql([]);
+      expect(vm.secretLoaded).to.be.false;
     });
   });
 
