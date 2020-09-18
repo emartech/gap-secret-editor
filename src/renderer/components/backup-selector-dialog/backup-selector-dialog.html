@@ -1,0 +1,14 @@
+<e-dialog
+  ref="dialog"
+  headline="Select a backup"
+  :opened="opened"
+  v-on="{ 'dialog.close': onClose }">
+
+  <div class="e-dialog__content">
+    Backups of {{ secretName }}
+  </div>
+
+  <div class="e-dialog__footer">
+    <button class="e-btn" @click="close">Cancel</button>
+  </div>
+</e-dialog>

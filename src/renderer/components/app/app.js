@@ -2,6 +2,7 @@ import { isEqual, get, last } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
+import BackupSelectorDialog from '../backup-selector-dialog/backup-selector-dialog';
 
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
@@ -9,7 +10,7 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor },
+  components: { SecretEditor, BackupSelectorDialog },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -27,7 +28,8 @@ export default {
     nameList: [],
     contextList: [],
     context: '',
-    searchTerm: ''
+    searchTerm: '',
+    backupSelectorOpened: false
   }),
   computed: {
     availableContexts() {
@@ -161,6 +163,10 @@ export default {
     },
     activateSearch() {
       this.$refs.searchInput.select();
+    },
+    openBackupSelector() {
+      if (!this.loadEnabled) return;
+      this.backupSelectorOpened = true;
     }
   },
   async mounted() {
