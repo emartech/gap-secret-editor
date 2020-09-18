@@ -80,7 +80,9 @@ describe('KubernetesClient', () => {
       stubApiClient('listNamespacedSecret', {
         items: [
           { metadata: { name: 'best-app' } },
+          { metadata: { name: 'best-app-backup' } },
           { metadata: { name: 'best-app-web-tls' } },
+          { metadata: { name: 'best-app-web-tls-backup' } },
           { metadata: { name: 'wonderful-app' } },
           { metadata: { name: 'wonderful-app-web-tls' } },
           { metadata: { name: 'default-token-a1b2c' } }

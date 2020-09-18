@@ -35,7 +35,11 @@ export default {
   listSecrets: async (namespace) => mapErrorToKubernetesError(async () => {
     const { body } = await getCoreApiClient().listNamespacedSecret(namespace);
     return body.items
-      .filter(item => !item.metadata.name.startsWith('default-token') && !item.metadata.name.endsWith('web-tls'))
+      .filter(item =>
+        !item.metadata.name.startsWith('default-token') &&
+        !item.metadata.name.endsWith('web-tls') &&
+        !item.metadata.name.endsWith('backup')
+      )
       .map(item => item.metadata.name);
   }),
 
