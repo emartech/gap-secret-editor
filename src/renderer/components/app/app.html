@@ -36,21 +36,41 @@
           </div>
 
           <div class="e-cell e-cell-small">
-            <div id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
-              <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
-                <e-spinner data-size="small"></e-spinner>
+            <e-tooltip content="Load">
+              <div id="load-button" class="e-btn e-btn-onlyicon" @click="loadSecret()" :disabled="!loadEnabled">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
+                  <e-spinner data-size="small"></e-spinner>
+                  <e-icon icon="folder-open"></e-icon>
+                </div>
               </div>
-              Load Secret
-            </div>
+            </e-tooltip>
           </div>
 
           <div class="e-cell e-cell-small">
-            <div id="save-button" class="e-btn" @click="saveSecret()" :disabled="!saveEnabled">
-              <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
-                <e-spinner data-size="small"></e-spinner>
+            <e-tooltip content="Save">
+              <div id="save-button" class="e-btn e-btn-onlyicon" @click="saveSecret()" :disabled="!saveEnabled">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
+                  <e-spinner data-size="small"></e-spinner>
+                  <e-icon icon="floppy-o"></e-icon>
+                </div>
               </div>
-              Save Secret
-            </div>
+            </e-tooltip>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <e-tooltip content="Load Backup">
+              <e-dropdown data-markup-content="<e-icon icon='e-purchase'></e-icon>"
+                          data-markup-class="e-btn e-btn-dropdown">
+                <div class="e-dropdown__content">
+                  <div @click="" class="e-dropdown__item">
+                    2020.12.12 00:12
+                  </div>
+                  <div @click="" class="e-dropdown__item">
+                    2020.12.14 00:15
+                  </div>
+                </div>
+              </e-dropdown>
+            </e-tooltip>
           </div>
 
           <div class="e-cell e-cell-small" style="margin-left: auto">
