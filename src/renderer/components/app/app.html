@@ -34,9 +34,6 @@
                 @change="selectName($event.target.value)"
             ></e-select>
           </div>
-        </div>
-
-        <div class="e-grid e-grid-small e-margin-top-s">
 
           <div class="e-cell e-cell-small">
             <div id="load-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
@@ -53,12 +50,6 @@
                 <e-spinner data-size="small"></e-spinner>
               </div>
               Save Secret
-            </div>
-          </div>
-
-          <div class="e-cell e-cell-small">
-            <div id="load-backup-button" class="e-btn e-btn-link" @click="openBackupSelector()" :disabled="!loadEnabled">
-              Load Backup
             </div>
           </div>
 
@@ -89,6 +80,4 @@
       </section>
     </main>
   </div>
-
-  <backup-selector-dialog :opened="backupSelectorOpened" :secret-name="secretName"></backup-selector-dialog>
 </div>

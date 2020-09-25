@@ -309,32 +309,6 @@ describe('App', () => {
       });
     });
   });
-
-  describe('#openBackupSelector', () => {
-    it('should open selector dialog when load is enabled', async () => {
-      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
-      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
-      const { vm } = await loadApp();
-      vm.secretNamespace = 'something';
-      vm.secretName = 'anything';
-
-      vm.openBackupSelector();
-
-      expect(vm.backupSelectorOpened).to.eql(true);
-    });
-
-    it('should not open selector dialog when load is disabled', async () => {
-      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
-      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
-      const { vm } = await loadApp();
-      vm.secretNamespace = '';
-      vm.secretName = '';
-
-      vm.openBackupSelector();
-
-      expect(vm.backupSelectorOpened).to.eql(false);
-    });
-  });
 });
 
 const loadApp = async () => {
