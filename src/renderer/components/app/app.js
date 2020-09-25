@@ -27,7 +27,8 @@ export default {
     nameList: [],
     contextList: [],
     context: '',
-    searchTerm: ''
+    searchTerm: '',
+    backups: []
   }),
   computed: {
     availableContexts() {
@@ -93,6 +94,14 @@ export default {
     clearSecret() {
       this.secret = [];
       this.secretLoaded = false;
+    },
+    async loadBackups() {
+      try {
+        const secret = await kubernetesClient.loadSecret(this.secretNamespace, `${this.secretName}-backup`);
+        this.backups = JSON.parse(secret.BACKUP);
+      } catch (e) {
+        this.backups = [];
+      }
     },
     async loadSecret() {
       this.loading.secretLoad = true;
