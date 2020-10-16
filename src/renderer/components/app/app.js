@@ -2,6 +2,7 @@ import { isEqual, get, last } from 'lodash';
 import { format } from 'date-fns';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
+import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-converter';
 import SecretEditor from '../secret-editor/secret-editor';
 
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
@@ -97,8 +98,8 @@ export default {
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
     },
-    selectBackup(backupSecret) {
-      console.log('backup selected:', backupSecret);
+    replaceSecret(newSecret) {
+      this.secret = objectToKeyValueArray(newSecret);
     },
     clearSecret() {
       this.secret = [];
@@ -116,8 +117,7 @@ export default {
       this.loading.secretLoad = true;
       try {
         this.originalSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
-        const tuples = Object.entries(this.originalSecret);
-        this.secret = tuples.map(([key, value]) => ({ key, value }));
+        this.secret = objectToKeyValueArray(this.originalSecret);
         this.secretLoaded = true;
         await this.loadBackups();
       } catch (e) {
@@ -134,9 +134,7 @@ export default {
       try {
         const currentlySavedSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         if (isEqual(currentlySavedSecret, this.originalSecret)) {
-          const tuples = this.secret.map(({ key, value }) => ([key, value]));
-          const secretAsObject = Object.fromEntries(tuples);
-
+          const secretAsObject = keyValueArrayToObject(this.secret);
           await kubernetesClient.saveSecret(this.secretNamespace, this.secretName, secretAsObject);
           await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
 

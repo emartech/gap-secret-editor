@@ -173,6 +173,19 @@ describe('App', () => {
     });
   });
 
+  describe('#replaceSecret', () => {
+    it('should replace loaded secret with backup', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.secret = [{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }];
+
+      vm.replaceSecret({ FIELD1: 'value0', FIELD3: 'value3' });
+
+      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value0' }, { key: 'FIELD3', value: 'value3' }]);
+    });
+  });
+
   describe('#loadSecret', () => {
     it('should transform loaded secret', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
