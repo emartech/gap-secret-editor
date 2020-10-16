@@ -295,6 +295,24 @@ describe('App', () => {
       expect(vm.originalSecret).to.eql({ FIELD: 'new-value' });
     });
 
+    it('should reload backups', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(kubernetesClient, 'saveSecret').resolves();
+      sinon.stub(kubernetesClient, 'patchDeployments').resolves();
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'team';
+      vm.secretName = 'app';
+      vm.secretLoaded = true;
+      vm.originalSecret = { FIELD: 'value' };
+
+      await vm.saveSecret();
+
+      expect(kubernetesClient.loadSecret).to.have.been.calledWith('team', 'app');
+      expect(kubernetesClient.loadSecret).to.have.been.calledWith('team', 'app-backup');
+    });
+
     it('should not modify original secret when save fails', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
