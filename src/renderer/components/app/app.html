@@ -62,11 +62,8 @@
               <e-dropdown data-markup-content="<e-icon icon='e-purchase'></e-icon>"
                           data-markup-class="e-btn e-btn-dropdown">
                 <div class="e-dropdown__content">
-                  <div @click="" class="e-dropdown__item">
-                    2020.12.12 00:12
-                  </div>
-                  <div @click="" class="e-dropdown__item">
-                    2020.12.14 00:15
+                  <div v-for="backup in backups" @click="selectBackup(backup.data)" class="e-dropdown__item">
+                    {{ backup.backupTime | formatTime }}
                   </div>
                 </div>
               </e-dropdown>

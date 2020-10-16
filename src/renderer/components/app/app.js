@@ -1,4 +1,5 @@
 import { isEqual, get, last } from 'lodash';
+import { format } from 'date-fns';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import SecretEditor from '../secret-editor/secret-editor';
@@ -62,6 +63,11 @@ export default {
       return this.secretLoaded && !this.loading.secretSave;
     }
   },
+  filters: {
+    formatTime(isoFormat) {
+      return format(new Date(isoFormat), 'yyyy-MM-dd HH:mm:SS');
+    }
+  },
   methods: {
     async selectContext(context) {
       this.clearSecret();
@@ -90,6 +96,9 @@ export default {
       this.clearSecret();
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
+    },
+    selectBackup(backupSecret) {
+      console.log('backup selected:', backupSecret);
     },
     clearSecret() {
       this.secret = [];
