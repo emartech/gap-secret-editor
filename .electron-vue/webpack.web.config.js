@@ -5,9 +5,7 @@ const webpack = require('webpack');
 
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const { VueLoaderPlugin } = require('vue-loader');
 
 const webConfig = {
   devtool: '#cheap-module-eval-source-map',
@@ -17,14 +15,6 @@ const webConfig = {
   module: {
     rules: [
       {
-        test: /\.less$/,
-        use: ['vue-style-loader', 'css-loader', 'less-loader']
-      },
-      {
-        test: /\.css$/,
-        use: ['vue-style-loader', 'css-loader']
-      },
-      {
         test: /\.html$/,
         use: 'vue-html-loader'
       },
@@ -33,20 +23,6 @@ const webConfig = {
         use: 'babel-loader',
         include: [path.resolve(__dirname, '../src/renderer')],
         exclude: /node_modules/
-      },
-      {
-        test: /\.vue$/,
-        use: {
-          loader: 'vue-loader',
-          options: {
-            extractCSS: true,
-            loaders: {
-              sass: 'vue-style-loader!css-loader!sass-loader?indentedSyntax=1',
-              scss: 'vue-style-loader!css-loader!sass-loader',
-              less: 'vue-style-loader!css-loader!less-loader'
-            }
-          }
-        }
       },
       {
         // eslint-disable-next-line security/detect-unsafe-regex
@@ -62,8 +38,6 @@ const webConfig = {
     ]
   },
   plugins: [
-    new VueLoaderPlugin(),
-    new MiniCssExtractPlugin({ filename: 'styles.css' }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.resolve(__dirname, '../src/index.ejs'),
