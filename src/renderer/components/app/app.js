@@ -108,7 +108,8 @@ export default {
     async loadBackups() {
       try {
         const secret = await kubernetesClient.loadSecret(this.secretNamespace, `${this.secretName}-backup`);
-        this.backups = JSON.parse(secret.BACKUP);
+        const allBackups = JSON.parse(secret.BACKUP);
+        this.backups = allBackups.filter(backup => backup.backupTime && backup.data);
       } catch (e) {
         this.backups = [];
       }

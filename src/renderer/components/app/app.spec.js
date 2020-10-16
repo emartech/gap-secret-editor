@@ -255,6 +255,22 @@ describe('App', () => {
       expect(vm.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
     });
 
+    it('should filter out backups with invalid format', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves(
+        { BACKUP: '[{ "data": { "FIELD": "value" }, "backupTime": "2020-09-20T22:17:01.891Z"}, { "FIELD": "value" }]' }
+      );
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'namespace';
+      vm.secretName = 'name';
+
+      await vm.loadBackups();
+
+      expect(kubernetesClient.loadSecret).to.have.been.calledWith('namespace', 'name-backup');
+      expect(vm.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
+    });
+
     it('should set backups empty when response is not a valid JSON', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
