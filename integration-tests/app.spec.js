@@ -358,7 +358,8 @@ describe('App', () => {
   const stubChangedSelectedSecret = (firstSecret, secondSecret) => {
     const clientMethodStub = sinon.stub();
     clientMethodStub.onFirstCall().resolves({ body: { data: firstSecret } });
-    clientMethodStub.onSecondCall().resolves({ body: { data: secondSecret } });
+    clientMethodStub.onSecondCall().resolves({ body: { data: { BACKUP: 'W10=' } } });
+    clientMethodStub.onThirdCall().resolves({ body: { data: secondSecret } });
     fakeKubernetesApiClient.readNamespacedSecret = clientMethodStub;
   };
 

@@ -110,6 +110,7 @@ export default {
         const tuples = Object.entries(this.originalSecret);
         this.secret = tuples.map(([key, value]) => ({ key, value }));
         this.secretLoaded = true;
+        await this.loadBackups();
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
         this.originalSecret = [];

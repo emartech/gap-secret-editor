@@ -173,6 +173,58 @@ describe('App', () => {
     });
   });
 
+  describe('#loadSecret', () => {
+    it('should transform loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+
+      await vm.loadSecret();
+
+      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }]);
+    });
+
+    it('should store original secret without transformation', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+
+      await vm.loadSecret();
+
+      expect(vm.originalSecret).to.eql({ FIELD1: 'value1', FIELD2: 'value2' });
+    });
+
+    it('should indicate loading', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({});
+      const { vm } = await loadApp();
+
+      expect(vm.loading.secretLoad).to.eql(false);
+      const loadingPromise = vm.loadSecret();
+      expect(vm.loading.secretLoad).to.eql(true);
+      await loadingPromise;
+      expect(vm.loading.secretLoad).to.eql(false);
+    });
+
+    it('should load backups also', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({});
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
+
+      await vm.loadSecret();
+
+      expect(kubernetesClient.loadSecret).to.have.been.calledTwice;
+      expect(kubernetesClient.loadSecret).to.have.been.calledWith('space', 'name');
+      expect(kubernetesClient.loadSecret).to.have.been.calledWith('space', 'name-backup');
+    });
+  });
+
   describe('#loadBackups', () => {
     it('should load backups for selected secret', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
