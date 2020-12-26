@@ -1,0 +1,24 @@
+<div>
+  <e-popover-handler
+    ref="popoverHandler"
+    :opened="actionlistOpen"
+    @close="onPopoverClose()"
+    @open="onPopoverOpen()"
+    adjust-width="true"
+    remove-on-destroy="true"
+  >
+    <div class="e-btn e-btn-dropdown" :disabled="disabled">
+      <e-icon icon="e-purchase"></e-icon>
+    </div>
+  </e-popover-handler>
+
+  <e-actionlist
+    ref="actionlist"
+    :items="JSON.stringify(actionlistItems)"
+    class="e-popover e-padding-none"
+    :class="{ 'e-hidden': disabled }"
+    max-height="225px"
+    @change="onActionlistChange($event.detail.value)"
+    search-hidden="true"
+  />
+</div>

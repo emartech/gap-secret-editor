@@ -1,9 +1,9 @@
 import { isEqual, get, last } from 'lodash';
-import { format } from 'date-fns';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-converter';
 import SecretEditor from '../secret-editor/secret-editor';
+import BackupSelector from '../backup-selector/backup-selector';
 
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
@@ -11,7 +11,7 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor },
+  components: { SecretEditor, BackupSelector },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -62,11 +62,9 @@ export default {
     },
     saveEnabled() {
       return this.secretLoaded && !this.loading.secretSave;
-    }
-  },
-  filters: {
-    formatTime(isoFormat) {
-      return format(new Date(isoFormat), 'yyyy-MM-dd HH:mm:SS');
+    },
+    backupEnabled() {
+      return this.secretLoaded;
     }
   },
   methods: {

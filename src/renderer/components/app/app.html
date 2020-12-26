@@ -59,15 +59,7 @@
 
           <div class="e-cell e-cell-small">
             <e-tooltip content="Load Backup">
-              <e-dropdown data-markup-content="<e-icon icon='e-purchase'></e-icon>"
-                          data-markup-class="e-btn e-btn-dropdown"
-                          data-autoclose>
-                <div class="e-dropdown__content">
-                  <div v-for="backup in backups" @click="replaceSecret(backup.data)" class="e-dropdown__item">
-                    {{ backup.backupTime | formatTime }}
-                  </div>
-                </div>
-              </e-dropdown>
+              <backup-selector :backups="backups" @input="replaceSecret($event)" :disabled="!backupEnabled" />
             </e-tooltip>
           </div>
 
