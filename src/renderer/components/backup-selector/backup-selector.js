@@ -4,18 +4,18 @@ export default {
   name: 'backup-selector',
   template: require('./backup-selector.html'),
   props: {
-    backups: Array,
+    availableTimes: Array,
+    selectedTime: String,
     disabled: Boolean
   },
   data: () => ({
-    actionlistOpen: false,
-    readonly: false
+    actionlistOpen: false
   }),
   computed: {
     actionlistItems() {
       if (!this.actionlistOpen) return [];
 
-      if (this.backups.length === 0) {
+      if (this.availableTimes.length === 0) {
         return [{
           type: 'option',
           content: 'No backups found',
@@ -23,10 +23,11 @@ export default {
         }];
       }
 
-      return this.backups.map(backup => ({
+      return this.availableTimes.map(time => ({
         type: 'option',
-        content: format(new Date(backup.backupTime), 'yyyy-MM-dd HH:mm:SS'),
-        value: backup.data
+        content: format(new Date(time), 'yyyy-MM-dd HH:mm:SS'),
+        value: time,
+        selected: time === this.selectedTime
       }));
     }
   },

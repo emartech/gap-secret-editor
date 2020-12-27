@@ -59,7 +59,12 @@
 
           <div class="e-cell e-cell-small">
             <e-tooltip content="Load Backup">
-              <backup-selector :backups="backups" @input="replaceSecret($event)" :disabled="!backupEnabled" />
+              <backup-selector
+                :available-times="availableBackupTimes"
+                :selected-time="selectedBackupTime"
+                :disabled="!backupEnabled"
+                @input="loadSelectedBackup($event)"
+              />
             </e-tooltip>
           </div>
 

@@ -1,4 +1,4 @@
-import { isEqual, get, last } from 'lodash';
+import { isEqual, get, last, find } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-converter';
@@ -30,7 +30,8 @@ export default {
     contextList: [],
     context: '',
     searchTerm: '',
-    backups: []
+    backups: [],
+    selectedBackupTime: null
   }),
   computed: {
     availableContexts() {
@@ -65,6 +66,9 @@ export default {
     },
     backupEnabled() {
       return this.secretLoaded;
+    },
+    availableBackupTimes() {
+      return this.backups.map(backup => backup.backupTime);
     }
   },
   methods: {
@@ -96,8 +100,10 @@ export default {
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
     },
-    replaceSecret(newSecret) {
-      this.secret = objectToKeyValueArray(newSecret);
+    loadSelectedBackup(backupTime) {
+      const backup = find(this.backups, { backupTime });
+      this.secret = objectToKeyValueArray(backup.data);
+      this.selectedBackupTime = backupTime;
     },
     clearSecret() {
       this.secret = [];
@@ -111,6 +117,7 @@ export default {
       } catch (e) {
         this.backups = [];
       }
+      this.selectedBackupTime = this.backups.length > 0 ? this.backups[0].backupTime : null;
     },
     async loadSecret() {
       this.loading.secretLoad = true;

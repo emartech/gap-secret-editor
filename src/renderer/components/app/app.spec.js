@@ -54,6 +54,23 @@ describe('App', () => {
     });
   });
 
+  describe('#availableBackupTimes', () => {
+    it('should return backup times of available backups', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.backups = [
+        { data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' },
+        { data: { FIELD: 'old-value' }, backupTime: '2020-09-19T22:17:01.891Z' }
+      ];
+
+      expect(vm.availableBackupTimes).to.eql([
+        '2020-09-20T22:17:01.891Z',
+        '2020-09-19T22:17:01.891Z'
+      ]);
+    });
+  });
+
   describe('#selectContext', () => {
     it('should set context field on component', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
@@ -173,16 +190,33 @@ describe('App', () => {
     });
   });
 
-  describe('#replaceSecret', () => {
+  describe('#loadSelectedBackup', () => {
     it('should replace loaded secret with backup', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
       vm.secret = [{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }];
+      vm.backups = [
+        { data: { FIELD1: 'value1', FIELD2: 'value2' }, backupTime: '2020-09-20T22:17:01.891Z' },
+        { data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' }
+      ];
 
-      vm.replaceSecret({ FIELD1: 'value0', FIELD3: 'value3' });
+      vm.loadSelectedBackup('2020-09-19T22:17:01.891Z');
 
       expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value0' }, { key: 'FIELD3', value: 'value3' }]);
+    });
+
+    it('should update selected backup time', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.backups = [
+        { data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' }
+      ];
+
+      vm.loadSelectedBackup('2020-09-19T22:17:01.891Z');
+
+      expect(vm.selectedBackupTime).to.eql('2020-09-19T22:17:01.891Z');
     });
   });
 
@@ -255,6 +289,24 @@ describe('App', () => {
       expect(vm.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
     });
 
+    it('should set selectedBackupTime based on the first backup', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({
+        BACKUP: JSON.stringify([
+          { 'data': { 'FIELD': 'value' }, 'backupTime': '2020-09-20T22:17:01.891Z' },
+          { 'data': { 'FIELD': 'old-value' }, 'backupTime': '2020-09-19T22:17:01.891Z' }
+        ])
+      });
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'namespace';
+      vm.secretName = 'name';
+
+      await vm.loadBackups();
+
+      expect(vm.selectedBackupTime).to.eql('2020-09-20T22:17:01.891Z');
+    });
+
     it('should filter out backups with invalid format', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
@@ -280,6 +332,7 @@ describe('App', () => {
       await vm.loadBackups();
 
       expect(vm.backups).to.eql([]);
+      expect(vm.selectedBackupTime).to.be.null;
     });
 
     it('should set backups empty when secret does not exist', async () => {
