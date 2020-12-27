@@ -104,6 +104,7 @@ export default {
       const backup = find(this.backups, { backupTime });
       this.secret = objectToKeyValueArray(backup.data);
       this.selectedBackupTime = backupTime;
+      notificationDisplayer.backupSuccess();
     },
     clearSecret() {
       this.secret = [];

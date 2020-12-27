@@ -1,6 +1,8 @@
 import { shallowMount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
+import notificationDisplayer from '../../lib/notification-displayer';
+
 import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE, LOCALSTORAGE_KEY_LAST_SELECTED_NAME } from './app';
 
 describe('App', () => {
@@ -217,6 +219,22 @@ describe('App', () => {
       vm.loadSelectedBackup('2020-09-19T22:17:01.891Z');
 
       expect(vm.selectedBackupTime).to.eql('2020-09-19T22:17:01.891Z');
+    });
+
+    it('should display notification', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(notificationDisplayer, 'backupSuccess');
+      const { vm } = await loadApp();
+      vm.backups = [
+        { data: { FIELD1: 'value0', FIELD3: 'value2' }, backupTime: '2020-09-20T00:00:00.000Z' },
+        { data: { FIELD1: 'value0' }, backupTime: '2020-09-19T00:00:00.000Z' }
+      ];
+      vm.selectedBackupTime = '2020-09-20T00:00:00.000Z';
+
+      vm.loadSelectedBackup('2020-09-19T00:00:00.000Z');
+
+      expect(notificationDisplayer.backupSuccess).to.have.been.called;
     });
   });
 

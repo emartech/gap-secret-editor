@@ -41,5 +41,14 @@ export default {
       type: 'danger',
       autoClose: true
     });
+  },
+  backupSuccess: () => {
+    window.e.utils.openNotification({
+      title: 'Backup loaded',
+      content: 'Backup loaded to the editor. You can make changes, then click Save to restore it.',
+      placement: 'top',
+      type: 'success',
+      autoClose: true
+    });
   }
 };
