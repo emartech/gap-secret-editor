@@ -1,7 +1,9 @@
+import { ipcRenderer } from 'electron';
 import { isEqual, get, last, find } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-converter';
+import { listenForUpdates } from '../../lib/auto-update-confirmation/auto-update-confirmation';
 import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
 
@@ -190,5 +192,7 @@ export default {
   },
   async mounted() {
     await this.initialize();
+    listenForUpdates();
+    ipcRenderer.send('ui-ready');
   }
 };

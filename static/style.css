@@ -1,0 +1,11 @@
+.release-notes {
+  padding: 0 8px 24px;
+}
+.release-notes h1 {
+  font-size: 1em;
+  line-height: 24px;
+  margin: 10px 0 0 0;
+}
+.release-notes ul {
+  margin: 0;
+}

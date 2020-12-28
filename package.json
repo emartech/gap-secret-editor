@@ -56,7 +56,7 @@
       "icon": "build/icons/settings.png",
       "publish": {
         "provider": "github",
-        "private": true
+        "private": false
       },
       "hardenedRuntime": true,
       "gatekeeperAssess": false,

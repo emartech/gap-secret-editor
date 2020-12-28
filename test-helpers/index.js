@@ -13,7 +13,8 @@ beforeEach(() => {
   sinon.stub(KubeConfig.prototype, 'makeApiClient');
   window.e = {
     utils: {
-      openNotification: () => {}
+      openNotification: () => {},
+      openConsequentialConfirmationDialog: () => {}
     }
   };
 });
