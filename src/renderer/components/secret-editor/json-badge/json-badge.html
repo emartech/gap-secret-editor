@@ -1,0 +1,13 @@
+<e-tooltip
+    :content="tooltipText"
+    :disabled="tooltipDisabled"
+  >
+  <div 
+    :id="id"
+    :class="defaultClass"
+    :style="defaultStyle"
+    v-on:click="onClick"
+  >
+    {{ content }}
+  </div>
+</e-tooltip>
