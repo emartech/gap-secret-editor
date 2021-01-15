@@ -9,6 +9,10 @@ repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
 
+## Logging
+
+Application logs can be found in the `~/Library/Logs/gap-secret-editor/` directory.
+
 ## For developers
 
 ``` bash

@@ -1,5 +1,8 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
+import log from 'electron-log';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
+
+const logger = log.scope('main');
 
 /**
  * Set `__static` path to static files in production
@@ -49,6 +52,7 @@ app.on('activate', () => {
 });
 
 ipcMain.on('ui-ready', () => {
+  logger.info('app-started');
   if (process.env.NODE_ENV === 'production') {
     startWatchingForUpdates();
   }
