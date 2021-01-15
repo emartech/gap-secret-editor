@@ -26,7 +26,7 @@ const initializeUpdateEventListeners = () => {
   });
 
   ipcMain.on('confirm-update-response', (event, isConfirmed) => {
-    logger.info('confirm-update-response', isConfirmed);
+    logger.info('confirm-update-response', { isConfirmed });
     if (isConfirmed) {
       autoUpdater.downloadUpdate();
     }

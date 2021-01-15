@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import log from 'electron-log';
 import { isEqual, get, last, find } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
@@ -6,6 +7,8 @@ import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-c
 import { listenForUpdates } from '../../lib/auto-update-confirmation/auto-update-confirmation';
 import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
+
+const logger = log.scope('app');
 
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
@@ -92,6 +95,7 @@ export default {
           notificationDisplayer.loadFailedDueToUnauthorizedAccess();
         } else {
           notificationDisplayer.loadFailed(e.message);
+          logger.error('secret-load-failed', { namespace: this.secretNamespace }, e);
         }
         this.nameList = [];
       }
@@ -119,6 +123,7 @@ export default {
         this.backups = allBackups.filter(backup => backup.backupTime && backup.data);
       } catch (e) {
         this.backups = [];
+        logger.warn('backup-load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.selectedBackupTime = this.backups.length > 0 ? this.backups[0].backupTime : null;
     },
@@ -133,6 +138,7 @@ export default {
         notificationDisplayer.loadFailed(e.message);
         this.originalSecret = [];
         this.clearSecret();
+        logger.warn('load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.loading.secretLoad = false;
     },
@@ -155,6 +161,7 @@ export default {
         }
       } catch (e) {
         notificationDisplayer.saveFailed(e.message);
+        logger.warn('save-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.loading.secretSave = false;
     },
@@ -173,6 +180,7 @@ export default {
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
         this.namespaceList = [];
+        logger.warn('initialization-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.loading.namespaceList = false;
     },
@@ -194,5 +202,6 @@ export default {
     await this.initialize();
     listenForUpdates();
     ipcRenderer.send('ui-ready');
+    logger.info('ui-ready');
   }
 };

@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-export const listenForUpdates = async () => {
+export const listenForUpdates = () => {
   ipcRenderer.on('confirm-update', async (event, updateInfo) => {
     const confirmed = await confirm(updateInfo);
     event.sender.send('confirm-update-response', confirmed);
