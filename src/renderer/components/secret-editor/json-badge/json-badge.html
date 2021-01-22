@@ -5,7 +5,7 @@
   <div 
     :id="id"
     :class="`e-label e-label-${type}`"
-    :style="`position: absolute; top: 7px; right: 0; cursor: ${setCursorByType(type)}`"
+    :style="style"
     v-on:click="onClick"
   >
     {{ content }}

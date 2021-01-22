@@ -8,9 +8,11 @@ export default {
     tooltipText: { type: String | null, default: null },
     onClick: { type: Function, default: (e) => e.preventDefault() }
   },
-  methods: {
-    setCursorByType(type) {
-      return type === 'info' ? 'pointer' : 'default';
+  computed: {
+    style() {
+      return `position: absolute; top: 7px; right: 0; cursor: ${
+        this.type === 'info' ? 'pointer' : 'default'
+      }`;
     }
   }
 };

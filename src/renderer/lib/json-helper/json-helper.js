@@ -13,10 +13,10 @@ export const isJsonWithErrors = (value) => {
 };
 
 const _looksLikeJson = (value) => {
-  const formattedValue = value.toString().replace(/\s/g, '');
+  const valueWithoutSpaces = value.toString().replace(/\s/g, '');
   return (
-    (formattedValue.startsWith('{') || formattedValue.startsWith('[')) &&
-    (formattedValue.endsWith('}') || formattedValue.endsWith(']'))
+    (valueWithoutSpaces.startsWith('{') && valueWithoutSpaces.endsWith('}')) ||
+    (valueWithoutSpaces.startsWith('[') && valueWithoutSpaces.endsWith(']'))
   );
 };
 
