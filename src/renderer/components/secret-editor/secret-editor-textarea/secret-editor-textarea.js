@@ -1,11 +1,10 @@
 import {
   isValidJson,
   isJsonWithErrors,
-  isJsonPrettified,
   getParseErrorMessage,
   minify,
   prettify,
-  states
+  isJsonMinified
 } from '../../../lib/json-helper/json-helper';
 import JsonBadge from '../json-badge/json-badge';
 
@@ -18,9 +17,6 @@ export default {
   props: {
     value: { type: String, required: true, default: '' }
   },
-  data: () => ({
-    jsonState: states.DEFAULT
-  }),
   computed: {
     isValidJson() {
       return isValidJson(this.value);
@@ -43,12 +39,10 @@ export default {
       this.$refs.textarea.style.height = `${this.$refs.textarea.scrollHeight}px`;
     },
     changeJsonState() {
-      if (isJsonPrettified(this.jsonState)) {
-        this.$emit('change', minify(this.value));
-        this.jsonState = states.MINIFIED;
-      } else {
+      if (isJsonMinified(this.value)) {
         this.$emit('change', prettify(this.value));
-        this.jsonState = states.PRETTIFIED;
+      } else {
+        this.$emit('change', minify(this.value));
       }
     }
   },

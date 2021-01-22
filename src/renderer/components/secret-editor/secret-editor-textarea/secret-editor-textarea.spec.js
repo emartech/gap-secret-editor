@@ -3,37 +3,34 @@ import SecretEditorTextarea from './secret-editor-textarea';
 
 describe('SecretEditorTextarea', () => {
   describe('#changeJsonState', () => {
-    it('should set jsonState from prettified to minified', () => {
+    it('should change JSON formatting from prettified to minified', () => {
       const wrapper = mount(SecretEditorTextarea, {
-        propsData: { value: '[{ "valid_key": "valid_value" }]' },
-        data: () => ({ jsonState: 'prettified' })
+        propsData: {
+          value: `[{\n
+          "key": "value"
+        \n}]`
+        }
       });
 
-      wrapper.find('#json-state-switcher').trigger('click');
+      wrapper.find('#badge').trigger('click');
 
-      expect(wrapper.vm.$data.jsonState).to.eql('minified');
+      const lines = _getNumberOfJsonStringLinesAfterSplittingByNewLine(
+        wrapper.emitted().change[0][0]
+      );
+      expect(lines).to.eql(1);
     });
 
-    it('should set jsonState from minified to prettified', () => {
+    it('should change JSON formatting from minified to prettified', () => {
       const wrapper = mount(SecretEditorTextarea, {
-        propsData: { value: '[{ "valid_key": "valid_value" }]' },
-        data: () => ({ jsonState: 'minified' })
+        propsData: { value: '[{ "key": "value" }]' }
       });
 
-      wrapper.find('#json-state-switcher').trigger('click');
+      wrapper.find('#badge').trigger('click');
 
-      expect(wrapper.vm.$data.jsonState).to.eql('prettified');
-    });
-
-    it('should not change json state when json contains errors', () => {
-      const wrapper = mount(SecretEditorTextarea, {
-        propsData: { value: '[{ invalid_key: invalid_value" }]' },
-        data: () => ({ jsonState: 'minified' })
-      });
-
-      wrapper.find('#json-state-switcher-on-error').trigger('click');
-
-      expect(wrapper.vm.$data.jsonState).to.eql('minified');
+      const lines = _getNumberOfJsonStringLinesAfterSplittingByNewLine(
+        wrapper.emitted().change[0][0]
+      );
+      expect(lines).to.greaterThan(1);
     });
   });
 
@@ -81,7 +78,7 @@ describe('SecretEditorTextarea', () => {
     });
 
     it('should return false when input not starts like a valid json', () => {
-      const invalidJsonString = '[ "val": "id" ]';
+      const invalidJsonString = '] "val": "id" ]';
       const { vm } = mount(SecretEditorTextarea, {
         propsData: { value: invalidJsonString }
       });
@@ -89,3 +86,7 @@ describe('SecretEditorTextarea', () => {
     });
   });
 });
+
+const _getNumberOfJsonStringLinesAfterSplittingByNewLine = (jsonString) => {
+  return jsonString.split('\n').length;
+};

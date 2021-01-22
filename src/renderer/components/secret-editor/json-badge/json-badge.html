@@ -1,11 +1,11 @@
 <e-tooltip
     :content="tooltipText"
-    :disabled="tooltipDisabled"
+    :disabled="!tooltipText"
   >
   <div 
     :id="id"
-    :class="defaultClass"
-    :style="defaultStyle"
+    :class="`e-label e-label-${type}`"
+    :style="`position: absolute; top: 7px; right: 0; cursor: ${setCursorByType(type)}`"
     v-on:click="onClick"
   >
     {{ content }}

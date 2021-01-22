@@ -1,11 +1,4 @@
-import {
-  isValidJson,
-  isJsonWithErrors,
-  minify,
-  prettify,
-  isJsonPrettified,
-  states
-} from './json-helper';
+import { isValidJson, isJsonWithErrors, minify, prettify } from './json-helper';
 
 describe('#isValidJson', () => {
   it('should return true when string is a valid JSON', () => {
@@ -32,7 +25,7 @@ describe('#isValidJson', () => {
 });
 
 describe('#isJsonWithErrors', () => {
-  it('returns true when input seems like a json but it contains errors', () => {
+  it('should return true when input seems like a json but it contains errors', () => {
     const invalidJsonString = '[{ "val: "id }]';
 
     const result = isJsonWithErrors(invalidJsonString);
@@ -40,7 +33,7 @@ describe('#isJsonWithErrors', () => {
     expect(result).to.be.true;
   });
 
-  it('returns true when input starts like a json but it is not a valid one', () => {
+  it('should return true when input starts like a json but it is not a valid one', () => {
     const invalidJsonString = '[{ "not_json" }]';
 
     const result = isJsonWithErrors(invalidJsonString);
@@ -48,8 +41,8 @@ describe('#isJsonWithErrors', () => {
     expect(result).to.be.true;
   });
 
-  it('returns false when input not starts like a valid json', () => {
-    const invalidJsonString = '[ "val": "id" ]';
+  it('should return false when input not starts like a valid json', () => {
+    const invalidJsonString = '] "val": "id" ]';
 
     const result = isJsonWithErrors(invalidJsonString);
 
@@ -65,8 +58,8 @@ describe('#minify and prettify', () => {
 
     const minifiedJsonString = minify(jsonString);
 
-    expect(jsonString.split('\n').length).to.be.greaterThan(1);
-    expect(minifiedJsonString.split('\n').length).to.eql(1);
+    expect(_getNumberOfLines(jsonString)).to.eql(5);
+    expect(_getNumberOfLines(minifiedJsonString)).to.eql(1);
   });
 
   it('should prettify a minified json', () => {
@@ -74,19 +67,11 @@ describe('#minify and prettify', () => {
 
     const prettifiedJsonString = prettify(jsonString);
 
-    expect(jsonString.split('\n').length).to.be.eql(1);
-    expect(prettifiedJsonString.split('\n').length).to.be.greaterThan(1);
+    expect(_getNumberOfLines(jsonString)).to.eql(1);
+    expect(_getNumberOfLines(prettifiedJsonString)).to.eql(5);
   });
 });
 
-describe('#isJsonPrettified', () => {
-  it('should return true when json state is prettified', () => {
-    const result = isJsonPrettified(states.PRETTIFIED);
-    expect(result).to.be.true;
-  });
-
-  it('should return false when json state is not prettified', () => {
-    const result = isJsonPrettified(states.MINIFIED);
-    expect(result).to.be.false;
-  });
-});
+const _getNumberOfLines = (string) => {
+  return string.split('\n').length;
+};

@@ -1,5 +1,5 @@
 export const isValidJson = (data) => {
-  if (_isNumber(data) || _isBoolean(data)) return false;
+  if (!_looksLikeJson(data)) return false;
   try {
     JSON.parse(data);
     return true;
@@ -8,23 +8,15 @@ export const isValidJson = (data) => {
   }
 };
 
-const _isNumber = (val) => {
-  return !isNaN(val) && Number(val) === +val;
-};
-
-const _isBoolean = (val) => {
-  return val === false || val === true || val === 'false' || val === 'true';
-};
-
 export const isJsonWithErrors = (value) => {
-  return _startsLikeJson(value) && !isValidJson(value);
+  return _looksLikeJson(value) && !isValidJson(value);
 };
 
-const _startsLikeJson = (value) => {
-  const formattedValue = value.replace(/\s/g, '');
+const _looksLikeJson = (value) => {
+  const formattedValue = value.toString().replace(/\s/g, '');
   return (
-    (formattedValue.startsWith('{') || formattedValue.startsWith('[{')) &&
-    (formattedValue.endsWith('}') || formattedValue.endsWith('}]'))
+    (formattedValue.startsWith('{') || formattedValue.startsWith('[')) &&
+    (formattedValue.endsWith('}') || formattedValue.endsWith(']'))
   );
 };
 
@@ -40,8 +32,8 @@ const _formatJson = (json, spaces = 0) => {
   return JSON.stringify(JSON.parse(json), null, spaces);
 };
 
-export const isJsonPrettified = (jsonState) => {
-  return jsonState === states.PRETTIFIED;
+export const isJsonMinified = (jsonString) => {
+  return jsonString.split('\n').length === 1;
 };
 
 export const getParseErrorMessage = (value) => {
@@ -50,10 +42,4 @@ export const getParseErrorMessage = (value) => {
   } catch (error) {
     return error.message;
   }
-};
-
-export const states = {
-  DEFAULT: '',
-  MINIFIED: 'minified',
-  PRETTIFIED: 'prettified'
 };
