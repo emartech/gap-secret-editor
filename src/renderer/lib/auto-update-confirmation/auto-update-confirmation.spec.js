@@ -6,43 +6,51 @@ describe('auto-update-confirmation', () => {
     sinon.stub(window.e.utils, 'openConsequentialConfirmationDialog').callsFake(config => {
       config.confirm.callback();
     });
+    let callBackResponse;
+    let eventResponse;
     const fakeEvent = {
-      sender: {}
+      sender: {
+        send: (channel, isConfirmed) => {
+          eventResponse = { channel, isConfirmed };
+        }
+      }
     };
-    const responseArguments = new Promise(resolve => {
-      fakeEvent.sender.send = (channel, isConfirmed) => {
-        resolve({ channel, isConfirmed });
-      };
-    });
 
-    listenForUpdates();
+    listenForUpdates(isConfirmed => { callBackResponse = isConfirmed; });
     ipcRenderer.emit('confirm-update', fakeEvent, { update: 'info' });
+    await nextTick();
 
-    expect(await responseArguments).to.eql({
+    expect(eventResponse).to.eql({
       channel: 'confirm-update-response',
       isConfirmed: true
     });
+    expect(callBackResponse).to.eql(true);
   });
 
   it('should respond with false when user cancelled the update', async () => {
     sinon.stub(window.e.utils, 'openConsequentialConfirmationDialog').callsFake(config => {
       config.cancel.callback();
     });
+    let callBackResponse;
+    let eventResponse;
     const fakeEvent = {
-      sender: {}
+      sender: {
+        send: (channel, isConfirmed) => {
+          eventResponse = { channel, isConfirmed };
+        }
+      }
     };
-    const responseArguments = new Promise(resolve => {
-      fakeEvent.sender.send = (channel, isConfirmed) => {
-        resolve({ channel, isConfirmed });
-      };
-    });
 
-    listenForUpdates();
+    listenForUpdates(isConfirmed => { callBackResponse = isConfirmed; });
     ipcRenderer.emit('confirm-update', fakeEvent, { update: 'info' });
+    await nextTick();
 
-    expect(await responseArguments).to.eql({
+    expect(eventResponse).to.eql({
       channel: 'confirm-update-response',
       isConfirmed: false
     });
+    expect(callBackResponse).to.eql(false);
   });
 });
+
+const nextTick = () => new Promise(resolve => setTimeout(resolve, 0));

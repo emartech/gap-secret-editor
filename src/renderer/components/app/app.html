@@ -94,5 +94,13 @@
         </div>
       </section>
     </main>
+
+    <div class="overlaycontainer" :class="{ 'e-hidden': !updateInProgress }">
+      <div class="e-overlay e-overlay-centered" style="border-radius: 0">
+        <div class="e-overlay__center">
+          <e-spinner></e-spinner>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
+import { ipcRenderer } from 'electron';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 
@@ -517,6 +518,25 @@ describe('App', () => {
         expect(vm.secretNamespace).to.eql('namespace2');
         expect(vm.secretName).to.eql('secret1');
       });
+    });
+  });
+
+  describe('when update is available', () => {
+    it('should show loading indicator when update request is confirmed', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(window.e.utils, 'openConsequentialConfirmationDialog').callsFake(config => {
+        config.confirm.callback();
+      });
+
+      const fakeEvent = { sender: { send: () => {} } };
+      const { vm } = await loadApp();
+
+      ipcRenderer.emit('confirm-update', fakeEvent, { update: 'info' });
+      await vm.$nextTick();
+      await vm.$nextTick();
+
+      expect(vm.updateInProgress).to.eql(true);
     });
   });
 });

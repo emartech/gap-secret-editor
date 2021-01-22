@@ -36,7 +36,8 @@ export default {
     context: '',
     searchTerm: '',
     backups: [],
-    selectedBackupTime: null
+    selectedBackupTime: null,
+    updateInProgress: false
   }),
   computed: {
     availableContexts() {
@@ -200,7 +201,7 @@ export default {
   },
   async mounted() {
     await this.initialize();
-    listenForUpdates();
+    listenForUpdates(confirmed => this.updateInProgress = confirmed);
     ipcRenderer.send('ui-ready');
     logger.info('ui-ready');
   }
