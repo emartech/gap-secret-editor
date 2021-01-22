@@ -1,9 +1,13 @@
 import Vue from 'vue';
 import { KubeConfig } from '@kubernetes/client-node';
+import log from 'electron-log';
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^e-/];
+
+log.transports.file.level = false;
+log.transports.console.level = false;
 
 beforeEach(() => {
   sinon.stub(KubeConfig.prototype, 'getContexts');
