@@ -7,6 +7,7 @@ import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-c
 import { listenForUpdates } from '../../lib/auto-update-confirmation/auto-update-confirmation';
 import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
+import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 
 const logger = log.scope('app');
 
@@ -16,7 +17,7 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor, BackupSelector },
+  components: { SecretEditor, BackupSelector, SaveConfirmationDialog },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -142,6 +143,11 @@ export default {
         logger.warn('load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.loading.secretLoad = false;
+    },
+    openSaveConfirmationDialog() {
+      if (!this.saveEnabled) return;
+
+      this.$refs.saveConfirmationDialog.open();
     },
     async saveSecret() {
       if (!this.saveEnabled) return;

@@ -217,7 +217,7 @@ describe('App', () => {
     });
 
     describe('when loaded secret has not changed since load', () => {
-      it('should save secret when save button clicked', async () => {
+      it('should not save secret when save button clicked then canceled', async () => {
         stubContextList(contextList);
         stubNamespaceList(namespaceList);
         stubSecretList(secretList);
@@ -233,6 +233,29 @@ describe('App', () => {
         await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-cancel-button');
+
+        expect(saveMethodMock).to.not.have.been.called;
+        expect(patchMethodMock).to.not.have.been.called;
+      });
+
+      it('should save secret when save button clicked then confirmed', async () => {
+        stubContextList(contextList);
+        stubNamespaceList(namespaceList);
+        stubSecretList(secretList);
+        stubChangedSelectedSecret({ FOOD: 'cGl6emE=' }, { FOOD: 'cGl6emE=' });
+        const saveMethodMock = stubApiClient('replaceNamespacedSecret');
+        stubDeploymentListForSelectedSecret();
+        const patchMethodMock = stubPatchMethod();
+        const wrapper = await loadApp();
+
+        await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
+        await changeSelectValue(wrapper, '#secret-selector', 'best-app');
+        await clickButton(wrapper, '#load-button');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-confirm-button');
 
         expect(saveMethodMock).to.have.been.calledWith(
           'best-app',
@@ -256,6 +279,7 @@ describe('App', () => {
         await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-confirm-button');
 
         expect(window.e.utils.openNotification).to.have.been.calledWith(sinon.match({ title: 'Secret saved' }));
       });
@@ -273,6 +297,7 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
         await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-confirm-button');
 
         const expectedNotificationParams = sinon.match({ title: 'Save failed', content: 'Oh no!' });
         expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
@@ -294,6 +319,7 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
         await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-confirm-button');
 
         expect(saveMethodMock).to.not.have.been.called;
         expect(patchMethodMock).to.not.have.been.called;
@@ -311,6 +337,7 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
         await clickButton(wrapper, '#save-button');
+        await clickButton(wrapper, '#save-confirm-button');
 
         const expectedNotificationParams = sinon.match({
           title: 'Save failed',

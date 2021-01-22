@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { ipcRenderer } from 'electron';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
@@ -363,6 +363,34 @@ describe('App', () => {
       await vm.loadBackups();
 
       expect(vm.backups).to.eql([]);
+    });
+  });
+
+  describe('#openSaveConfirmationDialog', () => {
+    it('should open confirmation dialog when secret is loaded', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+
+      const wrapper = await mount(App);
+      await flushPromises();
+      wrapper.vm.secretLoaded = true;
+
+      await wrapper.vm.openSaveConfirmationDialog();
+
+      expect(wrapper.vm.$refs.saveConfirmationDialog.opened).to.eql(true);
+    });
+
+    it('should keep confirmation dialog closed when secret is not loaded', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+
+      const wrapper = await mount(App);
+      await flushPromises();
+      wrapper.vm.secretLoaded = false;
+
+      await wrapper.vm.openSaveConfirmationDialog();
+
+      expect(wrapper.vm.$refs.saveConfirmationDialog.opened).to.eql(false);
     });
   });
 

@@ -48,7 +48,7 @@
 
           <div class="e-cell e-cell-small">
             <e-tooltip content="Save">
-              <div id="save-button" class="e-btn e-btn-onlyicon" @click="saveSecret()" :disabled="!saveEnabled">
+              <div id="save-button" class="e-btn e-btn-onlyicon" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
                   <e-spinner data-size="small"></e-spinner>
                   <e-icon icon="floppy-o"></e-icon>
@@ -102,5 +102,7 @@
         </div>
       </div>
     </div>
+
+    <save-confirmation-dialog ref="saveConfirmationDialog" @confirmed="saveSecret()" />
   </div>
 </div>

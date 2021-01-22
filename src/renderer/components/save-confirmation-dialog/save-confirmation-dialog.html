@@ -1,0 +1,20 @@
+<e-dialog
+  :opened="opened"
+  v-on="{ 'dialog.close': close }"
+  headline="Save changes"
+>
+  <p>
+    Are you sure you want to save?
+  </p>
+
+  <div class="e-dialog__footer">
+    <div class="e-grid e-grid-small">
+      <div class="e-cell e-cell-small">
+        <div id="save-cancel-button" class="e-btn" data-action="close">Cancel</div>
+      </div>
+      <div class="e-cell e-cell-small">
+        <div id="save-confirm-button" class="e-btn e-btn-primary" data-action="close" @click="confirm()">Save</div>
+      </div>
+    </div>
+  </div>
+</e-dialog>
