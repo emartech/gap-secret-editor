@@ -32,6 +32,17 @@ describe('SecretEditorTextarea', () => {
       );
       expect(lines).to.greaterThan(1);
     });
+
+    it('should not change JSON formatting when value is not a valid JSON', () => {
+      const value = '{ "key": "value", "key-without-value" }';
+      const wrapper = mount(SecretEditorTextarea, {
+        propsData: { value }
+      });
+
+      wrapper.find('#badge').trigger('click');
+
+      expect(wrapper.emitted()).to.eql({});
+    });
   });
 
   describe('#getJsonParseErrorMessage', () => {

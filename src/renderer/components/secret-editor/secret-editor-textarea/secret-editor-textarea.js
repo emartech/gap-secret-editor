@@ -39,6 +39,8 @@ export default {
       this.$refs.textarea.style.height = `${this.$refs.textarea.scrollHeight}px`;
     },
     changeJsonState() {
+      if (!this.isValidJson) return;
+
       if (isJsonMinified(this.value)) {
         this.$emit('change', prettify(this.value));
       } else {

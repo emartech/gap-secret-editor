@@ -2,11 +2,11 @@
     :content="tooltipText"
     :disabled="!tooltipText"
   >
-  <div 
+  <div
     :id="id"
     :class="`e-label e-label-${type}`"
     :style="style"
-    v-on:click="onClick"
+    @click="$emit('click')"
   >
     {{ content }}
   </div>
