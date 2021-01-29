@@ -1,0 +1,13 @@
+<e-tooltip
+    :content="tooltipText"
+    :disabled="!tooltipText"
+  >
+  <div
+    :id="id"
+    :class="`e-label e-label-${type}`"
+    :style="style"
+    @click="$emit('click')"
+  >
+    {{ content }}
+  </div>
+</e-tooltip>
