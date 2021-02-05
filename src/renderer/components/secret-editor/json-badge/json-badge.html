@@ -1,13 +1,13 @@
 <e-tooltip
-    :content="tooltipText"
-    :disabled="!tooltipText"
+    v-if="looksLikeJson"
+    :content="getJsonParseErrorMessage"
+    :disabled="!isJsonWithErrors"
   >
   <div
-    :id="id"
-    :class="`e-label e-label-${type}`"
+    :class="`e-label e-label-${type} badge`"
     :style="style"
-    @click="$emit('click')"
+    @click="changeJsonState()"
   >
-    {{ content }}
+    JSON
   </div>
 </e-tooltip>

@@ -1,11 +1,3 @@
-import {
-  isValidJson,
-  isJsonWithErrors,
-  getParseErrorMessage,
-  minify,
-  prettify,
-  isJsonMinified
-} from '../../../lib/json-helper/json-helper';
 import JsonBadge from '../json-badge/json-badge';
 
 export default {
@@ -17,35 +9,15 @@ export default {
   props: {
     value: { type: String, required: true, default: '' }
   },
-  computed: {
-    isValidJson() {
-      return isValidJson(this.value);
-    },
-    isJsonWithErrors() {
-      return isJsonWithErrors(this.value);
-    },
-    getJsonParseErrorMessage() {
-      return getParseErrorMessage(this.value);
-    }
-  },
   methods: {
-    changeSecretValue(event) {
-      this.$emit('change', event.target.value);
+    changeSecretValue(newValue) {
+      this.$emit('change', newValue);
       this.resize();
     },
     async resize() {
       await this.$nextTick();
       this.$refs.textarea.style.height = 'auto';
       this.$refs.textarea.style.height = `${this.$refs.textarea.scrollHeight}px`;
-    },
-    changeJsonState() {
-      if (!this.isValidJson) return;
-
-      if (isJsonMinified(this.value)) {
-        this.$emit('change', prettify(this.value));
-      } else {
-        this.$emit('change', minify(this.value));
-      }
     }
   },
   watch: {

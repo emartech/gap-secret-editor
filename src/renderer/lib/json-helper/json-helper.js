@@ -1,5 +1,5 @@
 export const isValidJson = (data) => {
-  if (!_looksLikeJson(data)) return false;
+  if (!looksLikeJson(data)) return false;
   try {
     JSON.parse(data);
     return true;
@@ -9,10 +9,10 @@ export const isValidJson = (data) => {
 };
 
 export const isJsonWithErrors = (value) => {
-  return _looksLikeJson(value) && !isValidJson(value);
+  return looksLikeJson(value) && !isValidJson(value);
 };
 
-const _looksLikeJson = (value) => {
+export const looksLikeJson = (value) => {
   const valueWithoutSpaces = value.toString().replace(/\s/g, '');
   return (
     (valueWithoutSpaces.startsWith('{') && valueWithoutSpaces.endsWith('}')) ||
