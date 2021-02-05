@@ -103,6 +103,11 @@
       </div>
     </div>
 
-    <save-confirmation-dialog ref="saveConfirmationDialog" @confirmed="saveSecret()" />
+    <save-confirmation-dialog
+      ref="saveConfirmationDialog"
+      :original-secret="originalSecret"
+      :current-secret="secretAsObject"
+      @confirmed="saveSecret()"
+    />
   </div>
 </div>

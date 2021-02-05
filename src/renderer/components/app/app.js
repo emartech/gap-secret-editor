@@ -76,6 +76,9 @@ export default {
     },
     availableBackupTimes() {
       return this.backups.map(backup => backup.backupTime);
+    },
+    secretAsObject() {
+      return keyValueArrayToObject(this.secret);
     }
   },
   methods: {
@@ -138,7 +141,7 @@ export default {
         await this.loadBackups();
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
-        this.originalSecret = [];
+        this.originalSecret = {};
         this.clearSecret();
         logger.warn('load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
@@ -156,11 +159,10 @@ export default {
       try {
         const currentlySavedSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
         if (isEqual(currentlySavedSecret, this.originalSecret)) {
-          const secretAsObject = keyValueArrayToObject(this.secret);
-          await kubernetesClient.saveSecret(this.secretNamespace, this.secretName, secretAsObject);
+          await kubernetesClient.saveSecret(this.secretNamespace, this.secretName, this.secretAsObject);
           await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
 
-          this.originalSecret = secretAsObject;
+          this.originalSecret = this.secretAsObject;
           await this.loadBackups();
           notificationDisplayer.saveSuccess();
         } else {

@@ -3,9 +3,29 @@
   v-on="{ 'dialog.close': close }"
   headline="Save changes"
 >
-  <p>
-    Are you sure you want to save?
-  </p>
+  <div>The following fields have been changed:</div>
+
+  <div
+    v-for="key in keysOfChangedFields"
+    class="e-grid e-grid-column e-border-radius e-margin-vertical-m"
+    style="border: 1px solid #a2b4c6"
+  >
+    <div
+      class="e-grid e-grid-vertical_center e-padding-s e-border-radius-top font-weight-bold text-color-gray-400 background-color-gray-100"
+      style="border-bottom: 1px solid #a2b4c6"
+    >
+      {{ key }}
+    </div>
+
+    <div
+      class="e-grid e-grid-vertical_center e-padding-s"
+    >
+      some diff
+    </div>
+
+  </div>
+
+  <div>Are you sure you want to save?</div>
 
   <div class="e-dialog__footer">
     <div class="e-grid e-grid-small">
