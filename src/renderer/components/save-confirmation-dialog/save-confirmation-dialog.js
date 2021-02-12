@@ -1,8 +1,12 @@
 import { difference, intersection, keys } from 'lodash';
+import Changes from './changes/changes';
 
 export default {
   name: 'save-confirmation-dialog',
   template: require('./save-confirmation-dialog.html'),
+  components: {
+    Changes
+  },
   props: {
     originalSecret: Object,
     currentSecret: Object

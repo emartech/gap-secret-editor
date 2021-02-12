@@ -7,12 +7,10 @@
 
   <div
     v-for="key in keysOfChangedFields"
-    class="e-grid e-grid-column e-border-radius e-margin-vertical-m"
-    style="border: 1px solid #a2b4c6"
+    class="e-grid e-grid-column e-border-radius e-margin-vertical-m e-border-all"
   >
     <div
-      class="e-grid e-grid-vertical_center e-padding-s e-border-radius-top font-weight-bold text-color-gray-400 background-color-gray-100"
-      style="border-bottom: 1px solid #a2b4c6"
+      class="e-grid e-grid-vertical_center e-padding-s e-border-radius-top e-border-bottom font-weight-bold text-color-gray-400 background-color-gray-100"
     >
       {{ key }}
     </div>
@@ -20,7 +18,10 @@
     <div
       class="e-grid e-grid-vertical_center e-padding-s"
     >
-      some diff
+      <changes
+        :original-value="originalSecret[key]"
+        :current-value="currentSecret[key]"
+      />
     </div>
 
   </div>
