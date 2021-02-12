@@ -35,12 +35,12 @@ describe('SaveConfirmationDialog', () => {
       expect(vm.keysOfChangedFields).to.eql(['DARTH']);
     });
 
-    it('should return keys in uppercase and alphabetical order', () => {
+    it('should return keys in alphabetical order', () => {
       const originalSecret = { DARTH: 'Vader', HAN: 'Solo', LUKE: 'Skywalker' };
       const currentSecret = { DARTH: 'Maul', HAN: 'Solo', chew: 'bacca' };
       const { vm } = mount(SaveConfirmationDialog, { propsData: { originalSecret, currentSecret } });
 
-      expect(vm.keysOfChangedFields).to.eql(['CHEW', 'DARTH', 'LUKE']);
+      expect(vm.keysOfChangedFields).to.eql(['chew', 'DARTH', 'LUKE']);
     });
   });
 

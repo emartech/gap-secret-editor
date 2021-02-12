@@ -1,4 +1,4 @@
-import { difference, intersection, keys, toUpper } from 'lodash';
+import { difference, intersection, keys } from 'lodash';
 
 export default {
   name: 'save-confirmation-dialog',
@@ -21,8 +21,7 @@ export default {
         ...intersection(originalKeys, currentKeys).filter(key => this.originalSecret[key] !== this.currentSecret[key])
       ];
       return changedFieldKeys
-        .map(toUpper)
-        .sort();
+        .sort((first, second) => first.toUpperCase().localeCompare(second.toUpperCase()));
     }
   },
   methods: {
