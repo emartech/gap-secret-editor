@@ -39,7 +39,10 @@ module.exports = config => {
     preprocessors: {
       './index.js': ['webpack', 'sourcemap']
     },
-    reporters: ['dots'],
+    reporters: ['mocha'],
+    mochaReporter: {
+      showDiff: 'inline'
+    },
     webpack: webpackConfig,
     webpackMiddleware: {
       noInfo: true
