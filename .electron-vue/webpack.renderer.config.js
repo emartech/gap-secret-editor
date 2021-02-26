@@ -37,6 +37,17 @@ const rendererConfig = {
         exclude: /node_modules/
       },
       {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false
+            }
+          },
+        ],
+      },
+      {
         test: /\.node$/,
         use: 'node-loader'
       },

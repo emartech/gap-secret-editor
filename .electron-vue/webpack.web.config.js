@@ -34,6 +34,17 @@ const webConfig = {
             name: 'imgs/[name].[ext]'
           }
         }
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              esModule: false
+            }
+          },
+        ],
       }
     ]
   },
