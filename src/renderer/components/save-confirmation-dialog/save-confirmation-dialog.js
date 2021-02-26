@@ -1,12 +1,10 @@
 import { difference, intersection, keys } from 'lodash';
-import Changes from './changes/changes';
+import { createPatch } from 'diff';
+import * as Diff2Html from 'diff2html';
 
 export default {
   name: 'save-confirmation-dialog',
   template: require('./save-confirmation-dialog.html'),
-  components: {
-    Changes
-  },
   props: {
     originalSecret: Object,
     currentSecret: Object
@@ -29,6 +27,16 @@ export default {
     }
   },
   methods: {
+    difference(key) {
+      const patch = createPatch(key, this.originalSecret[key] || '', this.currentSecret[key] || '');
+      const diffJson = Diff2Html.parse(patch);
+      return Diff2Html.html(diffJson, {
+        drawFileList: false,
+        matching: 'lines',
+        outputFormat: 'side-by-side',
+        rawTemplates: { 'generic-file-path': `<span>${key}</span>` }
+      });
+    },
     open() {
       this.opened = true;
     },

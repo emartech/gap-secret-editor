@@ -9,3 +9,8 @@
 .release-notes ul {
   margin: 0;
 }
+
+/* fix border of compare result */
+.d2h-file-side-diff {
+  margin-bottom: -7px;
+}

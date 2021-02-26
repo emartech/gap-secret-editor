@@ -2,31 +2,25 @@
   :opened="opened"
   v-on="{ 'dialog.close': close }"
   headline="Save changes"
+  width="90%"
 >
-  <div>The following fields have been changed:</div>
+  <div class="e-dialog__content">
+    <div>The following fields have been changed:</div>
 
-  <div
-    v-for="key in keysOfChangedFields"
-    class="e-grid e-grid-column e-border-radius e-margin-vertical-m e-border-all"
-  >
-    <div
-      class="e-grid e-grid-vertical_center e-padding-s e-border-radius-top e-border-bottom font-weight-bold text-color-gray-400 background-color-gray-100"
-    >
-      {{ key }}
+    <div class="e-margin-vertical-m" style="height: 250px">
+      <div class="e-scrollable">
+        <div class="e-scrollable__content">
+          <div
+            v-for="key in keysOfChangedFields"
+            v-html="difference(key)"
+          >
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div
-      class="e-grid e-grid-vertical_center e-padding-s"
-    >
-      <changes
-        :original-value="originalSecret[key]"
-        :current-value="currentSecret[key]"
-      />
-    </div>
-
+    <div>Are you sure you want to save?</div>
   </div>
-
-  <div>Are you sure you want to save?</div>
 
   <div class="e-dialog__footer">
     <div class="e-grid e-grid-small">
