@@ -24,7 +24,8 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'no-prototype-builtins': 'off',
     'jest/no-try-expect': 'off',
-    'curly': ['error', 'multi-line']
+    'curly': ['error', 'multi-line'],
+    'operator-linebreak': ['error', 'after', { overrides: { '?': 'before', ':': 'before' } }]
   },
   overrides: [
     {

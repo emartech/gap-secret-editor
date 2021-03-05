@@ -17,9 +17,9 @@ export default {
         .map((item, index) => ({ ...item, index }));
     },
     filteredFields() {
-      return this.fields.filter(field => this.searchTerm ?
-        stringMatches(field.key, this.searchTerm) || stringMatches(field.value, this.searchTerm) :
-        true
+      return this.fields.filter(field => this.searchTerm
+        ? stringMatches(field.key, this.searchTerm) || stringMatches(field.value, this.searchTerm)
+        : true
       );
     },
     isLastField() {

@@ -43,8 +43,8 @@ const webConfig = {
             options: {
               esModule: false
             }
-          },
-        ],
+          }
+        ]
       }
     ]
   },
