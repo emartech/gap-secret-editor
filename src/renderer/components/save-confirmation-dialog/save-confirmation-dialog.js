@@ -1,4 +1,4 @@
-import { difference, intersection, keys } from 'lodash';
+import { difference, intersection, isNil, keys } from 'lodash';
 import { createPatch } from 'diff';
 import * as Diff2Html from 'diff2html';
 
@@ -28,13 +28,22 @@ export default {
   },
   methods: {
     difference(key) {
+      const changeType = !isNil(this.originalSecret[key]) && !isNil(this.currentSecret[key])
+        ? 'CHANGED'
+        : isNil(this.originalSecret[key])
+          ? 'ADDED'
+          : 'REMOVED';
+
       const patch = createPatch(key, this.originalSecret[key] || '', this.currentSecret[key] || '');
       const diffJson = Diff2Html.parse(patch);
       return Diff2Html.html(diffJson, {
         drawFileList: false,
         matching: 'lines',
         outputFormat: 'side-by-side',
-        rawTemplates: { 'generic-file-path': `<span>${key}</span>` }
+        rawTemplates: {
+          'generic-file-path':
+            `<span>${key}</span><span class="e-padding-left-l text-color-gray-400">${changeType}</span>`
+        }
       });
     },
     open() {
