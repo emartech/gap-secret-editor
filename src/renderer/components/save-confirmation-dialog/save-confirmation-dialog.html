@@ -1,25 +1,15 @@
 <e-dialog
   :opened="opened"
   v-on="{ 'dialog.close': close }"
-  headline="Save changes"
+  headline="Do you want to save the following changes?"
   width="90%"
 >
-  <div class="e-dialog__content">
-    <div>The following fields have been changed:</div>
-
-    <div class="e-margin-vertical-m" style="height: 250px">
-      <div class="e-scrollable">
-        <div class="e-scrollable__content">
-          <div
-            v-for="key in keysOfChangedFields"
-            v-html="difference(key)"
-          >
-          </div>
-        </div>
-      </div>
+  <div style="position: relative">
+    <div
+      v-for="key in keysOfChangedFields"
+      v-html="difference(key)"
+    >
     </div>
-
-    <div>Are you sure you want to save?</div>
   </div>
 
   <div class="e-dialog__footer">
