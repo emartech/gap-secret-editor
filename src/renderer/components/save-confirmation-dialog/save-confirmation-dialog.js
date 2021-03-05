@@ -42,7 +42,15 @@ export default {
         outputFormat: 'side-by-side',
         rawTemplates: {
           'generic-file-path':
-            `<span>${key}</span><span class="e-padding-left-l text-color-gray-400">${changeType}</span>`
+            `<span>${key}</span><span class="e-padding-left-l text-color-gray-400">${changeType}</span>`,
+          'generic-empty-diff':
+            `<tr>
+              <td class="{{CSSLineClass.INFO}}">
+                <div class="{{contentClass}} {{CSSLineClass.INFO}}">
+                  Value is empty
+                </div>
+              </td>
+            </tr>`
         }
       });
     },
