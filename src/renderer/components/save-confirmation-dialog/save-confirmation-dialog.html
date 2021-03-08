@@ -5,11 +5,13 @@
   width="90%"
 >
   <div style="position: relative">
-    <div
+    <difference
       v-for="key in keysOfChangedFields"
-      v-html="difference(key)"
+      :label="key"
+      :original-value="originalSecret[key]"
+      :current-value="currentSecret[key]"
     >
-    </div>
+    </difference>
   </div>
 
   <div class="e-dialog__footer">
