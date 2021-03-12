@@ -27,6 +27,9 @@ export default {
     }
   },
   methods: {
+    isDuplicatedField(key) {
+      return this.value.filter(field => field.key === key).length > 1;
+    },
     changeFieldKey(index, key) {
       this._updateFields(index, { key });
     },

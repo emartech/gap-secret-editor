@@ -76,6 +76,30 @@ describe('SecretEditor', () => {
     });
   });
 
+  describe('#isDuplicatedField', () => {
+    it('should return false when field key is unique', () => {
+      const value = [
+        { key: 'name', value: 'James Bond' },
+        { key: 'code', value: '007' },
+        { key: 'name', value: 'Johnny English' }
+      ];
+      const { vm } = mount(SecretEditor, { propsData: { value, searchTerm: '' } });
+
+      expect(vm.isDuplicatedField('code')).to.be.false;
+    });
+
+    it('should return true when field key appears multiple times', () => {
+      const value = [
+        { key: 'name', value: 'James Bond' },
+        { key: 'code', value: '007' },
+        { key: 'name', value: 'Johnny English' }
+      ];
+      const { vm } = mount(SecretEditor, { propsData: { value, searchTerm: '' } });
+
+      expect(vm.isDuplicatedField('name')).to.be.true;
+    });
+  });
+
   it('should display fields with an extra empty row', () => {
     const { vm } = mount(SecretEditor, { propsData: { value: fields() } });
 

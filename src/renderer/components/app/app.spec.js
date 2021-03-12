@@ -104,6 +104,18 @@ describe('App', () => {
       expect(vm.saveEnabled).to.be.true;
     });
 
+    it('should return false when secret is loaded but then changed to field key duplication', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+      await vm.loadSecret();
+      vm.secret[0].key = 'duplicated';
+      vm.secret[1].key = 'duplicated';
+
+      expect(vm.saveEnabled).to.be.false;
+    });
+
     it('should return false when secret is being saved', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);

@@ -1,9 +1,9 @@
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
-import { isEqual, get, last, find } from 'lodash';
+import { find, get, isEqual, last, uniqBy } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
-import { objectToKeyValueArray, keyValueArrayToObject } from '../../lib/secret-converter';
+import { keyValueArrayToObject, objectToKeyValueArray } from '../../lib/secret-converter';
 import { listenForUpdates } from '../../lib/auto-update-confirmation/auto-update-confirmation';
 import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
@@ -69,8 +69,9 @@ export default {
       return this.secretNamespace && this.secretName && !this.loading.secretLoad;
     },
     saveEnabled() {
+      const hasDuplicatedKey = this.secret.length !== uniqBy(this.secret, 'key').length;
       const secretChanged = !isEqual(this.originalSecret, this.secretAsObject);
-      return this.secretLoaded && secretChanged && !this.loading.secretSave;
+      return this.secretLoaded && secretChanged && !hasDuplicatedKey && !this.loading.secretSave;
     },
     backupEnabled() {
       return this.secretLoaded;
