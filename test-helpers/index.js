@@ -1,10 +1,12 @@
 import Vue from 'vue';
 import { KubeConfig } from '@kubernetes/client-node';
 import log from 'electron-log';
+import registerVueGlobals from '../src/renderer/vue-globals';
 
 Vue.config.devtools = false;
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = [/^e-/];
+registerVueGlobals();
 
 log.transports.file.level = false;
 log.transports.console.level = false;
