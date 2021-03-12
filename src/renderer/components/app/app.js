@@ -9,6 +9,7 @@ import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
 
+
 const logger = log.scope('app');
 
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
@@ -117,6 +118,16 @@ export default {
       this.secret = objectToKeyValueArray(backup.data);
       this.selectedBackupTime = backupTime;
       notificationDisplayer.backupSuccess();
+    },
+    previewBackup({ modificationTime, lastModificationBefore }) {
+      const secretBeforeChange = this.backups.find(backup => backup.backupTime === lastModificationBefore);
+      const secretAfterChange = this.backups.find(backup => backup.backupTime === modificationTime);
+
+      this.$refs.changeViewerDialog.displayChange({
+        time: modificationTime,
+        secretAfter: secretAfterChange.data,
+        secretBefore: secretBeforeChange ? secretBeforeChange.data : {}
+      });
     },
     clearSecret() {
       this.secret = [];

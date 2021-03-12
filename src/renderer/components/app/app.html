@@ -64,6 +64,7 @@
                 :selected-time="selectedBackupTime"
                 :disabled="!backupEnabled"
                 @input="loadSelectedBackup($event)"
+                @preview-backup="previewBackup($event)"
               />
             </e-tooltip>
           </div>
@@ -103,5 +104,7 @@
       :current-secret="secretAsObject"
       @confirmed="saveSecret()"
     />
+
+    <change-viewer-dialog ref="changeViewerDialog" />
   </div>
 </div>

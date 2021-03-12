@@ -39,4 +39,49 @@ describe('BackupSelector', () => {
       ]);
     });
   });
+
+  describe('#viewBackup', () => {
+    it('should emit the time of selected backup and the time of the one before it', () => {
+      const availableTimes = [
+        '2020-12-24T18:00:00.000Z',
+        '2020-12-24T21:00:00.000Z',
+        '2020-12-24T20:00:00.000Z'
+      ];
+      const wrapper = mount(BackupSelector, { propsData: { availableTimes } });
+
+      wrapper.vm.viewBackup('2020-12-24T20:00:00.000Z');
+
+      expect(wrapper.emitted()).to.eql({
+        'preview-backup': [
+          [
+            {
+              modificationTime: '2020-12-24T20:00:00.000Z',
+              lastModificationBefore: '2020-12-24T18:00:00.000Z'
+            }
+          ]
+        ]
+      });
+    });
+
+    it('should emit time and null for last modification if it was the first modification', () => {
+      const availableTimes = [
+        '2020-12-24T18:00:00.000Z',
+        '2020-12-24T21:00:00.000Z'
+      ];
+      const wrapper = mount(BackupSelector, { propsData: { availableTimes } });
+
+      wrapper.vm.viewBackup('2020-12-24T18:00:00.000Z');
+
+      expect(wrapper.emitted()).to.eql({
+        'preview-backup': [
+          [
+            {
+              modificationTime: '2020-12-24T18:00:00.000Z',
+              lastModificationBefore: null
+            }
+          ]
+        ]
+      });
+    });
+  });
 });

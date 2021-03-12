@@ -34,7 +34,12 @@ export default {
       this.$emit('input', time);
     },
     viewBackup(time) {
-      this.$emit('preview-backup', time);
+      const sortedTimes = this.availableTimes.sort();
+      const timeIndex = sortedTimes.findIndex(option => option === time);
+      this.$emit('preview-backup', {
+        modificationTime: time,
+        lastModificationBefore: timeIndex === 0 ? null : sortedTimes[timeIndex - 1]
+      });
     }
   }
 };
