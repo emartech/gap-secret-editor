@@ -1,0 +1,9 @@
+<div style="position: relative">
+  <difference
+    v-for="key in keysOfChangedFields"
+    :label="key"
+    :original-value="originalSecret[key]"
+    :current-value="currentSecret[key]"
+  >
+  </difference>
+</div>
