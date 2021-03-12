@@ -3,7 +3,7 @@ import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
 import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/components/app/app';
 
-describe('App', () => {
+describe('App - Integration', () => {
   const fakeKubernetesApiClient = {};
   const contextList = ['staging', 'production'];
   const namespaceList = ['cool-team', 'lame-team'];
@@ -296,6 +296,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -318,6 +320,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -336,6 +340,8 @@ describe('App', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
+        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 

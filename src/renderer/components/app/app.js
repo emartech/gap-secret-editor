@@ -69,7 +69,8 @@ export default {
       return this.secretNamespace && this.secretName && !this.loading.secretLoad;
     },
     saveEnabled() {
-      return this.secretLoaded && !this.loading.secretSave;
+      const secretChanged = !isEqual(this.originalSecret, this.secretAsObject);
+      return this.secretLoaded && secretChanged && !this.loading.secretSave;
     },
     backupEnabled() {
       return this.secretLoaded;

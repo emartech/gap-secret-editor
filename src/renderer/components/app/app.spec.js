@@ -74,6 +74,51 @@ describe('App', () => {
     });
   });
 
+  describe('#saveEnabled', () => {
+    it('should return false when secret is not loaded', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+
+      expect(vm.saveEnabled).to.be.false;
+    });
+
+    it('should return false when secret is loaded but not changed', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+      await vm.loadSecret();
+
+      expect(vm.saveEnabled).to.be.false;
+    });
+
+    it('should return true when secret is loaded then changed', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+      await vm.loadSecret();
+      vm.secret[0].value = 'changed value';
+
+      expect(vm.saveEnabled).to.be.true;
+    });
+
+    it('should return false when secret is being saved', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+      await vm.loadSecret();
+      vm.secret[0].value = 'changed value';
+      const savePromise = vm.saveSecret();
+
+      expect(vm.saveEnabled).to.be.false;
+
+      await savePromise;
+    });
+  });
+
   describe('#selectContext', () => {
     it('should set context field on component', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
@@ -374,6 +419,7 @@ describe('App', () => {
       const wrapper = await mount(App);
       await flushPromises();
       wrapper.vm.secretLoaded = true;
+      wrapper.vm.secret = [{ key: 'NEW_FIELD', value: 'new value' }];
 
       await wrapper.vm.openSaveConfirmationDialog();
 
