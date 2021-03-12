@@ -9,45 +9,32 @@ export default {
     disabled: Boolean
   },
   data: () => ({
-    actionlistOpen: false
+    hoveredTime: ''
   }),
   computed: {
-    actionlistItems() {
-      if (!this.actionlistOpen) return [];
-
+    options() {
       if (this.availableTimes.length === 0) {
-        return [{
-          type: 'option',
-          content: 'No backups found',
-          value: null
-        }];
+        return [{ displayedTime: 'No backups found' }];
       }
-
       return this.availableTimes.map(time => ({
-        type: 'option',
-        content: format(new Date(time), 'yyyy-MM-dd HH:mm:SS'),
-        value: time,
+        time,
+        displayedTime: format(new Date(time), 'yyyy-MM-dd HH:mm:SS'),
         selected: time === this.selectedTime
       }));
     }
   },
   methods: {
-    async onActionlistChange(value) {
-      if (value) {
-        this.$emit('input', value);
-      }
-      this.actionlistOpen = false;
+    mousEnterItem(time) {
+      this.hoveredTime = time;
     },
-    onPopoverClose() {
-      this.actionlistOpen = false;
+    mouseLeveItem() {
+      this.hoveredTime = '';
     },
-    onPopoverOpen() {
-      this.actionlistOpen = true;
-      this.$refs.actionlist.value = null;
-      this.$refs.popoverHandler.update();
+    selectBackup(time) {
+      this.$emit('input', time);
+    },
+    viewBackup(time) {
+      this.$emit('preview-backup', time);
     }
-  },
-  mounted() {
-    this.$refs.popoverHandler.popover = this.$refs.actionlist;
   }
 };
