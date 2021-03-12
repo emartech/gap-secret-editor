@@ -18,7 +18,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const whiteListedModules = ['vue'];
 
 const rendererConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'eval-cheap-module-source-map',
   entry: {
     renderer: path.join(__dirname, '../src/renderer/main.js')
   },
@@ -50,18 +50,6 @@ const rendererConfig = {
       {
         test: /\.node$/,
         use: 'node-loader'
-      },
-      {
-        // eslint-disable-next-line security/detect-unsafe-regex
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            esModule: false,
-            limit: 10000,
-            name: 'imgs/[name]--[folder].[ext]'
-          }
-        }
       }
     ]
   },
@@ -94,8 +82,7 @@ const rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ],
   output: {
     filename: '[name].js',
@@ -109,7 +96,10 @@ const rendererConfig = {
     },
     extensions: ['.js', '.vue', '.json', '.css', '.node']
   },
-  target: 'electron-renderer'
+  target: 'electron-renderer',
+  optimization: {
+    emitOnErrors: true
+  }
 };
 
 /**
@@ -127,9 +117,10 @@ if (process.env.NODE_ENV !== 'production') {
  * Adjust rendererConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  rendererConfig.devtool = '';
+  rendererConfig.devtool = false;
 
   rendererConfig.optimization = {
+    ...rendererConfig.optimization,
     minimize: true,
     minimizer: [new TerserPlugin()]
   };

@@ -8,7 +8,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const webConfig = {
-  devtool: '#cheap-module-eval-source-map',
+  devtool: 'eval-cheap-module-source-map',
   entry: {
     web: path.join(__dirname, '../src/renderer/main.js')
   },
@@ -23,17 +23,6 @@ const webConfig = {
         use: 'babel-loader',
         include: [path.resolve(__dirname, '../src/renderer')],
         exclude: /node_modules/
-      },
-      {
-        // eslint-disable-next-line security/detect-unsafe-regex
-        test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
-        use: {
-          loader: 'url-loader',
-          query: {
-            limit: 10000,
-            name: 'imgs/[name].[ext]'
-          }
-        }
       },
       {
         test: /\.css$/i,
@@ -74,8 +63,7 @@ const webConfig = {
     new webpack.DefinePlugin({
       'process.env.IS_WEB': 'true'
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NoEmitOnErrorsPlugin()
+    new webpack.HotModuleReplacementPlugin()
   ],
   output: {
     filename: '[name].js',
@@ -88,16 +76,20 @@ const webConfig = {
     },
     extensions: ['.js', '.vue', '.json', '.css']
   },
-  target: 'web'
+  target: 'web',
+  optimization: {
+    emitOnErrors: true
+  }
 };
 
 /**
  * Adjust webConfig for production settings
  */
 if (process.env.NODE_ENV === 'production') {
-  webConfig.devtool = '';
+  webConfig.devtool = false;
 
   webConfig.optimization = {
+    ...webConfig.optimization,
     minimize: true,
     minimizer: [new TerserPlugin()]
   };

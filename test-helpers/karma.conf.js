@@ -8,7 +8,7 @@ const baseConfig = require('../.electron-vue/webpack.renderer.config');
 process.env.BABEL_ENV = 'test';
 
 let webpackConfig = merge(baseConfig, {
-  devtool: '#inline-source-map',
+  devtool: 'inline-source-map',
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"testing"'

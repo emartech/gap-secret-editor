@@ -35,13 +35,14 @@ const mainConfig = {
     libraryTarget: 'commonjs2',
     path: path.join(__dirname, '../dist/electron')
   },
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
-  ],
+  plugins: [],
   resolve: {
     extensions: ['.js', '.json', '.node']
   },
-  target: 'electron-main'
+  target: 'electron-main',
+  optimization: {
+    emitOnErrors: true
+  }
 };
 
 /**
@@ -60,6 +61,7 @@ if (process.env.NODE_ENV !== 'production') {
  */
 if (process.env.NODE_ENV === 'production') {
   mainConfig.optimization = {
+    ...mainConfig.optimization,
     minimize: true,
     minimizer: [new TerserPlugin()]
   };
