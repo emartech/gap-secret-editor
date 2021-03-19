@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
-import { find, get, isEqual, last, uniqBy } from 'lodash';
+import { get, isEqual, last, uniqBy } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { keyValueArrayToObject, objectToKeyValueArray } from '../../lib/secret-converter';
@@ -75,9 +75,6 @@ export default {
     backupEnabled() {
       return this.secretLoaded;
     },
-    availableBackupTimes() {
-      return this.backups.map(backup => backup.backupTime);
-    },
     secretAsObject() {
       return keyValueArrayToObject(this.secret);
     }
@@ -112,10 +109,9 @@ export default {
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
     },
-    loadSelectedBackup(backupTime) {
-      const backup = find(this.backups, { backupTime });
+    loadSelectedBackup(backup) {
       this.secret = objectToKeyValueArray(backup.data);
-      this.selectedBackupTime = backupTime;
+      this.selectedBackupTime = backup.backupTime;
       notificationDisplayer.backupSuccess();
     },
     clearSecret() {

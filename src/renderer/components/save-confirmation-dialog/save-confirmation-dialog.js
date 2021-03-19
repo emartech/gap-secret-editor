@@ -1,10 +1,9 @@
-import { difference, intersection, keys } from 'lodash';
-import Difference from './difference/difference';
+import Differences from '../differences/differences';
 
 export default {
   name: 'save-confirmation-dialog',
   template: require('./save-confirmation-dialog.html'),
-  components: { Difference },
+  components: { Differences },
   props: {
     originalSecret: Object,
     currentSecret: Object
@@ -12,20 +11,6 @@ export default {
   data: () => ({
     opened: false
   }),
-  computed: {
-    keysOfChangedFields() {
-      const originalKeys = keys(this.originalSecret);
-      const currentKeys = keys(this.currentSecret);
-
-      const changedFieldKeys = [
-        ...difference(currentKeys, originalKeys),
-        ...difference(originalKeys, currentKeys),
-        ...intersection(originalKeys, currentKeys).filter(key => this.originalSecret[key] !== this.currentSecret[key])
-      ];
-      return changedFieldKeys
-        .sort((first, second) => first.toUpperCase().localeCompare(second.toUpperCase()));
-    }
-  },
   methods: {
     open() {
       this.opened = true;

@@ -60,7 +60,7 @@
           <div class="e-cell e-cell-small">
             <e-tooltip content="Load Backup to editor">
               <backup-selector
-                :available-times="availableBackupTimes"
+                :backups="backups"
                 :selected-time="selectedBackupTime"
                 :disabled="!backupEnabled"
                 @input="loadSelectedBackup($event)"

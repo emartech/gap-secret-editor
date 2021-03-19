@@ -4,7 +4,7 @@
 
 ## Installation
 
-Download the application from the [releases](https://github.com/emartech/gap-secret-editor/releases) page of the GitHub 
+Download the application from the [releases](https://github.com/emartech/gap-secret-editor/releases) page of the GitHub
 repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
@@ -52,17 +52,17 @@ However, to sign and release it, some additional setup is required:
   * set the `CSC_LINK` environment variable to the path of the downloaded certificate
   * set the `CSC_KEY_PASSWORD` environment variable to the password of the certificate
 * after the application is signed, it has to be notarized by apple
-  * make sure you have a personal [Apple ID](https://appleid.apple.com), and with that you are a member of the team 
+  * make sure you have a personal [Apple ID](https://appleid.apple.com), and with that you are a member of the team
     (at https://developer.apple.com) who issued the certificate above
   * set the `APPLEID` environment variable to your apple id
   * set the `APPLEIDPASS` environment variable to the password of your apple id
-    * it is highly recommended to [generate](https://appleid.apple.com/account/manage) and use an application specific 
+    * it is highly recommended to [generate](https://appleid.apple.com/account/manage) and use an application specific
       password
   * install the latest Xcode
 * after the application is signed and notarized, you have to publish it as a new release
   * set the `GH_TOKEN` environment variable to you [GitHub Token](https://github.com/settings/tokens)
     * make sure the token has access to the *repo* role (and all its sub-roles)
-    
+
 If you set all the environment variables above, increase the version number in [package.json](package.json)
 and run `npm run release`.
 

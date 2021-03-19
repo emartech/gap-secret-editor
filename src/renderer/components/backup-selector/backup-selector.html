@@ -1,24 +1,46 @@
 <div>
-  <e-popover-handler
-    ref="popoverHandler"
-    :opened="actionlistOpen"
-    @close="onPopoverClose()"
-    @open="onPopoverOpen()"
-    adjust-width="true"
-    remove-on-destroy="true"
+  <e-dropdown
+    v-if="!disabled"
+    data-markup-content="<e-icon icon='reset-block'></e-icon>"
+    data-markup-class="e-btn e-btn-dropdown e-btn-no_minwidth"
+    data-markup-class-active="e-dropdown__button-open"
+    data-autoclose
   >
-    <div class="e-btn e-btn-dropdown" :disabled="disabled">
-      <e-icon icon="reset-block"></e-icon>
+    <div class="e-dropdown__content">
+      <div class="e-actionlist__itemscontainer" style="width: 250px; max-height: 300px">
+        <div v-if="options.length === 0">No backups found</div>
+        <div
+          v-for="option in options"
+          class="e-actionlist__item"
+          :class="{
+            'e-actionlist__item-selected': option.selected,
+            'e-actionlist__item-active': hoveredOptionId === option.id
+          }"
+          @mouseenter="mousEnterItem(option.id)"
+          @mouseleave="mouseLeveItem()"
+          @click="selectBackup(option.backup)"
+        >
+          <e-icon v-if="option.selected" icon="check" class="e-actionlist__selected_marker">
+          </e-icon>
+          {{ option.displayedTime }}
+          <div
+            @click.stop="viewBackup(option.backup)"
+            class="e-btn e-btn-small e-btn-onlyicon e-margin-left-m"
+          >
+            <e-icon icon="eye"></e-icon>
+          </div>
+        </div>
+      </div>
     </div>
-  </e-popover-handler>
+  </e-dropdown>
 
-  <e-actionlist
-    ref="actionlist"
-    :items="JSON.stringify(actionlistItems)"
-    class="e-popover e-padding-none"
-    :class="{ 'e-hidden': disabled }"
-    max-height="225px"
-    @change="onActionlistChange($event.detail.value)"
-    search-hidden="true"
+  <div v-if="disabled" class="e-btn e-btn-dropdown" disabled>
+    <e-icon icon="reset-block"></e-icon>
+  </div>
+
+  <change-history-dialog
+    ref="changeHistoryDialog"
+    :backups="backups"
+    @load-backup="selectBackup($event)"
   />
 </div>

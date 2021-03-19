@@ -1,53 +1,43 @@
 import { format } from 'date-fns';
+import ChangeHistoryDialog from '../change-history-dialog/change-history-dialog';
 
 export default {
   name: 'backup-selector',
   template: require('./backup-selector.html'),
+  components: { ChangeHistoryDialog },
   props: {
-    availableTimes: Array,
+    backups: Array,
     selectedTime: String,
     disabled: Boolean
   },
   data: () => ({
-    actionlistOpen: false
+    hoveredOptionId: ''
   }),
   computed: {
-    actionlistItems() {
-      if (!this.actionlistOpen) return [];
-
-      if (this.availableTimes.length === 0) {
-        return [{
-          type: 'option',
-          content: 'No backups found',
-          value: null
-        }];
-      }
-
-      return this.availableTimes.map(time => ({
-        type: 'option',
-        content: format(new Date(time), 'yyyy-MM-dd HH:mm:SS'),
-        value: time,
-        selected: time === this.selectedTime
+    availableBackupTimes() {
+      return this.backups.map(backup => backup.backupTime);
+    },
+    options() {
+      return this.backups.map(backup => ({
+        backup,
+        id: backup.backupTime,
+        displayedTime: format(new Date(backup.backupTime), 'yyyy-MM-dd HH:mm:SS'),
+        selected: backup.backupTime === this.selectedTime
       }));
     }
   },
   methods: {
-    async onActionlistChange(value) {
-      if (value) {
-        this.$emit('input', value);
-      }
-      this.actionlistOpen = false;
+    mousEnterItem(id) {
+      this.hoveredOptionId = id;
     },
-    onPopoverClose() {
-      this.actionlistOpen = false;
+    mouseLeveItem() {
+      this.hoveredOptionId = '';
     },
-    onPopoverOpen() {
-      this.actionlistOpen = true;
-      this.$refs.actionlist.value = null;
-      this.$refs.popoverHandler.update();
+    selectBackup(backup) {
+      this.$emit('input', backup);
+    },
+    viewBackup(backup) {
+      this.$refs.changeHistoryDialog.displayChange(backup.backupTime);
     }
-  },
-  mounted() {
-    this.$refs.popoverHandler.popover = this.$refs.actionlist;
   }
 };
