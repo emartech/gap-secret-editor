@@ -1,0 +1,29 @@
+<div>
+  <div class="overlaycontainer" :class="{ 'e-hidden': !updateInProgress }">
+    <div class="e-overlay e-overlay-centered" style="border-radius: 0">
+      <div class="e-overlay__center">
+        <e-spinner></e-spinner>
+      </div>
+    </div>
+  </div>
+
+  <e-dialog
+    :opened="dialogOpened"
+    no-close="true"
+    :headline="`New version available - v${version}`"
+  >
+    <div class="release-notes" v-safe-html="releaseNotes"></div>
+    <div>Do you want to download and install it now?</div>
+
+    <div class="e-dialog__footer">
+      <div class="e-grid e-grid-small">
+        <div class="e-cell e-cell-small">
+          <div class="e-btn" @click="installLater()">Cancel</div>
+        </div>
+        <div class="e-cell e-cell-small">
+          <div class="e-btn e-btn-primary" @click="installNow()">Install Now</div>
+        </div>
+      </div>
+    </div>
+  </e-dialog>
+</div>

@@ -4,10 +4,10 @@ import { find, get, isEqual, last, uniqBy } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { keyValueArrayToObject, objectToKeyValueArray } from '../../lib/secret-converter';
-import { listenForUpdates } from '../../lib/auto-update-confirmation/auto-update-confirmation';
 import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
+import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
 
 const logger = log.scope('app');
 
@@ -17,7 +17,7 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor, BackupSelector, SaveConfirmationDialog },
+  components: { SecretEditor, BackupSelector, SaveConfirmationDialog, AutoUpdateConfirmation },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -37,8 +37,7 @@ export default {
     context: '',
     searchTerm: '',
     backups: [],
-    selectedBackupTime: null,
-    updateInProgress: false
+    selectedBackupTime: null
   }),
   computed: {
     availableContexts() {
@@ -211,7 +210,6 @@ export default {
   },
   async mounted() {
     await this.initialize();
-    listenForUpdates(confirmed => this.updateInProgress = confirmed);
     ipcRenderer.send('ui-ready');
     logger.info('ui-ready');
   }
