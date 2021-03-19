@@ -11,6 +11,9 @@
       :items="JSON.stringify(modificationTimeOptions)"
       @change="displayChange($event.target.value)"
     ></e-select>
+    <button @click="loadToEditor()" class="e-btn e-btn-primary e-margin-left-xs">
+      Load to editor
+    </button>
   </div>
 
   <differences

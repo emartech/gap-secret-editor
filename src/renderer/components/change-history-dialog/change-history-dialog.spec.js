@@ -1,4 +1,5 @@
 import { mount } from '@vue/test-utils';
+import { format } from 'date-fns';
 import ChangeHistoryDialog from './change-history-dialog';
 
 describe('ChangeHistoryDialog', () => {
@@ -14,13 +15,13 @@ describe('ChangeHistoryDialog', () => {
       expect(vm.modificationTimeOptions).to.eql([
         {
           type: 'option',
-          content: '2020-12-24 21:00:00',
+          content: format(new Date('2020-12-24T20:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
           value: '2020-12-24T20:00:00.000Z',
           selected: true
         },
         {
           type: 'option',
-          content: '2020-12-24 19:00:00',
+          content: format(new Date('2020-12-24T18:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
           value: '2020-12-24T18:00:00.000Z',
           selected: false
         }

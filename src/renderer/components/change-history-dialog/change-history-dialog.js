@@ -32,10 +32,18 @@ export default {
       this.selectedModificationTime = backupTime;
 
       const selectedBackupIndex = this.backups.findIndex(item => item.backupTime === backupTime);
-      this.secretBefore = selectedBackupIndex === this.backups.length - 1
-        ? {}
-        : this.backups[selectedBackupIndex + 1].data;
+      this.secretBefore =
+        selectedBackupIndex === this.backups.length - 1
+          ? {}
+          : this.backups[selectedBackupIndex + 1].data;
       this.secretAfter = this.backups[selectedBackupIndex].data;
+    },
+    loadToEditor() {
+      const selectedBackup = this.backups.find(
+        backup => backup.backupTime === this.selectedModificationTime
+      );
+      this.$emit('load-backup', selectedBackup);
+      this.close();
     },
     close() {
       this.opened = false;

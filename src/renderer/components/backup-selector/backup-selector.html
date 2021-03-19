@@ -8,9 +8,7 @@
   >
     <div class="e-dropdown__content">
       <div class="e-actionlist__itemscontainer" style="width: 250px; max-height: 300px">
-        <div v-if="options.length === 0">
-          No backups found
-        </div>
+        <div v-if="options.length === 0">No backups found</div>
         <div
           v-for="option in options"
           class="e-actionlist__item"
@@ -40,5 +38,9 @@
     <e-icon icon="reset-block"></e-icon>
   </div>
 
-  <change-history-dialog ref="changeHistoryDialog" :backups="backups" />
+  <change-history-dialog
+    ref="changeHistoryDialog"
+    :backups="backups"
+    @load-backup="selectBackup($event)"
+  />
 </div>
