@@ -1,44 +1,51 @@
 import { format } from 'date-fns';
+import ChangeViewerDialog from '../change-viewer-dialog/change-viewer-dialog';
 
 export default {
   name: 'backup-selector',
   template: require('./backup-selector.html'),
+  components: { ChangeViewerDialog },
   props: {
-    availableTimes: Array,
+    backups: Array,
     selectedTime: String,
     disabled: Boolean
   },
   data: () => ({
-    hoveredTime: ''
+    hoveredOptionId: ''
   }),
   computed: {
+    availableBackupTimes() {
+      return this.backups.map(backup => backup.backupTime);
+    },
     options() {
-      if (this.availableTimes.length === 0) {
-        return [{ displayedTime: 'No backups found' }];
-      }
-      return this.availableTimes.map(time => ({
-        time,
-        displayedTime: format(new Date(time), 'yyyy-MM-dd HH:mm:SS'),
-        selected: time === this.selectedTime
+      return this.backups.map(backup => ({
+        backup,
+        id: backup.backupTime,
+        displayedTime: format(new Date(backup.backupTime), 'yyyy-MM-dd HH:mm:SS'),
+        selected: backup.backupTime === this.selectedTime
       }));
     }
   },
   methods: {
-    mousEnterItem(time) {
-      this.hoveredTime = time;
+    mousEnterItem(id) {
+      this.hoveredOptionId = id;
     },
     mouseLeveItem() {
-      this.hoveredTime = '';
+      this.hoveredOptionId = '';
     },
-    selectBackup(time) {
-      this.$emit('input', time);
+    selectBackup(backup) {
+      this.$emit('input', backup);
     },
-    viewBackup(time) {
-      const sortedTimes = this.availableTimes.sort();
-      const timeIndex = sortedTimes.findIndex(option => option === time);
-      this.$emit('preview-backup', {
-        modificationTime: time,
-        lastModificationBefore: timeIndex === 0 ? null : sortedTimes[timeIndex - 1]
+    viewBackup(backup) {
+      const selectedBackupIndex = this.backups.findIndex(item => item.backupTime === backup.backupTime);
+      const secretBefore = selectedBackupIndex === this.backups.length - 1
+        ? {}
+        : this.backups[selectedBackupIndex + 1].data;
+
+      this.$refs.changeViewerDialog.displayChange({
+        time: backup.backupTime,
+        secretAfter: backup.data,
+        secretBefore
       });
     }
   }

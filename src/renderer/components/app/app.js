@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
-import { find, get, isEqual, last, uniqBy } from 'lodash';
+import { get, isEqual, last, uniqBy } from 'lodash';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { keyValueArrayToObject, objectToKeyValueArray } from '../../lib/secret-converter';
@@ -8,7 +8,6 @@ import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
-
 
 const logger = log.scope('app');
 
@@ -76,9 +75,6 @@ export default {
     backupEnabled() {
       return this.secretLoaded;
     },
-    availableBackupTimes() {
-      return this.backups.map(backup => backup.backupTime);
-    },
     secretAsObject() {
       return keyValueArrayToObject(this.secret);
     }
@@ -113,21 +109,10 @@ export default {
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
     },
-    loadSelectedBackup(backupTime) {
-      const backup = find(this.backups, { backupTime });
+    loadSelectedBackup(backup) {
       this.secret = objectToKeyValueArray(backup.data);
-      this.selectedBackupTime = backupTime;
+      this.selectedBackupTime = backup.backupTime;
       notificationDisplayer.backupSuccess();
-    },
-    previewBackup({ modificationTime, lastModificationBefore }) {
-      const secretBeforeChange = this.backups.find(backup => backup.backupTime === lastModificationBefore);
-      const secretAfterChange = this.backups.find(backup => backup.backupTime === modificationTime);
-
-      this.$refs.changeViewerDialog.displayChange({
-        time: modificationTime,
-        secretAfter: secretAfterChange.data,
-        secretBefore: secretBeforeChange ? secretBeforeChange.data : {}
-      });
     },
     clearSecret() {
       this.secret = [];

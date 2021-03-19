@@ -3,85 +3,35 @@ import { format } from 'date-fns';
 import BackupSelector from './backup-selector';
 
 describe('BackupSelector', () => {
-  const availableTimes = ['2020-12-24T18:00:00.000Z', '2020-12-24T20:00:00.000Z'];
-  const selectedTime = availableTimes[0];
-
   describe('#options', () => {
-    it("should return available backup times formatted in user's timezone", () => {
+    it('should return available backups with formatted time and selected info', () => {
       sinon.stub(Date.prototype, 'getTimezoneOffset').returns(-180);
+      const backups = [
+        { data: { FIELD: 'value' }, backupTime: '2020-12-24T18:00:00.000Z' },
+        { data: { FIELD: 'old-value' }, backupTime: '2020-12-24T20:00:00.000Z' }
+      ];
       const { vm } = mount(BackupSelector, {
-        propsData: { availableTimes, selectedTime, disabled: false }
+        propsData: {
+          backups,
+          selectedTime: backups[0].backupTime,
+          disabled: false
+        }
       });
 
       expect(vm.options).to.eql([
         {
-          time: '2020-12-24T18:00:00.000Z',
+          id: '2020-12-24T18:00:00.000Z',
           displayedTime: format(new Date('2020-12-24T18:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
-          selected: true
+          selected: true,
+          backup: backups[0]
         },
         {
-          time: '2020-12-24T20:00:00.000Z',
+          id: '2020-12-24T20:00:00.000Z',
           displayedTime: format(new Date('2020-12-24T20:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
-          selected: false
+          selected: false,
+          backup: backups[1]
         }
       ]);
-    });
-
-    it('should return "no backups" when there are no backup times', () => {
-      const { vm } = mount(BackupSelector, {
-        propsData: { availableTimes: [], selectedTime: null, disabled: false }
-      });
-
-      expect(vm.options).to.eql([
-        {
-          displayedTime: 'No backups found'
-        }
-      ]);
-    });
-  });
-
-  describe('#viewBackup', () => {
-    it('should emit the time of selected backup and the time of the one before it', () => {
-      const availableTimes = [
-        '2020-12-24T18:00:00.000Z',
-        '2020-12-24T21:00:00.000Z',
-        '2020-12-24T20:00:00.000Z'
-      ];
-      const wrapper = mount(BackupSelector, { propsData: { availableTimes } });
-
-      wrapper.vm.viewBackup('2020-12-24T20:00:00.000Z');
-
-      expect(wrapper.emitted()).to.eql({
-        'preview-backup': [
-          [
-            {
-              modificationTime: '2020-12-24T20:00:00.000Z',
-              lastModificationBefore: '2020-12-24T18:00:00.000Z'
-            }
-          ]
-        ]
-      });
-    });
-
-    it('should emit time and null for last modification if it was the first modification', () => {
-      const availableTimes = [
-        '2020-12-24T18:00:00.000Z',
-        '2020-12-24T21:00:00.000Z'
-      ];
-      const wrapper = mount(BackupSelector, { propsData: { availableTimes } });
-
-      wrapper.vm.viewBackup('2020-12-24T18:00:00.000Z');
-
-      expect(wrapper.emitted()).to.eql({
-        'preview-backup': [
-          [
-            {
-              modificationTime: '2020-12-24T18:00:00.000Z',
-              lastModificationBefore: null
-            }
-          ]
-        ]
-      });
     });
   });
 });
