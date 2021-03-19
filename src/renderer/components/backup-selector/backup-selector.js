@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
-import ChangeViewerDialog from '../change-viewer-dialog/change-viewer-dialog';
+import ChangeHistoryDialog from '../change-history-dialog/change-history-dialog';
 
 export default {
   name: 'backup-selector',
   template: require('./backup-selector.html'),
-  components: { ChangeViewerDialog },
+  components: { ChangeHistoryDialog },
   props: {
     backups: Array,
     selectedTime: String,
@@ -37,16 +37,7 @@ export default {
       this.$emit('input', backup);
     },
     viewBackup(backup) {
-      const selectedBackupIndex = this.backups.findIndex(item => item.backupTime === backup.backupTime);
-      const secretBefore = selectedBackupIndex === this.backups.length - 1
-        ? {}
-        : this.backups[selectedBackupIndex + 1].data;
-
-      this.$refs.changeViewerDialog.displayChange({
-        time: backup.backupTime,
-        secretAfter: backup.data,
-        secretBefore
-      });
+      this.$refs.changeHistoryDialog.displayChange(backup.backupTime);
     }
   }
 };
