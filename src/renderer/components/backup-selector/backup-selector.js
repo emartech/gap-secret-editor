@@ -1,38 +1,30 @@
 import { format } from 'date-fns';
 import ChangeHistoryDialog from '../change-history-dialog/change-history-dialog';
+import BackupListItem from './backup-list-item/backup-list-item';
 
 export default {
   name: 'backup-selector',
   template: require('./backup-selector.html'),
-  components: { ChangeHistoryDialog },
+  components: {
+    BackupListItem,
+    ChangeHistoryDialog
+  },
   props: {
     backups: Array,
     selectedTime: String,
     disabled: Boolean
   },
-  data: () => ({
-    hoveredOptionId: ''
-  }),
   computed: {
-    availableBackupTimes() {
-      return this.backups.map(backup => backup.backupTime);
-    },
     options() {
       return this.backups.map(backup => ({
         backup,
         id: backup.backupTime,
-        displayedTime: format(new Date(backup.backupTime), 'yyyy-MM-dd HH:mm:SS'),
+        displayedTime: format(new Date(backup.backupTime), 'yyyy-MM-dd HH:mm:ss'),
         selected: backup.backupTime === this.selectedTime
       }));
     }
   },
   methods: {
-    mouseEnterItem(id) {
-      this.hoveredOptionId = id;
-    },
-    mouseLeaveItem() {
-      this.hoveredOptionId = '';
-    },
     selectBackup(backup) {
       this.$emit('input', backup);
     },

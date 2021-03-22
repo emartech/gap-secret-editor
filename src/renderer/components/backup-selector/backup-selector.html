@@ -9,27 +9,13 @@
     <div class="e-dropdown__content">
       <div class="e-actionlist__itemscontainer" style="width: 250px; max-height: 300px">
         <div v-if="options.length === 0">No backups found</div>
-        <div
+        <backup-list-item
           v-for="option in options"
-          class="e-actionlist__item"
-          :class="{
-            'e-actionlist__item-selected': option.selected,
-            'e-actionlist__item-active': hoveredOptionId === option.id
-          }"
-          @mouseenter="mouseEnterItem(option.id)"
-          @mouseleave="mouseLeaveItem()"
           @click="selectBackup(option.backup)"
-        >
-          <e-icon v-if="option.selected" icon="check" class="e-actionlist__selected_marker">
-          </e-icon>
-          {{ option.displayedTime }}
-          <div
-            @click.stop="viewBackup(option.backup)"
-            class="e-btn e-btn-small e-btn-onlyicon e-margin-left-m"
-          >
-            <e-icon icon="eye"></e-icon>
-          </div>
-        </div>
+          @view="viewBackup(option.backup)"
+          :selected="option.selected"
+          :time="option.displayedTime"
+        ></backup-list-item>
       </div>
     </div>
   </e-dropdown>

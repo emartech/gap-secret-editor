@@ -1,0 +1,20 @@
+<div
+  class="e-actionlist__item"
+  :class="{
+    'e-actionlist__item-selected': selected,
+    'e-actionlist__item-active': hovered
+  }"
+  @mouseenter="mouseEnter()"
+  @mouseleave="mouseLeave()"
+  @click="$emit('click')"
+>
+  <e-icon v-if="selected" icon="check" class="e-actionlist__selected_marker">
+  </e-icon>
+  {{ time }}
+  <div
+    @click.stop="$emit('view')"
+    class="e-btn e-btn-small e-btn-onlyicon e-margin-left-m"
+  >
+    <e-icon icon="eye"></e-icon>
+  </div>
+</div>

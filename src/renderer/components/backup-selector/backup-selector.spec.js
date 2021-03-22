@@ -21,13 +21,13 @@ describe('BackupSelector', () => {
       expect(vm.options).to.eql([
         {
           id: '2020-12-24T18:00:00.000Z',
-          displayedTime: format(new Date('2020-12-24T18:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
+          displayedTime: format(new Date('2020-12-24T18:00:00.000Z'), 'yyyy-MM-dd HH:mm:ss'),
           selected: true,
           backup: backups[0]
         },
         {
           id: '2020-12-24T20:00:00.000Z',
-          displayedTime: format(new Date('2020-12-24T20:00:00.000Z'), 'yyyy-MM-dd HH:mm:SS'),
+          displayedTime: format(new Date('2020-12-24T20:00:00.000Z'), 'yyyy-MM-dd HH:mm:ss'),
           selected: false,
           backup: backups[1]
         }
