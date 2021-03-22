@@ -27,10 +27,10 @@ export default {
     }
   },
   methods: {
-    mousEnterItem(id) {
+    mouseEnterItem(id) {
       this.hoveredOptionId = id;
     },
-    mouseLeveItem() {
+    mouseLeaveItem() {
       this.hoveredOptionId = '';
     },
     selectBackup(backup) {

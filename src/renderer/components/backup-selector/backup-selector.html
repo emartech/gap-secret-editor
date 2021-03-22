@@ -16,8 +16,8 @@
             'e-actionlist__item-selected': option.selected,
             'e-actionlist__item-active': hoveredOptionId === option.id
           }"
-          @mouseenter="mousEnterItem(option.id)"
-          @mouseleave="mouseLeveItem()"
+          @mouseenter="mouseEnterItem(option.id)"
+          @mouseleave="mouseLeaveItem()"
           @click="selectBackup(option.backup)"
         >
           <e-icon v-if="option.selected" icon="check" class="e-actionlist__selected_marker">
