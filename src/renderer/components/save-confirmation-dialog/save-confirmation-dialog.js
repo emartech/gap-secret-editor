@@ -1,9 +1,9 @@
-import Differences from '../differences/differences';
+import DifferenceList from '../difference-list/difference-list';
 
 export default {
   name: 'save-confirmation-dialog',
   template: require('./save-confirmation-dialog.html'),
-  components: { Differences },
+  components: { DifferenceList },
   props: {
     originalSecret: Object,
     currentSecret: Object

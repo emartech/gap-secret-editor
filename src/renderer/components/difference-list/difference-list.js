@@ -2,8 +2,8 @@ import { difference, intersection, keys } from 'lodash';
 import Difference from './difference/difference';
 
 export default {
-  name: 'differences',
-  template: require('./differences.html'),
+  name: 'difference-list',
+  template: require('./difference-list.html'),
   components: { Difference },
   props: {
     originalSecret: Object,

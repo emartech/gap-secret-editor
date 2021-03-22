@@ -1,10 +1,10 @@
 import { format } from 'date-fns';
-import Differences from '../differences/differences';
+import DifferenceList from '../difference-list/difference-list';
 
 export default {
   name: 'change-history-dialog',
   template: require('./change-history-dialog.html'),
-  components: { Differences },
+  components: { DifferenceList },
   props: {
     backups: Array,
     originalSecret: Object,
