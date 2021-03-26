@@ -14,3 +14,11 @@
 .d2h-file-side-diff {
   margin-bottom: -7px;
 }
+
+/* ACE editor adjustments */
+.ace_editor {
+  line-height: 24px !important;
+}
+.ace_hidden-cursors {
+  opacity:0
+}

@@ -1,31 +1,45 @@
+import AceEditor from 'vue2-ace-editor';
 import JsonBadge from '../json-badge/json-badge';
 
 export default {
   name: 'secret-editor-textarea',
   template: require('./secret-editor-textarea.html'),
-  components: {
-    JsonBadge
-  },
+  components: { AceEditor, JsonBadge },
+  data: () => ({
+    editor: null
+  }),
   props: {
     value: { type: String, required: true, default: '' }
   },
   methods: {
     changeSecretValue(newValue) {
       this.$emit('change', newValue);
-      this.resize();
     },
-    async resize() {
-      await this.$nextTick();
-      this.$refs.textarea.style.height = 'auto';
-      this.$refs.textarea.style.height = `${this.$refs.textarea.scrollHeight}px`;
-    }
-  },
-  watch: {
-    value() {
-      this.resize();
+    initEditor(editor) {
+      require('brace/theme/github');
+      require('brace/mode/text');
+      require('brace/mode/json');
+
+      editor.setOptions({
+        minLines: 1,
+        maxLines: 30,
+        highlightActiveLine: false
+      });
+      editor.renderer.setScrollMargin(8, 8, 0, 0);
+      editor.renderer.setOptions({
+        highlightGutterLine: false
+        // showInvisibles: true
+      });
+      editor.session.setOptions({
+        tabSize: 2,
+        useSoftTabs: true,
+        navigateWithinSoftTabs: true
+      });
+
+      this.editor = editor;
     }
   },
   mounted() {
-    this.resize();
+    this.editor.gotoLine(0, 0);
   }
 };
