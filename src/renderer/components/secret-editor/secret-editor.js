@@ -1,10 +1,10 @@
-import SecretEditorTextarea from './secret-editor-textarea/secret-editor-textarea';
+import ValueEditor from './value-editor/value-editor';
 
 export default {
   name: 'secret-editor',
   template: require('./secret-editor.html'),
   components: {
-    SecretEditorTextarea
+    ValueEditor
   },
   props: {
     value: { type: Array, required: true, default: () => [] },

@@ -7,8 +7,8 @@ require('brace/mode/text');
 require('brace/mode/json');
 
 export default {
-  name: 'secret-editor-textarea',
-  template: require('./secret-editor-textarea.html'),
+  name: 'value-editor',
+  template: require('./value-editor.html'),
   components: { AceEditor, JsonBadge },
   data: () => ({
     editor: null
