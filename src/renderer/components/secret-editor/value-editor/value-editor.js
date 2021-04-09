@@ -1,6 +1,7 @@
 import AceEditor from 'vue2-ace-editor';
 import JsonBadge from '../json-badge/json-badge';
 import { looksLikeJson } from '../../../lib/json-helper/json-helper';
+import setCommonAceEditorSettings from '../set-common-ace-editor-settings';
 
 require('brace/theme/github');
 require('brace/mode/text');
@@ -26,21 +27,9 @@ export default {
       this.$emit('change', newValue);
     },
     initEditor(editor) {
+      setCommonAceEditorSettings(editor);
       editor.setOptions({
-        minLines: 1,
-        maxLines: 30,
-        highlightActiveLine: false,
-        cursorStyle: 'slim'
-      });
-      editor.renderer.setScrollMargin(8, 8, 0, 0);
-      editor.renderer.setOptions({
-        highlightGutterLine: false
-        // showInvisibles: true
-      });
-      editor.session.setOptions({
-        tabSize: 2,
-        useSoftTabs: true,
-        navigateWithinSoftTabs: true
+        maxLines: 30
       });
 
       this.editor = editor;

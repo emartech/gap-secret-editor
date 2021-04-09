@@ -1,11 +1,10 @@
+import KeyEditor from './key-editor/key-editor';
 import ValueEditor from './value-editor/value-editor';
 
 export default {
   name: 'secret-editor',
   template: require('./secret-editor.html'),
-  components: {
-    ValueEditor
-  },
+  components: { KeyEditor, ValueEditor },
   props: {
     value: { type: Array, required: true, default: () => [] },
     searchTerm: { type: String, required: false, default: () => '' }

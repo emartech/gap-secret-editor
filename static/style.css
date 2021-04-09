@@ -20,5 +20,8 @@
   line-height: 24px !important;
 }
 .ace_hidden-cursors {
-  opacity:0
+  opacity: 0
+}
+.ace_scroller {
+  border-radius: 8px;
 }
