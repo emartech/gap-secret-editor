@@ -2,7 +2,7 @@
   <ace-editor
     class="e-input secret-value"
     :value="value"
-    @input="changeSecretValue($event)"
+    @input="emitChange($event)"
     @init="initEditor($event)"
     :lang="editorLanguage"
     theme="github"
@@ -10,6 +10,6 @@
 
   <json-badge
     :text="value"
-    @change-json-state="changeSecretValue($event)"
+    @change-json-state="emitChange($event)"
   />
 </div>

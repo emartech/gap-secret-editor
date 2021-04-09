@@ -1,5 +1,5 @@
 import AceEditor from 'vue2-ace-editor';
-import setCommonAceEditorSettings from '../set-common-ace-editor-settings';
+import EditorBase from '../editor-base';
 
 require('brace/theme/github');
 require('brace/mode/text');
@@ -7,16 +7,11 @@ require('brace/mode/text');
 export default {
   name: 'key-editor',
   template: require('./key-editor.html'),
+  mixins: [EditorBase],
   components: { AceEditor },
-  props: {
-    value: { type: String, required: true, default: '' }
-  },
   methods: {
-    emitChange(newValue) {
-      this.$emit('change', newValue);
-    },
     initEditor(editor) {
-      setCommonAceEditorSettings(editor);
+      this.setCommonAceEditorSettings(editor);
       editor.setOptions({
         maxLines: 1
       });
