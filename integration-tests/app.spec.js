@@ -160,7 +160,7 @@ describe('App - Integration', () => {
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
       await clickButton(wrapper, '#load-button');
 
-      const renderedSecretKeys = wrapper.findAll('#secret-editor input').wrappers
+      const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key').wrappers
         .map(wrapper => wrapper.element.value);
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
     });
@@ -180,7 +180,7 @@ describe('App - Integration', () => {
       await clickButton(wrapper, '#load-button');
       await changeInputValue(wrapper, '#search-input', 'super');
 
-      const renderedSecretKeys = wrapper.findAll('#secret-editor input').wrappers
+      const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key').wrappers
         .map(wrapper => wrapper.element.value);
       expect(renderedSecretKeys).to.eql(['SUPER_SECRET_JSON']);
     });
@@ -212,7 +212,7 @@ describe('App - Integration', () => {
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
       await clickButton(wrapper, '#load-button');
 
-      const renderedSecretKeys = wrapper.findAll('#secret-editor input');
+      const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key');
       expect(renderedSecretKeys).to.have.lengthOf(0);
     });
 
@@ -230,8 +230,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-cancel-button');
 
@@ -252,8 +252,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -276,8 +276,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -296,8 +296,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -320,8 +320,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 
@@ -340,8 +340,8 @@ describe('App - Integration', () => {
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
         await clickButton(wrapper, '#load-button');
-        await changeInputValue(wrapper, '#secret-editor input', 'DRINK');
-        await changeInputValue(wrapper, '#secret-editor textarea', 'coke');
+        await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
+        await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
         await clickButton(wrapper, '#save-confirm-button');
 

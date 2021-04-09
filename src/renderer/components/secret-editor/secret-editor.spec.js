@@ -104,18 +104,18 @@ describe('SecretEditor', () => {
   it('should display fields with an extra empty row', () => {
     const { vm } = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
-    const renderedKeys = Array.from(vm.$el.querySelectorAll('input')).map(input => input.value);
+    const renderedKeys = Array.from(vm.$el.querySelectorAll('.secret-key')).map(input => input.value);
     expect(renderedKeys).to.eql(['name', 'code', '']);
-    const renderedValues = Array.from(vm.$el.querySelectorAll('textarea')).map(input => input.value);
+    const renderedValues = Array.from(vm.$el.querySelectorAll('.secret-value')).map(input => input.value);
     expect(renderedValues).to.eql(['James Bond', '007', '']);
   });
 
   it('should display fields matching with search term', () => {
     const { vm } = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
 
-    const renderedKeys = Array.from(vm.$el.querySelectorAll('input')).map(input => input.value);
+    const renderedKeys = Array.from(vm.$el.querySelectorAll('.secret-key')).map(input => input.value);
     expect(renderedKeys).to.eql(['name']);
-    const renderedValues = Array.from(vm.$el.querySelectorAll('textarea')).map(input => input.value);
+    const renderedValues = Array.from(vm.$el.querySelectorAll('.secret-value')).map(input => input.value);
     expect(renderedValues).to.eql(['James Bond']);
   });
 
@@ -131,9 +131,9 @@ describe('SecretEditor', () => {
 
   describe('change emitting', () => {
     it('should emit modified secret when a key changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
+      const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
-      wrapper.findAll('input').at(1).setValue('kod');
+      wrapper.findAll('.secret-key').at(1).setValue('kod');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -149,7 +149,7 @@ describe('SecretEditor', () => {
     it('should emit modified secret when a value changes', async () => {
       const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
-      wrapper.findAll('textarea').at(0).setValue('James Bandi');
+      wrapper.findAll('.secret-value').at(0).setValue('James Bandi');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bandi' },
@@ -158,9 +158,9 @@ describe('SecretEditor', () => {
     });
 
     it('should emit modified secret when a new key entered', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
+      const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
-      wrapper.findAll('input').at(2).setValue('drink');
+      wrapper.findAll('.secret-key').at(2).setValue('drink');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -172,7 +172,7 @@ describe('SecretEditor', () => {
     it('should emit modified secret when a new value entered', () => {
       const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
-      wrapper.findAll('textarea').at(2).setValue('Martini');
+      wrapper.findAll('.secret-value').at(2).setValue('Martini');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
@@ -184,7 +184,7 @@ describe('SecretEditor', () => {
     it('should emit the whole modified secret when search term is provided and a value is modified', () => {
       const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
 
-      wrapper.findAll('textarea').at(0).setValue('42');
+      wrapper.findAll('.secret-value').at(0).setValue('42');
 
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' },
