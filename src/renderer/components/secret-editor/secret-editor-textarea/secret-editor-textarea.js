@@ -40,6 +40,8 @@ export default {
     }
   },
   mounted() {
-    this.editor.gotoLine(0, 0);
+    if (this.editor) {
+      this.editor.gotoLine(0, 0);
+    }
   }
 };

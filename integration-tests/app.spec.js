@@ -1,7 +1,7 @@
-import { mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
 import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/components/app/app';
+import { mountWithFakeAceEditor } from '../test-helpers/mount-helpers';
 
 describe('App - Integration', () => {
   const fakeKubernetesApiClient = {};
@@ -422,7 +422,7 @@ describe('App - Integration', () => {
 });
 
 const loadApp = async () => {
-  const wrapper = mount(App);
+  const wrapper = mountWithFakeAceEditor(App);
   await flushPromises();
   return wrapper;
 };

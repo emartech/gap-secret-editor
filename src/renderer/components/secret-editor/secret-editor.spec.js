@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
 import SecretEditor from './secret-editor';
+import { mountWithFakeAceEditor } from '../../../../test-helpers/mount-helpers';
 
 describe('SecretEditor', () => {
   const fields = () => [
@@ -101,7 +102,7 @@ describe('SecretEditor', () => {
   });
 
   it('should display fields with an extra empty row', () => {
-    const { vm } = mount(SecretEditor, { propsData: { value: fields() } });
+    const { vm } = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
     const renderedKeys = Array.from(vm.$el.querySelectorAll('input')).map(input => input.value);
     expect(renderedKeys).to.eql(['name', 'code', '']);
@@ -110,7 +111,7 @@ describe('SecretEditor', () => {
   });
 
   it('should display fields matching with search term', () => {
-    const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
+    const { vm } = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
 
     const renderedKeys = Array.from(vm.$el.querySelectorAll('input')).map(input => input.value);
     expect(renderedKeys).to.eql(['name']);
@@ -146,7 +147,7 @@ describe('SecretEditor', () => {
     });
 
     it('should emit modified secret when a value changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
+      const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('textarea').at(0).setValue('James Bandi');
 
@@ -169,7 +170,7 @@ describe('SecretEditor', () => {
     });
 
     it('should emit modified secret when a new value entered', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
+      const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('textarea').at(2).setValue('Martini');
 
@@ -181,7 +182,7 @@ describe('SecretEditor', () => {
     });
 
     it('should emit the whole modified secret when search term is provided and a value is modified', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
+      const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
 
       wrapper.findAll('textarea').at(0).setValue('42');
 
