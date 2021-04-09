@@ -1,10 +1,16 @@
 export default {
   props: {
-    value: { type: String, required: true, default: '' }
+    value: { type: String, required: true, default: '' },
+    highlight: { type: String, default: '' }
   },
   data: () => ({
     editor: null
   }),
+  watch: {
+    highlight() {
+      this.updateHighlights();
+    }
+  },
   methods: {
     emitChange(newValue) {
       this.$emit('change', newValue);
@@ -28,6 +34,19 @@ export default {
       });
 
       this.editor = editor;
+    },
+    updateHighlights() {
+      if (!this.editor) return;
+
+      const session = this.editor.session;
+
+      Object.keys(session.getMarkers()).forEach(markerId => session.removeMarker(markerId));
+
+      this.editor.$search.setOptions({ needle: this.highlight });
+      this.editor.$search.findAll(session).forEach(range => session.addMarker(range, 'searchHighlight', 'text'));
     }
+  },
+  mounted() {
+    this.updateHighlights();
   }
 };

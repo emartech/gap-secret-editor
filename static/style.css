@@ -25,3 +25,8 @@
 .ace_scroller {
   border-radius: 8px;
 }
+.searchHighlight {
+  position: absolute;
+  z-index: 20;
+  background-color: #fdeea1;
+}
