@@ -29,7 +29,8 @@ export default {
       editor.setOptions({
         minLines: 1,
         maxLines: 30,
-        highlightActiveLine: false
+        highlightActiveLine: false,
+        cursorStyle: 'slim'
       });
       editor.renderer.setScrollMargin(8, 8, 0, 0);
       editor.renderer.setOptions({
