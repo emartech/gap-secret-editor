@@ -7,6 +7,9 @@ export default {
     editor: null
   }),
   watch: {
+    value() {
+      this.updateHighlights();
+    },
     highlight() {
       this.updateHighlights();
     }
