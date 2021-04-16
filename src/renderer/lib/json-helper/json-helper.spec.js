@@ -69,7 +69,7 @@ describe('#minify and prettify', () => {
     expect(prettifiedJsonString).to.eql('[{ "key": "value" }]');
   });
 
-  it('should introduce linebreaks to json if it is long enaugh to break to lines', () => {
+  it('should introduce linebreaks to json if it is long enough to break to lines', () => {
     const longValue = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
     const jsonString = `{"key":"${longValue}","otherKey":23}`;
 

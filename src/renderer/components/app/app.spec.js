@@ -70,6 +70,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
       await vm.loadSecret();
 
       expect(vm.saveEnabled).to.be.false;
@@ -80,6 +82,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
       await vm.loadSecret();
       vm.secret[0].value = 'changed value';
 
@@ -91,6 +95,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
       await vm.loadSecret();
       vm.secret[0].key = 'duplicated';
       vm.secret[1].key = 'duplicated';
@@ -103,6 +109,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
       await vm.loadSecret();
       vm.secret[0].value = 'changed value';
       const savePromise = vm.saveSecret();
@@ -279,11 +287,26 @@ describe('App', () => {
   });
 
   describe('#loadSecret', () => {
+    it('should not load secret when no secret is selected', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret');
+      const { vm } = await loadApp();
+      vm.secretNamespace = '';
+      vm.secretName = '';
+
+      await vm.loadSecret();
+
+      expect(kubernetesClient.loadSecret).to.not.have.been.called;
+    });
+
     it('should transform loaded secret', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
 
       await vm.loadSecret();
 
@@ -295,6 +318,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
 
       await vm.loadSecret();
 
@@ -306,6 +331,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'loadSecret').resolves({});
       const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
 
       expect(vm.loading.secretLoad).to.eql(false);
       const loadingPromise = vm.loadSecret();

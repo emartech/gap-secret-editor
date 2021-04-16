@@ -130,6 +130,8 @@ export default {
       this.selectedBackupTime = this.backups.length > 0 ? this.backups[0].backupTime : null;
     },
     async loadSecret() {
+      if (!this.loadEnabled) return;
+
       this.loading.secretLoad = true;
       try {
         this.originalSecret = await kubernetesClient.loadSecret(this.secretNamespace, this.secretName);
