@@ -25,6 +25,9 @@
 .ace_scroller {
   border-radius: 8px;
 }
+.ace_gutter {
+  z-index: 3 !important;
+}
 .searchHighlight {
   position: absolute;
   z-index: 20;
