@@ -9,6 +9,9 @@ export default {
     value: { type: Array, required: true, default: () => [] },
     searchTerm: { type: String, required: false, default: () => '' }
   },
+  data: () => ({
+    keysOfHiddenFields: []
+  }),
   computed: {
     fields() {
       return this.value
@@ -16,13 +19,15 @@ export default {
         .map((item, index) => ({ ...item, index }));
     },
     filteredFields() {
-      return this.fields.filter(field => this.searchTerm
-        ? stringMatches(field.key, this.searchTerm) || stringMatches(field.value, this.searchTerm)
-        : true
-      );
+      return this.fields.filter(field => !this.keysOfHiddenFields.includes(field.key));
     },
     isLastField() {
       return (index) => index === this.fields.length - 1;
+    }
+  },
+  watch: {
+    searchTerm() {
+      this._updateHiddenFields();
     }
   },
   methods: {
@@ -46,7 +51,18 @@ export default {
     _emitSecretChange(fields) {
       const nonEmptyFields = fields.filter(secret => secret.key || secret.value);
       this.$emit('input', nonEmptyFields.map(field => ({ key: field.key, value: field.value })));
+    },
+    _updateHiddenFields() {
+      this.keysOfHiddenFields = this.fields
+        .filter(field => this.searchTerm
+          ? !stringMatches(field.key, this.searchTerm) && !stringMatches(field.value, this.searchTerm)
+          : false
+        )
+        .map(field => field.key);
     }
+  },
+  mounted() {
+    this._updateHiddenFields();
   }
 };
 

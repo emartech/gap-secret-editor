@@ -75,6 +75,41 @@ describe('SecretEditor', () => {
         { key: 'code', value: '007', index: 1 }
       ]);
     });
+
+    it('should update return value when searchTerm changes', async () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
+
+      expect(wrapper.vm.filteredFields).to.eql([
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: 'code', value: '007', index: 1 }
+      ]);
+
+      wrapper.setProps({ value: fields(), searchTerm: 'code' });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.filteredFields).to.eql([
+        { key: 'code', value: '007', index: 1 }
+      ]);
+    });
+
+    it('should not update return value when value changes', async () => {
+      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
+
+      expect(wrapper.vm.filteredFields).to.eql([
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: 'code', value: '007', index: 1 }
+      ]);
+
+      const secret = fields();
+      secret[0].value = 'James Bandi';
+      wrapper.setProps({ value: secret, searchTerm: 'o' });
+      await wrapper.vm.$nextTick();
+
+      expect(wrapper.vm.filteredFields).to.eql([
+        { key: 'name', value: 'James Bandi', index: 0 },
+        { key: 'code', value: '007', index: 1 }
+      ]);
+    });
   });
 
   describe('#isDuplicatedField', () => {
@@ -110,8 +145,9 @@ describe('SecretEditor', () => {
     expect(renderedValues).to.eql(['James Bond', '007', '']);
   });
 
-  it('should display fields matching with search term', () => {
+  it('should display fields matching with search term', async () => {
     const { vm } = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
+    await vm.$nextTick();
 
     const renderedKeys = Array.from(vm.$el.querySelectorAll('.secret-key')).map(input => input.value);
     expect(renderedKeys).to.eql(['name']);
@@ -181,8 +217,9 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit the whole modified secret when search term is provided and a value is modified', () => {
+    it('should emit the whole modified secret when search term is provided and a value is modified', async () => {
       const wrapper = mountWithFakeAceEditor(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
+      await wrapper.vm.$nextTick();
 
       wrapper.findAll('.secret-value').at(0).setValue('42');
 
@@ -202,8 +239,9 @@ describe('SecretEditor', () => {
       ]]] });
     });
 
-    it('should emit the whole modified secret when search term is provided and a field is deleted', () => {
+    it('should emit the whole modified secret when search term is provided and a field is deleted', async () => {
       const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
+      await wrapper.vm.$nextTick();
 
       wrapper.findAll('.e-btn').at(0).trigger('click');
 
