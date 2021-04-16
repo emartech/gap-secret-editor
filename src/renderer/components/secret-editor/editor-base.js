@@ -7,11 +7,11 @@ export default {
     editor: null
   }),
   watch: {
-    value() {
-      this.updateHighlights();
+    async value() {
+      await this.updateHighlights();
     },
-    highlight() {
-      this.updateHighlights();
+    async highlight() {
+      await this.updateHighlights();
     }
   },
   methods: {
@@ -38,9 +38,10 @@ export default {
 
       this.editor = editor;
     },
-    updateHighlights() {
+    async updateHighlights() {
       if (!this.editor) return;
 
+      await this.$nextTick();
       const session = this.editor.session;
 
       Object.keys(session.getMarkers()).forEach(markerId => session.removeMarker(markerId));
@@ -49,7 +50,7 @@ export default {
       this.editor.$search.findAll(session).forEach(range => session.addMarker(range, 'searchHighlight', 'text'));
     }
   },
-  mounted() {
-    this.updateHighlights();
+  async mounted() {
+    await this.updateHighlights();
   }
 };
