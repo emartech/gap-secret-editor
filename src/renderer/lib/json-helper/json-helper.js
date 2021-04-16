@@ -1,3 +1,6 @@
+import prettier from 'prettier/standalone';
+import babelParser from 'prettier/parser-babel';
+
 export const isValidJson = (data) => {
   if (!looksLikeJson(data)) return false;
   try {
@@ -21,15 +24,13 @@ export const looksLikeJson = (value) => {
 };
 
 export const minify = (json) => {
-  return _formatJson(json);
+  return JSON.stringify(JSON.parse(json));
 };
 
 export const prettify = (json) => {
-  return _formatJson(json, 2);
-};
-
-const _formatJson = (json, spaces = 0) => {
-  return JSON.stringify(JSON.parse(json), null, spaces);
+  return prettier
+    .format(json, { parser: 'json', printWidth: 80, plugins: [babelParser] })
+    .slice(0, -1);
 };
 
 export const isJsonMinified = (jsonString) => {

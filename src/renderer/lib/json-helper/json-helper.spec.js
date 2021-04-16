@@ -52,26 +52,30 @@ describe('#isJsonWithErrors', () => {
 
 describe('#minify and prettify', () => {
   it('should minify a stringified json', () => {
-    const jsonString = `[{\n
+    const jsonString = `[{
       "key": "value"
-    \n}]`;
+    }]`;
 
     const minifiedJsonString = minify(jsonString);
 
-    expect(_getNumberOfLines(jsonString)).to.eql(5);
-    expect(_getNumberOfLines(minifiedJsonString)).to.eql(1);
+    expect(minifiedJsonString).to.eql('[{"key":"value"}]');
   });
 
-  it('should prettify a minified json', () => {
+  it('should prettify a minified json to a single line if it fits there', () => {
     const jsonString = '[{"key":"value"}]';
 
     const prettifiedJsonString = prettify(jsonString);
 
-    expect(_getNumberOfLines(jsonString)).to.eql(1);
-    expect(_getNumberOfLines(prettifiedJsonString)).to.eql(5);
+    expect(prettifiedJsonString).to.eql('[{ "key": "value" }]');
+  });
+
+  it('should introduce linebreaks to json if it is long enaugh to break to lines', () => {
+    const longValue = 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+    const jsonString = `{"key":"${longValue}","otherKey":23}`;
+
+    const prettifiedJsonString = prettify(jsonString);
+
+    expect(prettifiedJsonString).to.eql(`{\n  "key": "${longValue}",\n  "otherKey": 23\n}`);
   });
 });
 
-const _getNumberOfLines = (string) => {
-  return string.split('\n').length;
-};

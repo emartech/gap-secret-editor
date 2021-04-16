@@ -66,6 +66,7 @@
     "afterSign": "scripts/notarize.js"
   },
   "dependencies": {
+    "prettier": "2.2.1",
     "vue": "2.6.12",
     "vue-electron": "1.0.6"
   },
