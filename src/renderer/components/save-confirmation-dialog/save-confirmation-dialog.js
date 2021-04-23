@@ -1,4 +1,5 @@
 import DifferenceList from '../difference-list/difference-list';
+import { isValidJson } from '../../lib/json-helper/json-helper';
 
 export default {
   name: 'save-confirmation-dialog',
@@ -11,6 +12,13 @@ export default {
   data: () => ({
     opened: false
   }),
+  computed: {
+    hasInvalidatedJson() {
+      return Object.keys(this.originalSecret).some(key =>
+        isValidJson(this.originalSecret[key]) && this.currentSecret[key] && !isValidJson(this.currentSecret[key])
+      );
+    }
+  },
   methods: {
     open() {
       this.opened = true;

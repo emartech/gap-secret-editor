@@ -11,12 +11,18 @@
   </difference-list>
 
   <div class="e-dialog__footer">
-    <div class="e-grid e-grid-small">
+    <div class="e-grid e-grid-small e-grid-vertical_center">
       <div class="e-cell e-cell-small">
         <div id="save-cancel-button" class="e-btn" data-action="close">Cancel</div>
       </div>
       <div class="e-cell e-cell-small">
         <div id="save-confirm-button" class="e-btn e-btn-primary" data-action="close" @click="confirm()">Save</div>
+      </div>
+      <div v-if="hasInvalidatedJson" class="e-cell e-cell-small">
+        <div class="text-color-warning">
+          <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
+          One of the valid JSON fields became invalid.
+        </div>
       </div>
     </div>
   </div>
