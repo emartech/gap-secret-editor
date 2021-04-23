@@ -1,0 +1,9 @@
+<e-tooltip :content="tooltip">
+  <div
+    class="e-btn e-btn-small e-btn-onlyicon e-btn-borderless"
+    :disabled="!isValidJson"
+    @click="changeJsonState()"
+  >
+    <e-icon :icon="isJsonMinified ? 'e-expand' : 'e-compress'" size="small"></e-icon>
+  </div>
+</e-tooltip>

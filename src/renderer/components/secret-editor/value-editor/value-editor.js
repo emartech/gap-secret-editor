@@ -1,7 +1,7 @@
 import AceEditor from 'vue2-ace-editor';
-import JsonBadge from '../json-badge/json-badge';
 import { looksLikeJson } from '../../../lib/json-helper/json-helper';
 import EditorBase from '../editor-base';
+import JsonFormatButton from './json-format-button/json-format-button';
 
 require('brace/theme/github');
 require('brace/mode/text');
@@ -11,10 +11,17 @@ export default {
   name: 'value-editor',
   template: require('./value-editor.html'),
   mixins: [EditorBase],
-  components: { AceEditor, JsonBadge },
+  components: { AceEditor, JsonFormatButton },
+  data: () => ({
+    editorHoovered: false,
+    toolbarHovered: false
+  }),
   computed: {
     editorLanguage() {
       return looksLikeJson(this.value) ? 'json' : 'text';
+    },
+    toolbarOpacity() {
+      return this.toolbarHovered ? 1 : (this.editorHoovered ? 0.3 : 0);
     }
   },
   methods: {

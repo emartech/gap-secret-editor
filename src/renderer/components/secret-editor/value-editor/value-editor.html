@@ -1,4 +1,8 @@
-<div style="display: flex; position: relative; padding-right: 70px">
+<div
+  class="value-editor"
+  @mouseenter="editorHoovered = true"
+  @mouseleave="editorHoovered = false"
+>
   <ace-editor
     class="e-input secret-value"
     :value="value"
@@ -8,8 +12,16 @@
     theme="github"
   />
 
-  <json-badge
-    :text="value"
-    @change-json-state="emitChange($event)"
-  />
+  <div
+    class="editor-toolbar"
+    @mouseenter="toolbarHovered = true"
+    @mouseleave="toolbarHovered = false"
+    :style="`opacity: ${toolbarOpacity}`"
+  >
+    <json-format-button
+      v-if="editorLanguage === 'json'"
+      :text="value"
+      @change-json-state="emitChange($event)"
+    />
+  </div>
 </div>

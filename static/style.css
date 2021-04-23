@@ -1,3 +1,4 @@
+/* release notes */
 .release-notes {
   padding: 0 8px 24px;
 }
@@ -8,6 +9,24 @@
 }
 .release-notes ul {
   margin: 0;
+}
+
+/* value editor with toolbar */
+.value-editor {
+  position: relative;
+}
+.editor-toolbar {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  background-color: #e8e8e8;
+  border-radius: 0 8px 0 8px;
+  margin: 1px;
+  transition: opacity 0.2s ease-in-out;
+}
+.editor-toolbar .e-btn {
+  margin: 2px;
 }
 
 /* fix border of compare result */
