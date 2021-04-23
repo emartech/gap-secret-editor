@@ -34,5 +34,10 @@ describe('Difference', () => {
       const { vm } = mount(Difference, { propsData: { originalValue: '{"key"}', currentValue: '{"value"}' } });
       expect(vm.invalidatedJsonMessage).to.eql('');
     });
+
+    it('should return empty string when a valid json is removed', () => {
+      const { vm } = mount(Difference, { propsData: { originalValue: '{"key":"value"}', currentValue: null } });
+      expect(vm.invalidatedJsonMessage).to.eql('');
+    });
   });
 });

@@ -43,7 +43,7 @@ export default {
           : 'REMOVED';
     },
     invalidatedJsonMessage() {
-      if (!isValidJson(this.originalValue || '') || isValidJson(this.currentValue || '')) return '';
+      if (!isValidJson(this.originalValue || '') || !this.currentValue || isValidJson(this.currentValue)) return '';
 
       return `<span class="e-padding-left-xl text-color-warning">
                 <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
