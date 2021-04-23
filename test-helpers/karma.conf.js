@@ -31,7 +31,12 @@ module.exports = config => {
       'visibleElectron': {
         base: 'Electron',
         flags: ['--headless'],
-        require: path.join('test-helpers', 'test-setup-workaround.js')
+        require: path.join('test-helpers', 'test-setup-workaround.js'),
+        browserWindowOptions: {
+          webPreferences: {
+            nativeWindowOpen: false
+          }
+        }
       }
     },
     frameworks: ['mocha', 'sinon-chai'],
