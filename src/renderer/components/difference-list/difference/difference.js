@@ -1,6 +1,7 @@
 import { isNil } from 'lodash';
 import { createPatch } from 'diff';
 import * as Diff2Html from 'diff2html';
+import { isValidJson } from '../../../lib/json-helper/json-helper';
 
 export default {
   name: 'difference',
@@ -20,7 +21,9 @@ export default {
         outputFormat: 'side-by-side',
         rawTemplates: {
           'generic-file-path':
-            `<span>${this.label}</span><span class="e-padding-left-l text-color-gray-400">${this.changeType}</span>`,
+            `<span>${this.label}</span>
+             <span class="e-padding-left-l text-color-gray-400">${this.changeType}</span>
+             ${this.invalidatedJsonMessage}`,
           'generic-empty-diff':
             `<tr>
               <td class="{{CSSLineClass.INFO}}">
@@ -38,6 +41,14 @@ export default {
         : isNil(this.originalValue)
           ? 'ADDED'
           : 'REMOVED';
+    },
+    invalidatedJsonMessage() {
+      if (!isValidJson(this.originalValue || '') || isValidJson(this.currentValue || '')) return '';
+
+      return `<span class="e-padding-left-xl text-color-warning">
+                <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
+                JSON became invalid
+              </span>`;
     }
   },
   methods: {
