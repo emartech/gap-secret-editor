@@ -12,12 +12,6 @@ export default {
   },
   computed: {
     content() {
-      const changeType = !isNil(this.originalValue) && !isNil(this.currentValue)
-        ? 'CHANGED'
-        : isNil(this.originalValue)
-          ? 'ADDED'
-          : 'REMOVED';
-
       const patch = createPatch(this.label, this.originalValue || '', this.currentValue || '');
       const diffJson = Diff2Html.parse(patch);
       return Diff2Html.html(diffJson, {
@@ -26,7 +20,7 @@ export default {
         outputFormat: 'side-by-side',
         rawTemplates: {
           'generic-file-path':
-            `<span>${this.label}</span><span class="e-padding-left-l text-color-gray-400">${changeType}</span>`,
+            `<span>${this.label}</span><span class="e-padding-left-l text-color-gray-400">${this.changeType}</span>`,
           'generic-empty-diff':
             `<tr>
               <td class="{{CSSLineClass.INFO}}">
@@ -37,6 +31,13 @@ export default {
             </tr>`
         }
       });
+    },
+    changeType() {
+      return !isNil(this.originalValue) && !isNil(this.currentValue)
+        ? 'CHANGED'
+        : isNil(this.originalValue)
+          ? 'ADDED'
+          : 'REMOVED';
     }
   },
   methods: {
