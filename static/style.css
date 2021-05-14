@@ -24,9 +24,16 @@
   border-radius: 0 8px 0 8px;
   margin: 1px;
   transition: opacity 0.2s ease-in-out;
+  opacity: 0.3;
+}
+.editor-toolbar:hover {
+  opacity: 1;
 }
 .editor-toolbar .e-btn {
   margin: 2px;
+}
+.value-editor:not(:hover) .editor-toolbar {
+  opacity: 0
 }
 
 /* fix border of compare result */

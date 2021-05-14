@@ -12,16 +12,9 @@ export default {
   template: require('./value-editor.html'),
   mixins: [EditorBase],
   components: { AceEditor, JsonFormatButton },
-  data: () => ({
-    editorHoovered: false,
-    toolbarHovered: false
-  }),
   computed: {
     editorLanguage() {
       return looksLikeJson(this.value) ? 'json' : 'text';
-    },
-    toolbarOpacity() {
-      return this.toolbarHovered ? 1 : (this.editorHoovered ? 0.3 : 0);
     }
   },
   methods: {
