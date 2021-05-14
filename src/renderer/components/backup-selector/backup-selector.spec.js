@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import { format } from 'date-fns';
 import BackupSelector from './backup-selector';
+import createStore from '../../store/store';
 
 describe('BackupSelector', () => {
   describe('#options', () => {
@@ -10,12 +11,14 @@ describe('BackupSelector', () => {
         { data: { FIELD: 'value' }, backupTime: '2020-12-24T18:00:00.000Z' },
         { data: { FIELD: 'old-value' }, backupTime: '2020-12-24T20:00:00.000Z' }
       ];
+      const store = createStore();
+      store.commit('setBackups', backups);
       const { vm } = mount(BackupSelector, {
         propsData: {
-          backups,
           selectedTime: backups[0].backupTime,
           disabled: false
-        }
+        },
+        store: store
       });
 
       expect(vm.options).to.eql([

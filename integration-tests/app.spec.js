@@ -2,6 +2,7 @@ import flushPromises from 'flush-promises';
 import { KubeConfig } from '@kubernetes/client-node';
 import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE } from '../src/renderer/components/app/app';
 import { mountWithFakeAceEditor } from '../test-helpers/mount-helpers';
+import createStore from '../src/renderer/store/store';
 
 describe('App - Integration', () => {
   const fakeKubernetesApiClient = {};
@@ -422,7 +423,7 @@ describe('App - Integration', () => {
 });
 
 const loadApp = async () => {
-  const wrapper = mountWithFakeAceEditor(App);
+  const wrapper = mountWithFakeAceEditor(App, { store: createStore() });
   await flushPromises();
   return wrapper;
 };

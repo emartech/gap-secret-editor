@@ -1,4 +1,5 @@
 import { format } from 'date-fns';
+import { mapState } from 'vuex';
 import ChangeHistoryDialog from '../change-history-dialog/change-history-dialog';
 import BackupListItem from './backup-list-item/backup-list-item';
 
@@ -10,11 +11,11 @@ export default {
     ChangeHistoryDialog
   },
   props: {
-    backups: Array,
     selectedTime: String,
     disabled: Boolean
   },
   computed: {
+    ...mapState(['backups']),
     options() {
       return this.backups.map(backup => ({
         backup,

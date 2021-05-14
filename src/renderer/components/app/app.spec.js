@@ -1,5 +1,6 @@
 import { shallowMount, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
+import createStore from '../../store/store';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 
@@ -246,12 +247,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
       vm.secret = [{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }];
-      vm.backups = [
-        { data: { FIELD1: 'value1', FIELD2: 'value2' }, backupTime: '2020-09-20T22:17:01.891Z' },
-        { data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' }
-      ];
 
-      vm.loadSelectedBackup(vm.backups[1]);
+      vm.loadSelectedBackup({ data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' });
 
       expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value0' }, { key: 'FIELD3', value: 'value3' }]);
     });
@@ -260,11 +257,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
-      vm.backups = [
-        { data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' }
-      ];
 
-      vm.loadSelectedBackup(vm.backups[0]);
+      vm.loadSelectedBackup({ data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' });
 
       expect(vm.selectedBackupTime).to.eql('2020-09-19T22:17:01.891Z');
     });
@@ -274,13 +268,8 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(notificationDisplayer, 'backupSuccess');
       const { vm } = await loadApp();
-      vm.backups = [
-        { data: { FIELD1: 'value0', FIELD3: 'value2' }, backupTime: '2020-09-20T00:00:00.000Z' },
-        { data: { FIELD1: 'value0' }, backupTime: '2020-09-19T00:00:00.000Z' }
-      ];
-      vm.selectedBackupTime = '2020-09-20T00:00:00.000Z';
 
-      vm.loadSelectedBackup(vm.backups[1]);
+      vm.loadSelectedBackup({ data: { FIELD1: 'value0' }, backupTime: '2020-09-19T00:00:00.000Z' });
 
       expect(notificationDisplayer.backupSuccess).to.have.been.called;
     });
@@ -371,7 +360,7 @@ describe('App', () => {
       await vm.loadBackups();
 
       expect(kubernetesClient.loadSecret).to.have.been.calledWith('namespace', 'name-backup');
-      expect(vm.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
+      expect(vm.$store.state.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
     });
 
     it('should set selectedBackupTime based on the first backup', async () => {
@@ -405,7 +394,7 @@ describe('App', () => {
       await vm.loadBackups();
 
       expect(kubernetesClient.loadSecret).to.have.been.calledWith('namespace', 'name-backup');
-      expect(vm.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
+      expect(vm.$store.state.backups).to.eql([{ data: { FIELD: 'value' }, backupTime: '2020-09-20T22:17:01.891Z' }]);
     });
 
     it('should set backups empty when response is not a valid JSON', async () => {
@@ -416,7 +405,7 @@ describe('App', () => {
 
       await vm.loadBackups();
 
-      expect(vm.backups).to.eql([]);
+      expect(vm.$store.state.backups).to.eql([]);
       expect(vm.selectedBackupTime).to.be.null;
     });
 
@@ -428,7 +417,7 @@ describe('App', () => {
 
       await vm.loadBackups();
 
-      expect(vm.backups).to.eql([]);
+      expect(vm.$store.state.backups).to.eql([]);
     });
   });
 
@@ -437,7 +426,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mount(App);
+      const wrapper = await mount(App, { store: createStore() });
       await flushPromises();
       wrapper.vm.secretLoaded = true;
       wrapper.vm.secret = [{ key: 'NEW_FIELD', value: 'new value' }];
@@ -451,7 +440,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mount(App);
+      const wrapper = await mount(App, { store: createStore() });
       await flushPromises();
       wrapper.vm.secretLoaded = false;
 
@@ -618,7 +607,7 @@ describe('App', () => {
 });
 
 const loadApp = async () => {
-  const wrapper = shallowMount(App);
+  const wrapper = shallowMount(App, { store: createStore() });
   await flushPromises();
   return wrapper;
 };

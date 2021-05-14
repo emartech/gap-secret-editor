@@ -1,6 +1,7 @@
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
 import { get, isEqual, last, uniqBy } from 'lodash';
+import { mapMutations } from 'vuex';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 import { keyValueArrayToObject, objectToKeyValueArray } from '../../lib/secret-converter';
@@ -36,7 +37,6 @@ export default {
     contextList: [],
     context: '',
     searchTerm: '',
-    backups: [],
     selectedBackupTime: null
   }),
   computed: {
@@ -80,6 +80,7 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['setBackups']),
     async selectContext(context) {
       this.clearSecret();
       this.context = context;
@@ -119,15 +120,16 @@ export default {
       this.secretLoaded = false;
     },
     async loadBackups() {
+      let backups = [];
       try {
         const secret = await kubernetesClient.loadSecret(this.secretNamespace, `${this.secretName}-backup`);
         const allBackups = JSON.parse(secret.BACKUP);
-        this.backups = allBackups.filter(backup => backup.backupTime && backup.data);
+        backups = allBackups.filter(backup => backup.backupTime && backup.data);
       } catch (e) {
-        this.backups = [];
         logger.warn('backup-load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
-      this.selectedBackupTime = this.backups.length > 0 ? this.backups[0].backupTime : null;
+      this.setBackups(backups);
+      this.selectedBackupTime = backups.length > 0 ? backups[0].backupTime : null;
     },
     async loadSecret() {
       if (!this.loadEnabled) return;
