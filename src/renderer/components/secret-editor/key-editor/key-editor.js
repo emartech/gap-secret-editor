@@ -16,7 +16,8 @@ export default {
         maxLines: 1
       });
       editor.commands.bindKeys({
-        'Return|Shift-Return|Ctrl-Return|Alt-Return': () => {}
+        'Return|Shift-Return|Ctrl-Return|Alt-Return': () => {},
+        'Tab|Shift-Tab': null
       });
 
       editor.renderer.setOptions({
