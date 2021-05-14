@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import createStore from './store/store';
 import registerVueGlobals from './vue-globals';
 
 import App from './components/app/app';
@@ -11,5 +12,6 @@ registerVueGlobals();
 
 new Vue({
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  store: createStore()
 }).$mount('#app');

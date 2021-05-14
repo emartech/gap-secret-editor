@@ -68,7 +68,8 @@
   "dependencies": {
     "prettier": "2.2.1",
     "vue": "2.6.12",
-    "vue-electron": "1.0.6"
+    "vue-electron": "1.0.6",
+    "vuex": "3.6.2"
   },
   "devDependencies": {
     "@babel/core": "7.13.16",
