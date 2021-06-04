@@ -6,9 +6,7 @@ export default {
   template: require('./change-history-dialog.html'),
   components: { DifferenceList },
   props: {
-    backups: Array,
-    originalSecret: Object,
-    currentSecret: Object
+    backups: Array
   },
   data: () => ({
     opened: false,

@@ -1,0 +1,15 @@
+<e-tooltip content="View history">
+  <div
+    class="e-btn e-btn-small e-btn-onlyicon e-btn-borderless"
+    @click="openChangeHistoryDialog()"
+  >
+    <e-icon icon="reset-block" size="small"></e-icon>
+  </div>
+
+  <change-history-dialog
+    ref="changeHistoryDialog"
+    :backups="fieldBackups"
+    @load-backup="selectBackup($event)"
+  />
+</e-tooltip>
+

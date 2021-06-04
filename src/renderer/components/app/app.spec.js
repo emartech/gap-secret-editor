@@ -1,6 +1,5 @@
-import { shallowMount, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
-import createStore from '../../store/store';
+import { mountWithStore, shallowMountWithStore } from '../../../../test-helpers/mount-helpers';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 
@@ -426,7 +425,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mount(App, { store: createStore() });
+      const wrapper = await mountWithStore(App);
       await flushPromises();
       wrapper.vm.secretLoaded = true;
       wrapper.vm.secret = [{ key: 'NEW_FIELD', value: 'new value' }];
@@ -440,7 +439,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mount(App, { store: createStore() });
+      const wrapper = await mountWithStore(App);
       await flushPromises();
       wrapper.vm.secretLoaded = false;
 
@@ -607,7 +606,7 @@ describe('App', () => {
 });
 
 const loadApp = async () => {
-  const wrapper = shallowMount(App, { store: createStore() });
+  const wrapper = shallowMountWithStore(App);
   await flushPromises();
   return wrapper;
 };

@@ -1,6 +1,5 @@
-import { mount } from '@vue/test-utils';
 import SecretEditor from './secret-editor';
-import { mountWithFakeAceEditor } from '../../../../test-helpers/mount-helpers';
+import { mountWithFakeAceEditor, mountWithStore, shallowMountWithStore } from '../../../../test-helpers/mount-helpers';
 
 describe('SecretEditor', () => {
   const fields = () => [
@@ -10,7 +9,7 @@ describe('SecretEditor', () => {
 
   describe('#filteredFields', () => {
     it('should return given fields with an extra empty field when searchTerm is empty', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: '' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: '' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
@@ -20,7 +19,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when key equals searchTerm', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 }
@@ -28,7 +27,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when key contains searchTerm', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'od' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'od' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'code', value: '007', index: 1 }
@@ -36,7 +35,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when key contains searchTerm with different casing', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'OD' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'OD' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'code', value: '007', index: 1 }
@@ -44,7 +43,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when value equals searchTerm', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'James Bond' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'James Bond' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 }
@@ -52,7 +51,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when value contains searchTerm', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'Bond' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'Bond' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 }
@@ -60,7 +59,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching field when value contains searchTerm with different casing', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'bOND' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'bOND' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 }
@@ -68,7 +67,7 @@ describe('SecretEditor', () => {
     });
 
     it('should return matching fields when more fields are matching with searchTerm', () => {
-      const { vm } = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
@@ -77,7 +76,7 @@ describe('SecretEditor', () => {
     });
 
     it('should update return value when searchTerm changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
+      const wrapper = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
 
       expect(wrapper.vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
@@ -93,7 +92,7 @@ describe('SecretEditor', () => {
     });
 
     it('should not update return value when value changes', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
+      const wrapper = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
 
       expect(wrapper.vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
@@ -119,7 +118,7 @@ describe('SecretEditor', () => {
         { key: 'code', value: '007' },
         { key: 'name', value: 'Johnny English' }
       ];
-      const { vm } = mount(SecretEditor, { propsData: { value, searchTerm: '' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value, searchTerm: '' } });
 
       expect(vm.isDuplicatedField('code')).to.be.false;
     });
@@ -130,7 +129,7 @@ describe('SecretEditor', () => {
         { key: 'code', value: '007' },
         { key: 'name', value: 'Johnny English' }
       ];
-      const { vm } = mount(SecretEditor, { propsData: { value, searchTerm: '' } });
+      const { vm } = mountWithStore(SecretEditor, { propsData: { value, searchTerm: '' } });
 
       expect(vm.isDuplicatedField('name')).to.be.true;
     });
@@ -156,7 +155,7 @@ describe('SecretEditor', () => {
   });
 
   it('should display delete buttons for every field, and disable the last one', () => {
-    const { vm } = mount(SecretEditor, { propsData: { value: fields() } });
+    const { vm } = shallowMountWithStore(SecretEditor, { propsData: { value: fields() } });
 
     const isButtonDisabled = button => Array.from(button.classList).includes('e-btn-disabled');
     const deleteButtons = Array.from(vm.$el.querySelectorAll('.e-btn'));
@@ -230,7 +229,7 @@ describe('SecretEditor', () => {
     });
 
     it('should emit modified secret when a field is deleted', () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields() } });
+      const wrapper = shallowMountWithStore(SecretEditor, { propsData: { value: fields() } });
 
       wrapper.findAll('.e-btn').at(1).trigger('click');
 
@@ -240,7 +239,7 @@ describe('SecretEditor', () => {
     });
 
     it('should emit the whole modified secret when search term is provided and a field is deleted', async () => {
-      const wrapper = mount(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
+      const wrapper = shallowMountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'code' } });
       await wrapper.vm.$nextTick();
 
       wrapper.findAll('.e-btn').at(0).trigger('click');
