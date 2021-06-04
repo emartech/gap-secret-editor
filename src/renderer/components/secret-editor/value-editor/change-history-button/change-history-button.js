@@ -30,7 +30,7 @@ export default {
       this.$refs.changeHistoryDialog.displayChange(this.fieldBackups[0].backupTime);
     },
     selectBackup(backup) {
-      console.log('backup selected', backup);
+      this.$emit('load-field-backup', backup.data[this.fieldKey]);
     }
   }
 };

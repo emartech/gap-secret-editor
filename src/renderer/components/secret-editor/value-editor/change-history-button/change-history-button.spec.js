@@ -1,6 +1,7 @@
 import { mount } from '@vue/test-utils';
 import ChangeHistoryButton from './change-history-button';
 import createStore from '../../../../store/store';
+import { mountWithStore } from '../../../../../../test-helpers/mount-helpers';
 
 describe('ChangeHistoryButton', () => {
   describe('#fieldBackups', () => {
@@ -69,5 +70,13 @@ describe('ChangeHistoryButton', () => {
       ]);
     });
 
+  });
+
+  describe('#selectBackup', () => {
+    it('should return only the given field from all backups', () => {
+      const wrapper = mountWithStore(ChangeHistoryButton, { propsData: { fieldKey: 'THE_FIELD' } });
+      wrapper.vm.selectBackup({ backupTime: '2020-12-24T01:00:00.000Z', data: { THE_FIELD: 'NEW_VALUE' } });
+      expect(wrapper.emitted()).to.eql({ 'load-field-backup': [['NEW_VALUE']] });
+    });
   });
 });

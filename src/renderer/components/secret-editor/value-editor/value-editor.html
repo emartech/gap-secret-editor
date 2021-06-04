@@ -14,6 +14,9 @@
       :text="value"
       @change-json-state="emitChange($event)"
     />
-    <change-history-button :field-key="fieldKey" />
+    <change-history-button
+      :field-key="fieldKey"
+      @load-field-backup="emitChange($event)"
+    />
   </div>
 </div>
