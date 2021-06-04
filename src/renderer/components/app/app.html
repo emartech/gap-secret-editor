@@ -36,11 +36,11 @@
           </div>
 
           <div class="e-cell e-cell-small">
-            <e-tooltip content="Load">
-              <div id="load-button" class="e-btn e-btn-onlyicon" @click="loadSecret()" :disabled="!loadEnabled">
+            <e-tooltip content="Reload">
+              <div id="reload-button" class="e-btn e-btn-onlyicon" @click="loadSecret()" :disabled="!loadEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
                   <e-spinner data-size="small"></e-spinner>
-                  <e-icon icon="folder-open"></e-icon>
+                  <e-icon icon="e-refresh"></e-icon>
                 </div>
               </div>
             </e-tooltip>

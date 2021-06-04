@@ -40,12 +40,12 @@ describe('App - Integration', () => {
       ]);
     });
 
-    it('should disable load/save buttons', async () => {
+    it('should disable reload/save buttons', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);
       const wrapper = await loadApp();
 
-      expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
+      expect(wrapper.find('#reload-button').attributes('disabled')).to.eql('disabled');
       expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
     });
 
@@ -78,7 +78,7 @@ describe('App - Integration', () => {
       ]);
     });
 
-    it('should disable load/save buttons', async () => {
+    it('should disable reload/save buttons', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
@@ -86,7 +86,7 @@ describe('App - Integration', () => {
 
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
 
-      expect(wrapper.find('#load-button').attributes('disabled')).to.eql('disabled');
+      expect(wrapper.find('#reload-button').attributes('disabled')).to.eql('disabled');
       expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
     });
 
@@ -122,7 +122,7 @@ describe('App - Integration', () => {
   });
 
   describe('when namespace and secret selected', () => {
-    it('should enable load button', async () => {
+    it('should enable reload button', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
@@ -131,7 +131,7 @@ describe('App - Integration', () => {
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
 
-      expect(wrapper.find('#load-button').attributes('disabled')).to.be.undefined;
+      expect(wrapper.find('#reload-button').attributes('disabled')).to.be.undefined;
     });
 
     it('should disable save button when secret not loaded', async () => {
@@ -146,7 +146,7 @@ describe('App - Integration', () => {
       expect(wrapper.find('#save-button').attributes('disabled')).to.eql('disabled');
     });
 
-    it('should load secret when load button clicked', async () => {
+    it('should load secret when secret selected', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
@@ -158,14 +158,13 @@ describe('App - Integration', () => {
 
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-      await clickButton(wrapper, '#load-button');
 
       const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key').wrappers
         .map(wrapper => wrapper.element.value);
       expect(renderedSecretKeys).to.eql(['NUMBER_42', 'SUPER_SECRET_JSON', '']);
     });
 
-    it('should load secret and filter its fields when load button clicked and filter provided', async () => {
+    it('should load secret and filter its fields when secret selected and filter provided', async () => {
       stubContextList(contextList);
       stubNamespaceList(namespaceList);
       stubSecretList(secretList);
@@ -177,7 +176,6 @@ describe('App - Integration', () => {
 
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-      await clickButton(wrapper, '#load-button');
       await changeInputValue(wrapper, '#search-input', 'super');
 
       const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key').wrappers
@@ -195,7 +193,6 @@ describe('App - Integration', () => {
 
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-      await clickButton(wrapper, '#load-button');
 
       const expectedNotificationParams = sinon.match({ title: 'Load failed', content: 'Oh no!' });
       expect(window.e.utils.openNotification).to.have.been.calledWith(expectedNotificationParams);
@@ -210,7 +207,6 @@ describe('App - Integration', () => {
 
       await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
       await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-      await clickButton(wrapper, '#load-button');
 
       const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key');
       expect(renderedSecretKeys).to.have.lengthOf(0);
@@ -229,7 +225,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
@@ -251,7 +246,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
@@ -275,7 +269,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
@@ -295,7 +288,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
@@ -319,7 +311,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');
@@ -339,7 +330,6 @@ describe('App - Integration', () => {
 
         await changeSelectValue(wrapper, '#namespace-selector', 'cool-team');
         await changeSelectValue(wrapper, '#secret-selector', 'best-app');
-        await clickButton(wrapper, '#load-button');
         await changeInputValue(wrapper, '#secret-editor .secret-key', 'DRINK');
         await changeInputValue(wrapper, '#secret-editor .secret-value', 'coke');
         await clickButton(wrapper, '#save-button');

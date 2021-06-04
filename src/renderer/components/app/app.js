@@ -105,10 +105,11 @@ export default {
       }
       this.loading.nameList = false;
     },
-    selectName(name) {
+    async selectName(name) {
       this.clearSecret();
       this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
+      await this.loadSecret();
     },
     loadSelectedBackup(backup) {
       this.secret = objectToKeyValueArray(backup.data);
@@ -200,7 +201,7 @@ export default {
         await this.selectNamespace(lastSelectedNamespace);
         const lastSelectedName = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME];
         if (lastSelectedName && this.nameList.includes(lastSelectedName)) {
-          this.selectName(lastSelectedName);
+          await this.selectName(lastSelectedName);
         }
       }
     },

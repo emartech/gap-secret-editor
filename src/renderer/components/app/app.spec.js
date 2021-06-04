@@ -226,17 +226,26 @@ describe('App', () => {
       expect(localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME]).to.eql('cool-app');
     });
 
-    it('should clear loaded secret', async () => {
+    it('should clear secret then load selected one', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const loadPromise = resolvablePromise();
+      sinon.stub(kubernetesClient, 'loadSecret').returns(loadPromise);
       const { vm } = await loadApp();
+      vm.secretNamespace = 'some-nice-namespace';
       vm.secret = [{ key: 'doesnt', value: 'matter' }];
       vm.secretLoaded = true;
 
-      await vm.selectName('cool-app');
+      vm.selectName('cool-app');
 
       expect(vm.secret).to.eql([]);
       expect(vm.secretLoaded).to.be.false;
+
+      loadPromise.resolve({ FIELD1: 'value1', FIELD2: 'value2' });
+      await flushPromises();
+
+      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }]);
+      expect(vm.secretLoaded).to.be.true;
     });
   });
 
@@ -609,4 +618,16 @@ const loadApp = async () => {
   const wrapper = shallowMountWithStore(App);
   await flushPromises();
   return wrapper;
+};
+
+const resolvablePromise = () => {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolveCallback, rejectCallback) => {
+    resolve = resolveCallback;
+    reject = rejectCallback;
+  });
+  promise.resolve = resolve;
+  promise.reject = reject;
+  return promise;
 };
