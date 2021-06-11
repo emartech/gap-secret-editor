@@ -36,7 +36,7 @@
           </div>
 
           <div class="e-cell e-cell-small">
-            <e-tooltip content="Reload">
+            <e-tooltip content="Reload secret">
               <div id="reload-button" class="e-btn e-btn-onlyicon" @click="loadSecret()" :disabled="!loadEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
                   <e-spinner data-size="small"></e-spinner>
@@ -47,7 +47,7 @@
           </div>
 
           <div class="e-cell e-cell-small">
-            <e-tooltip content="Save">
+            <e-tooltip content="Save secret">
               <div id="save-button" class="e-btn e-btn-onlyicon" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
                   <e-spinner data-size="small"></e-spinner>
@@ -58,7 +58,18 @@
           </div>
 
           <div class="e-cell e-cell-small">
-            <e-tooltip content="Load Backup to editor">
+            <e-tooltip content="Restart service">
+              <div id="restart-button" class="e-btn e-btn-onlyicon" @click="restartService()" :disabled="!serviceRestartEnabled">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.serviceRestart }">
+                  <e-spinner data-size="small"></e-spinner>
+                  <e-icon icon="ac-settings-immediate"></e-icon>
+                </div>
+              </div>
+            </e-tooltip>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <e-tooltip content="Load backup to editor">
               <backup-selector
                 :selected-time="selectedBackupTime"
                 :disabled="!backupEnabled"

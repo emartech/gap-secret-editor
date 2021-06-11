@@ -29,7 +29,8 @@ export default {
       namespaceList: false,
       nameList: false,
       secretLoad: false,
-      secretSave: false
+      secretSave: false,
+      serviceRestart: false
     },
     secretLoaded: false,
     namespaceList: [],
@@ -73,6 +74,9 @@ export default {
       return this.secretLoaded && secretChanged && !hasDuplicatedKey && !this.loading.secretSave;
     },
     backupEnabled() {
+      return this.secretLoaded;
+    },
+    serviceRestartEnabled() {
       return this.secretLoaded;
     },
     secretAsObject() {
@@ -175,6 +179,16 @@ export default {
         logger.warn('save-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
       this.loading.secretSave = false;
+    },
+    async restartService() {
+      this.loading.serviceRestart = true;
+      try {
+        await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
+      } catch (e) {
+        notificationDisplayer.serviceRestartFailed(e.message);
+        logger.warn('restart-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
+      }
+      this.loading.serviceRestart = false;
     },
     async initialize() {
       this.loading.contextList = true;

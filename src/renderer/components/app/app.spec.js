@@ -509,6 +509,46 @@ describe('App', () => {
     });
   });
 
+  describe('#restartService', () => {
+    it('should patch deployments related to the loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'patchDeployments').resolves();
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'awesome-namespace';
+      vm.secretName = 'amazing-name';
+
+      await vm.restartService();
+
+      expect(kubernetesClient.patchDeployments).to.have.been.calledWith('awesome-namespace', 'amazing-name');
+    });
+
+    it('should set loading flag properly', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'patchDeployments').resolves();
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'awesome-namespace';
+      vm.secretName = 'amazing-name';
+
+      const promise = vm.restartService();
+      expect(vm.loading.serviceRestart).to.be.true;
+      await promise;
+      expect(vm.loading.serviceRestart).to.be.false;
+    });
+
+    it('should notify user about failure', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'patchDeployments').rejects(new Error('oh snap!'));
+      sinon.stub(notificationDisplayer, 'serviceRestartFailed');
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'awesome-namespace';
+      vm.secretName = 'amazing-name';
+
+      await vm.restartService();
+
+      expect(notificationDisplayer.serviceRestartFailed).to.have.been.called;
+    });
+  });
+
   describe('#initialize', () => {
     it('should load context data', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production', 'test']);

@@ -27,6 +27,14 @@ export default {
       type: 'danger'
     });
   },
+  serviceRestartFailed: (reason) => {
+    window.e.utils.openNotification({
+      title: 'Restart failed',
+      content: reason,
+      placement,
+      type: 'danger'
+    });
+  },
   loadFailed: (reason) => {
     window.e.utils.openNotification({
       title: 'Load failed',
