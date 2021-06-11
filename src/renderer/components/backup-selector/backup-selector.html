@@ -6,7 +6,7 @@
     data-markup-class-active="e-dropdown__button-open"
     data-autoclose
   >
-    <div class="e-dropdown__content">
+    <div class="e-dropdown__content" style="z-index: 600">
       <div class="e-actionlist__itemscontainer" style="width: 250px; max-height: 300px">
         <div v-if="options.length === 0">No backups found</div>
         <backup-list-item
