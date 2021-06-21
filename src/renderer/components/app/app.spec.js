@@ -535,6 +535,19 @@ describe('App', () => {
       expect(vm.loading.serviceRestart).to.be.false;
     });
 
+    it('should patch deployments related to the loaded secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'patchDeployments').resolves();
+      sinon.stub(notificationDisplayer, 'serviceRestartSuccess');
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'awesome-namespace';
+      vm.secretName = 'amazing-name';
+
+      await vm.restartService();
+
+      expect(notificationDisplayer.serviceRestartSuccess).to.have.been.called;
+    });
+
     it('should notify user about failure', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'patchDeployments').rejects(new Error('oh snap!'));

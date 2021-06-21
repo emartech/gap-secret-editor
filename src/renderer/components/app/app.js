@@ -184,6 +184,7 @@ export default {
       this.loading.serviceRestart = true;
       try {
         await kubernetesClient.patchDeployments(this.secretNamespace, this.secretName);
+        notificationDisplayer.serviceRestartSuccess();
       } catch (e) {
         notificationDisplayer.serviceRestartFailed(e.message);
         logger.warn('restart-failed', { namespace: this.secretNamespace, name: this.secretName }, e);

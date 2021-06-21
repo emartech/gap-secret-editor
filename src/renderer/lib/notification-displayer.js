@@ -27,6 +27,15 @@ export default {
       type: 'danger'
     });
   },
+  serviceRestartSuccess: () => {
+    window.e.utils.openNotification({
+      title: 'Service restarted',
+      content: 'Service using the secret was restarted successfully.',
+      placement,
+      type: 'success',
+      autoClose: true
+    });
+  },
   serviceRestartFailed: (reason) => {
     window.e.utils.openNotification({
       title: 'Restart failed',
