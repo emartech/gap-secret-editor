@@ -6,7 +6,7 @@
     <main class="e-layout__content" style="flex-grow: 1;">
       <section class="e-layout__section e-padding-s" style="display: flex; flex-direction: column;">
 
-        <div class="e-grid e-grid-small">
+        <div class="e-grid e-grid-small e-margin-bottom-s">
           <div class="e-cell e-cell-small">
             <e-select
                 :items="JSON.stringify(availableContexts)"
@@ -34,36 +34,29 @@
                 @change="selectName($event.target.value)"
             ></e-select>
           </div>
+        </div>
 
+        <div class="e-grid e-grid-small">
           <div class="e-cell e-cell-small">
             <e-tooltip content="Reload secret">
-              <div id="reload-button" class="e-btn e-btn-onlyicon" @click="loadSecret()" :disabled="!loadEnabled">
+              <div id="reload-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
                   <e-spinner data-size="small"></e-spinner>
                   <e-icon icon="e-refresh"></e-icon>
                 </div>
+                Reload
               </div>
             </e-tooltip>
           </div>
 
           <div class="e-cell e-cell-small">
             <e-tooltip content="Save secret">
-              <div id="save-button" class="e-btn e-btn-onlyicon" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
+              <div id="save-button" class="e-btn" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
                 <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
                   <e-spinner data-size="small"></e-spinner>
                   <e-icon icon="floppy-o"></e-icon>
                 </div>
-              </div>
-            </e-tooltip>
-          </div>
-
-          <div class="e-cell e-cell-small">
-            <e-tooltip content="Restart service">
-              <div id="restart-button" class="e-btn e-btn-onlyicon" @click="restartService()" :disabled="!serviceRestartEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.serviceRestart }">
-                  <e-spinner data-size="small"></e-spinner>
-                  <e-icon icon="ac-settings-immediate"></e-icon>
-                </div>
+                Save
               </div>
             </e-tooltip>
           </div>
@@ -75,6 +68,22 @@
                 :disabled="!backupEnabled"
                 @input="loadSelectedBackup($event)"
               />
+            </e-tooltip>
+          </div>
+
+          <div class="e-cell">
+            <e-icon icon="e-character-vertical-line" color="shade" style="height: 100%"></e-icon>
+          </div>
+
+          <div class="e-cell e-cell-small">
+            <e-tooltip content="Restart service">
+              <div id="restart-button" class="e-btn" @click="restartService()" :disabled="!serviceRestartEnabled">
+                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.serviceRestart }">
+                  <e-spinner data-size="small"></e-spinner>
+                  <e-icon icon="e-signout"></e-icon>
+                </div>
+                Restart
+              </div>
             </e-tooltip>
           </div>
 
@@ -94,7 +103,9 @@
           </div>
         </div>
 
-        <div class="e-margin-top-l" style="flex-grow: 1;">
+        <hr class="e-separator e-separator-fullwidth e-margin-vertical-m">
+
+        <div style="flex-grow: 1;">
           <div class="e-scrollable">
             <div class="e-scrollable__content">
               <secret-editor id="secret-editor" class="e-padding-s" v-if="secretLoaded" v-model="secret" :search-term="searchTerm">

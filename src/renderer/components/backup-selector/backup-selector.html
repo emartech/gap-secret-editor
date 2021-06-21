@@ -1,7 +1,7 @@
 <div>
   <e-dropdown
     v-if="!disabled"
-    data-markup-content="<e-icon icon='reset-block'></e-icon>"
+    data-markup-content="<e-icon icon='reset-block'></e-icon>Load backup"
     data-markup-class="e-btn e-btn-dropdown e-btn-no_minwidth"
     data-markup-class-active="e-dropdown__button-open"
     data-autoclose
@@ -21,7 +21,7 @@
   </e-dropdown>
 
   <div v-if="disabled" class="e-btn e-btn-dropdown" disabled>
-    <e-icon icon="reset-block"></e-icon>
+    <e-icon icon="reset-block"></e-icon>Load backup
   </div>
 
   <change-history-dialog
