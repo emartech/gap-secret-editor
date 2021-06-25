@@ -12,6 +12,7 @@ import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-conf
 
 const logger = log.scope('app');
 
+export const LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT = 'lastSelectedContext';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 
@@ -90,6 +91,7 @@ export default {
       this.context = context;
       await kubernetesClient.setContext(context);
       await this.initializeNamespacesAndSecrets();
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = context;
     },
     async selectNamespace(namespace) {
       this.clearSecret();
@@ -194,7 +196,10 @@ export default {
     async initialize() {
       this.loading.contextList = true;
       this.contextList = await kubernetesClient.listContexts();
-      this.context = await kubernetesClient.getContext();
+      const lastSelectedContext = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT];
+      this.context = this.contextList.includes(lastSelectedContext)
+        ? lastSelectedContext
+        : await kubernetesClient.getContext();
       this.loading.contextList = false;
       await this.initializeNamespacesAndSecrets();
     },

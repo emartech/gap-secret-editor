@@ -3,7 +3,11 @@ import { mountWithStore, shallowMountWithStore } from '../../../../test-helpers/
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 
-import App, { LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE, LOCALSTORAGE_KEY_LAST_SELECTED_NAME } from './app';
+import App, {
+  LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT,
+  LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE,
+  LOCALSTORAGE_KEY_LAST_SELECTED_NAME
+} from './app';
 
 describe('App', () => {
   beforeEach(() => {
@@ -144,6 +148,18 @@ describe('App', () => {
       await vm.selectContext('staging');
 
       expect(kubernetesClient.setContext).to.have.been.calledWith('staging');
+    });
+
+    it('should store selection to local storage', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = 'some old value';
+      const { vm } = await loadApp();
+
+      await vm.selectContext('staging');
+
+      expect(localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT]).to.eql('staging');
     });
 
     it('should reload namespaces', async () => {
@@ -563,9 +579,22 @@ describe('App', () => {
   });
 
   describe('#initialize', () => {
-    it('should load context data', async () => {
+    it('should load context data when a valid value is stored on local storage', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production', 'test']);
       sinon.stub(kubernetesClient, 'getContext').resolves('staging');
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = 'production';
+      const { vm } = await loadApp();
+
+      await vm.initialize();
+
+      expect(vm.contextList).to.eql(['staging', 'production', 'test']);
+      expect(vm.context).to.eql('production');
+    });
+
+    it('should load context data when the local storage value is not valid', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production', 'test']);
+      sinon.stub(kubernetesClient, 'getContext').resolves('staging');
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = 'some unknown value';
       const { vm } = await loadApp();
 
       await vm.initialize();
