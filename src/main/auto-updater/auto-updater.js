@@ -1,17 +1,22 @@
 import { BrowserWindow, ipcMain, powerMonitor } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
-import { findLast } from 'lodash';
 import schedule from 'node-schedule';
 
 const logger = log.scope('auto-updater');
 
+let alreadyWatchingForUpdates = false;
+
 export const startWatchingForUpdates = () => {
+  if (alreadyWatchingForUpdates) return;
+
   autoUpdater.autoDownload = false;
   initializeUpdateEventListeners();
 
   checkForUpdates();
   scheduleDailyUpdateCheck();
+
+  alreadyWatchingForUpdates = true;
 };
 
 const initializeUpdateEventListeners = () => {
@@ -21,8 +26,9 @@ const initializeUpdateEventListeners = () => {
 
   autoUpdater.on('update-available', (updateInfo) => {
     logger.info('update-available', updateInfo);
-    const mainWindow = findLast(BrowserWindow.getAllWindows());
-    mainWindow.webContents.send('confirm-update', updateInfo);
+    BrowserWindow.getAllWindows().forEach(window =>
+      window.webContents.send('confirm-update', updateInfo)
+    );
   });
 
   ipcMain.on('confirm-update-response', (event, isConfirmed) => {
