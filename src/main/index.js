@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 
@@ -12,7 +12,6 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
 }
 
-let mainWindow;
 const winURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:9080'
   : `file://${__dirname}/index.html`;
@@ -21,7 +20,7 @@ const createWindow = () => {
   /**
    * Initial window options
    */
-  mainWindow = new BrowserWindow({
+  const window = new BrowserWindow({
     height: 563,
     useContentSize: true,
     width: 1024,
@@ -30,14 +29,30 @@ const createWindow = () => {
     }
   });
 
-  mainWindow.loadURL(winURL);
-
-  mainWindow.on('closed', () => {
-    mainWindow = null;
-  });
+  window.loadURL(winURL);
+  logger.info('window-opened');
 };
 
-app.on('ready', createWindow);
+const addNewWindowCommandToDefaultMenus = () => {
+  const newWindowMenuItemDefinition = {
+    label: 'New Window',
+    accelerator: 'CommandOrControl+N',
+    click: () => createWindow()
+  };
+
+  const appMenu = Menu.getApplicationMenu();
+  const fileMenu = appMenu.items.find(item => item.label === 'File');
+  fileMenu.submenu.insert(0, new MenuItem(newWindowMenuItemDefinition));
+  Menu.setApplicationMenu(appMenu);
+
+  const dockMenu = Menu.buildFromTemplate([newWindowMenuItemDefinition]);
+  app.dock.setMenu(dockMenu);
+};
+
+app.on('ready', () => {
+  addNewWindowCommandToDefaultMenus();
+  createWindow();
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
@@ -47,13 +62,13 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  if (mainWindow === null) {
+  if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });
 
 ipcMain.on('ui-ready', () => {
-  logger.info('app-started');
+  logger.info('ui-ready');
   if (process.env.NODE_ENV === 'production') {
     startWatchingForUpdates();
   }
