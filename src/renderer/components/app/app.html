@@ -6,99 +6,105 @@
     <main class="e-layout__content" style="flex-grow: 1;">
       <section class="e-layout__section e-padding-s" style="display: flex; flex-direction: column;">
 
-        <div class="e-grid e-grid-small e-margin-bottom-s">
+        <div class="e-grid e-grid-small e-grid-wrap">
           <div class="e-cell e-cell-small">
-            <e-select
-                :items="JSON.stringify(availableContexts)"
-                :loading="loading.contextList"
-                @change="selectContext($event.target.value)"
-            ></e-select>
-          </div>
-          <div class="e-cell e-cell-small">
-            <e-select
-                id="namespace-selector"
-                placeholder="Select your namespace"
-                :items="JSON.stringify(namespaces)"
-                :loading="loading.namespaceList"
-                @change="selectNamespace($event.target.value)"
-            ></e-select>
-          </div>
-
-          <div class="e-cell e-cell-small">
-            <e-select
-                id="secret-selector"
-                :disabled="secretNamespace === ''"
-                placeholder="Select your secret"
-                :items="JSON.stringify(namesForSelectedNamespace)"
-                :loading="loading.nameList"
-                @change="selectName($event.target.value)"
-            ></e-select>
-          </div>
-        </div>
-
-        <div class="e-grid e-grid-small">
-          <div class="e-cell e-cell-small">
-            <e-tooltip content="Reload secret">
-              <div id="reload-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
-                  <e-spinner data-size="small"></e-spinner>
-                  <e-icon icon="e-refresh"></e-icon>
-                </div>
-                Reload
+            <div class="e-grid e-grid-small">
+              <div class="e-cell e-cell-small">
+                <e-select
+                  size="large"
+                  :items="JSON.stringify(availableContexts)"
+                  :loading="loading.contextList"
+                  @change="selectContext($event.target.value)"
+                ></e-select>
               </div>
-            </e-tooltip>
-          </div>
 
-          <div class="e-cell e-cell-small">
-            <e-tooltip content="Save secret">
-              <div id="save-button" class="e-btn" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
-                  <e-spinner data-size="small"></e-spinner>
-                  <e-icon icon="floppy-o"></e-icon>
-                </div>
-                Save
+              <div class="e-cell e-cell-small">
+                <e-select
+                  size="large"
+                  id="namespace-selector"
+                  placeholder="Select your namespace"
+                  :items="JSON.stringify(namespaces)"
+                  :loading="loading.namespaceList"
+                  @change="selectNamespace($event.target.value)"
+                ></e-select>
               </div>
-            </e-tooltip>
-          </div>
 
-          <div class="e-cell e-cell-small">
-            <e-tooltip content="Load backup to editor">
-              <backup-selector
-                :selected-time="selectedBackupTime"
-                :disabled="!backupEnabled"
-                @input="loadSelectedBackup($event)"
-              />
-            </e-tooltip>
-          </div>
-
-          <div class="e-cell">
-            <e-icon icon="e-character-vertical-line" color="shade" style="height: 100%"></e-icon>
-          </div>
-
-          <div class="e-cell e-cell-small">
-            <e-tooltip content="Restart service">
-              <div id="restart-button" class="e-btn" @click="restartService()" :disabled="!serviceRestartEnabled">
-                <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.serviceRestart }">
-                  <e-spinner data-size="small"></e-spinner>
-                  <e-icon icon="e-signout"></e-icon>
-                </div>
-                Restart
+              <div class="e-cell e-cell-small">
+                <e-select
+                  size="large"
+                  id="secret-selector"
+                  :disabled="secretNamespace === ''"
+                  placeholder="Select your secret"
+                  :items="JSON.stringify(namesForSelectedNamespace)"
+                  :loading="loading.nameList"
+                  @change="selectName($event.target.value)"
+                ></e-select>
               </div>
-            </e-tooltip>
+            </div>
           </div>
 
-          <div class="e-cell e-cell-small" style="margin-left: auto">
-            <div style="position: relative">
-              <input
-                  id="search-input"
-                  ref="searchInput"
-                  class="e-input e-input-large"
-                  type="search"
-                  placeholder="Search"
-                  v-model="searchTerm"
-                  style="padding-left: 40px"
-              />
-              <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
+          <div class="e-cell e-cell-small e-cell-auto" style="min-width: fit-content">
+            <div class="e-grid e-grid-small">
+              <div class="e-cell e-cell-small">
+                <e-tooltip content="Reload secret">
+                  <div id="reload-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
+                    <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
+                      <e-spinner data-size="small"></e-spinner>
+                      <e-icon icon="e-refresh"></e-icon>
+                    </div>
+                    Reload
+                  </div>
+                </e-tooltip>
+              </div>
+
+              <div class="e-cell e-cell-small">
+                <e-tooltip content="Save secret">
+                  <div id="save-button" class="e-btn" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
+                    <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
+                      <e-spinner data-size="small"></e-spinner>
+                      <e-icon icon="floppy-o"></e-icon>
+                    </div>
+                    Save
+                  </div>
+                </e-tooltip>
+              </div>
+
+              <div class="e-cell e-cell-small">
+                <e-tooltip content="Load backup to editor">
+                  <backup-selector
+                    :selected-time="selectedBackupTime"
+                    :disabled="!backupEnabled"
+                    @input="loadSelectedBackup($event)"
+                  />
+                </e-tooltip>
+              </div>
+
+              <div class="e-cell e-cell-small">
+                <e-tooltip content="Restart service">
+                  <div id="restart-button" class="e-btn" @click="restartService()" :disabled="!serviceRestartEnabled">
+                    <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.serviceRestart }">
+                      <e-spinner data-size="small"></e-spinner>
+                      <e-icon icon="e-signout"></e-icon>
+                    </div>
+                    Restart
+                  </div>
+                </e-tooltip>
+              </div>
+
+              <div class="e-cell e-cell-small" style="margin-left: auto">
+                <div style="position: relative">
+                  <input
+                    id="search-input"
+                    ref="searchInput"
+                    class="e-input e-input-large"
+                    type="search"
+                    placeholder="Search"
+                    v-model="searchTerm"
+                    style="padding-left: 40px"
+                  />
+                  <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
