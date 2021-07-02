@@ -12,25 +12,45 @@ if (process.env.NODE_ENV !== 'development') {
   global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
 }
 
-const winURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:9080'
-  : `file://${__dirname}/index.html`;
+const getUrl = page =>
+  process.env.NODE_ENV === 'development'
+    ? `http://localhost:9080/${page}`
+    : `file://${__dirname}/${page}`;
 
-const createWindow = () => {
-  /**
-   * Initial window options
-   */
-  const window = new BrowserWindow({
+const createWindow = async () => {
+  const splashWindow = new BrowserWindow({
+    width: 800,
+    height: (1080 * 800) / 1920, // video resolution: 1920*1080
+    transparent: true,
+    frame: false
+  });
+  splashWindow.loadURL(getUrl('static/splash-screen.html'));
+
+  const mainWindow = new BrowserWindow({
+    width: 1024,
     height: 563,
     useContentSize: true,
-    width: 1024,
     webPreferences: {
       nodeIntegration: true
-    }
+    },
+    show: false
   });
 
-  window.loadURL(winURL);
+  await Promise.all([
+    mainWindow.loadURL(getUrl('index.html')),
+    waitForSplashAnimationToFinish()
+  ]);
+
+  splashWindow.destroy();
+  mainWindow.show();
   logger.info('window-opened');
+};
+
+const waitForSplashAnimationToFinish = () => {
+  const isFirstWindowOpening = BrowserWindow.getAllWindows().length === 2;
+  return isFirstWindowOpening
+    ? new Promise(resolve => setTimeout(resolve, 4500))
+    : Promise.resolve();
 };
 
 const addNewWindowCommandToDefaultMenus = () => {
