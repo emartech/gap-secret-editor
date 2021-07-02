@@ -196,12 +196,13 @@ export default {
     async initialize() {
       this.loading.contextList = true;
       this.contextList = await kubernetesClient.listContexts();
+      this.loading.contextList = false;
+
       const lastSelectedContext = localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT];
-      this.context = this.contextList.includes(lastSelectedContext)
+      const initialContext = this.contextList.includes(lastSelectedContext)
         ? lastSelectedContext
         : await kubernetesClient.getContext();
-      this.loading.contextList = false;
-      await this.initializeNamespacesAndSecrets();
+      await this.selectContext(initialContext);
     },
     async initializeNamespacesAndSecrets() {
       this.loading.namespaceList = true;

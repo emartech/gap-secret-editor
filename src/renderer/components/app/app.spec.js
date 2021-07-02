@@ -581,7 +581,7 @@ describe('App', () => {
   describe('#initialize', () => {
     it('should load context data when a valid value is stored on local storage', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production', 'test']);
-      sinon.stub(kubernetesClient, 'getContext').resolves('staging');
+      sinon.stub(kubernetesClient, 'setContext');
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = 'production';
       const { vm } = await loadApp();
 
@@ -589,6 +589,7 @@ describe('App', () => {
 
       expect(vm.contextList).to.eql(['staging', 'production', 'test']);
       expect(vm.context).to.eql('production');
+      expect(kubernetesClient.setContext).to.have.been.calledWith('production');
     });
 
     it('should load context data when the local storage value is not valid', async () => {
