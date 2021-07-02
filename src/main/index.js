@@ -18,17 +18,15 @@ const getUrl = page =>
     : `file://${__dirname}/${page}`;
 
 const createWindow = async () => {
-  const splashWindow = new BrowserWindow({
-    width: 800,
-    height: (1080 * 800) / 1920, // video resolution: 1920*1080
-    transparent: true,
-    frame: false
-  });
+  const width = 1024;
+  const height = (1080 * width) / 1920; // video resolution: 1920*1080
+
+  const splashWindow = new BrowserWindow({ width, height, useContentSize: true, backgroundColor: '#E3E9F0' });
   splashWindow.loadURL(getUrl('static/splash-screen.html'));
 
   const mainWindow = new BrowserWindow({
-    width: 1024,
-    height: 563,
+    width,
+    height,
     useContentSize: true,
     webPreferences: {
       nodeIntegration: true
