@@ -19,7 +19,7 @@ const getUrl = page =>
 
 const createWindow = async () => {
   const width = 1024;
-  const height = (1080 * width) / 1920; // video resolution: 1920*1080
+  const height = Math.floor(1080 * width) / 1920; // video resolution: 1920*1080
 
   const splashWindow = new BrowserWindow({ width, height, useContentSize: true, backgroundColor: '#E3E9F0' });
   splashWindow.loadURL(getUrl('static/splash-screen.html'));
