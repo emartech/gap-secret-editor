@@ -1,0 +1,29 @@
+<e-dialog
+  headline="Give us feedback"
+  :opened="opened"
+  v-on="{ 'dialog.close': close }"
+>
+  <div class="e-field">Let us know how we can improve your automation program editing experience.</div>
+
+  <div class="e-field">
+    <div class="e-field__label">Your feedback</div>
+    <textarea
+      class="e-input e-input-textarea"
+      v-model="feedback"
+      placeholder="Enter a detailed description of your feedback or suggestion"
+    ></textarea>
+  </div>
+
+  <div class="e-dialog__footer">
+    <div class="e-flex e-flex-condensed">
+      <div class="e-btn e-flex__item" @click="close()">Cancel</div>
+
+      <div class="e-btn e-btn-primary e-btn-has_overlay e-flex__item" @click="sendFeedbackAndClose()">
+        <div class="e-btn__loading" :class="{ 'e-btn__loading-active': feedbackSendingInProgress }">
+          <e-spinner data-size="small"></e-spinner>
+        </div>
+        Send Feedback
+      </div>
+    </div>
+  </div>
+</e-dialog>

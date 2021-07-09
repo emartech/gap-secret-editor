@@ -69,5 +69,13 @@ export default {
       type: 'success',
       autoClose: true
     });
-  }
-};
+  },
+  feedbackFailed: () => {
+    window.e.utils.openNotification({
+      title: 'Send feedback failed',
+      content: 'Failed to send feedback. Try again later.',
+      placement,
+      type: 'danger',
+      autoClose: true
+    });
+  } };
