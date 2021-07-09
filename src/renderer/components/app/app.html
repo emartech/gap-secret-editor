@@ -2,6 +2,7 @@
   <div class="e-layout e-layout-without_navigation e-fullheight" style="display: flex;">
     <header class="e-layout__header">
       <h1 class="e-layout__title">GAP Secret Editor</h1>
+      <div class="e-btn e-btn-link" @click="openFeedbackDialog()">Give us feedback</div>
     </header>
     <main class="e-layout__content" style="flex-grow: 1;">
       <section class="e-layout__section e-padding-s" style="display: flex; flex-direction: column;">
@@ -130,5 +131,7 @@
       :current-secret="secretAsObject"
       @confirmed="saveSecret()"
     />
+
+    <feedback-dialog ref="feedbackDialog" />
   </div>
 </div>

@@ -9,6 +9,7 @@ import SecretEditor from '../secret-editor/secret-editor';
 import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
+import FeedbackDialog from '../feedback-dialog/feedback-dialog';
 
 const logger = log.scope('app');
 
@@ -19,7 +20,7 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor, BackupSelector, SaveConfirmationDialog, AutoUpdateConfirmation },
+  components: { SecretEditor, BackupSelector, SaveConfirmationDialog, AutoUpdateConfirmation, FeedbackDialog },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -86,6 +87,9 @@ export default {
   },
   methods: {
     ...mapMutations(['setBackups']),
+    openFeedbackDialog() {
+      this.$refs.feedbackDialog.open();
+    },
     async selectContext(context) {
       this.clearSecret();
       this.context = context;
