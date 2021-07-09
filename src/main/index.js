@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
+import { postFeedbackToGoogleForm } from './feedback/feedback';
 
 const logger = log.scope('main');
 
@@ -90,4 +91,8 @@ ipcMain.on('ui-ready', () => {
   if (process.env.NODE_ENV === 'production') {
     startWatchingForUpdates();
   }
+});
+
+ipcMain.handle('send-feedback', async (event, feedback) => {
+  await postFeedbackToGoogleForm(feedback);
 });
