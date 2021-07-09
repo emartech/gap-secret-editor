@@ -24,7 +24,6 @@
     "test": "npm run audit && npm run lint && npm run test:once",
     "test:once": "karma start test-helpers/karma.conf.js --single-run",
     "test:watch": "karma start test-helpers/karma.conf.js",
-    "postinstall": "npm run lint:fix",
     "release": "node .electron-vue/build.js && electron-builder --publish always"
   },
   "build": {
@@ -95,6 +94,7 @@
     "@kubernetes/client-node": "0.14.3",
     "@vue/test-utils": "1.2.0",
     "ajv": "6.12.6",
+    "axios": "0.21.1",
     "babel-eslint": "10.1.0",
     "babel-loader": "8.2.2",
     "cfonts": "2.9.3",
