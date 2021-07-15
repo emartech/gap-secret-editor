@@ -16,9 +16,9 @@
 
   <div class="e-dialog__footer">
     <div class="e-flex e-flex-condensed">
-      <div class="e-btn e-flex__item" @click="close()">Cancel</div>
+      <div id="feedback-cancel-button" class="e-btn e-flex__item" @click="close()">Cancel</div>
 
-      <div class="e-btn e-btn-primary e-btn-has_overlay e-flex__item" @click="sendFeedbackAndClose()">
+      <div id="feedback-send-button" class="e-btn e-btn-primary e-btn-has_overlay e-flex__item" @click="sendFeedbackAndClose()">
         <div class="e-btn__loading" :class="{ 'e-btn__loading-active': feedbackSendingInProgress }">
           <e-spinner data-size="small"></e-spinner>
         </div>

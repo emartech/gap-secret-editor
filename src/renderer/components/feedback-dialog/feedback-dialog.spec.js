@@ -10,7 +10,7 @@ describe('FeedbackDialog', () => {
     const wrapper = mount(FeedbackDialog);
     wrapper.find('textarea').setValue('I love this!');
 
-    const [, okButton] = wrapper.findAll('.e-btn').wrappers;
+    const okButton = wrapper.find('#feedback-send-button');
     okButton.trigger('click');
     await flushPromises();
 
@@ -22,7 +22,7 @@ describe('FeedbackDialog', () => {
     const wrapper = mount(FeedbackDialog);
     wrapper.find('textarea').setValue('I love this!');
 
-    const [, okButton] = wrapper.findAll('.e-btn').wrappers;
+    const okButton = wrapper.find('#feedback-send-button');
     okButton.trigger('click');
     await flushPromises();
 
@@ -35,7 +35,7 @@ describe('FeedbackDialog', () => {
 
     wrapper.vm.open();
 
-    const [, okButton] = wrapper.findAll('.e-btn').wrappers;
+    const okButton = wrapper.find('#feedback-send-button');
     okButton.trigger('click');
     await flushPromises();
 
@@ -48,7 +48,7 @@ describe('FeedbackDialog', () => {
 
     const wrapper = mount(FeedbackDialog);
 
-    const [, okButton] = wrapper.findAll('.e-btn').wrappers;
+    const okButton = wrapper.find('#feedback-send-button');
     okButton.trigger('click');
     await flushPromises();
 
@@ -60,7 +60,7 @@ describe('FeedbackDialog', () => {
     const wrapper = mount(FeedbackDialog);
     wrapper.vm.open();
 
-    const [cancelButton] = wrapper.findAll('.e-btn').wrappers;
+    const cancelButton = wrapper.find('#feedback-cancel-button');
     cancelButton.trigger('click');
     await flushPromises();
 
