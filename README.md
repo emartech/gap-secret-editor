@@ -2,6 +2,11 @@
 
 > Secret and config editor with GUI for Emarsys applications in Google Application Platform
 
+## Prerequisites
+
+Install (or update) [gcloud](https://cloud.google.com/sdk/docs/quickstarts), and connect to the staging and production
+clusters. More info in [GAP docs](https://gap-docs.gservice.emarsys.net/development-environment-setup-guide.html#gcloud).
+
 ## Installation
 
 Download the application from the [releases](https://github.com/emartech/gap-secret-editor/releases) page of the GitHub
