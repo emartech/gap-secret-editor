@@ -104,11 +104,12 @@ const startRenderer = () => new Promise(resolve => {
   const server = new WebpackDevServer(
     compiler,
     {
-      contentBase: path.join(__dirname, '../'),
-      quiet: true,
-      before(app, ctx) {
-        app.use(hotMiddleware);
-        ctx.middleware.waitUntilValid(() => {
+      static: {
+        directory: path.join(__dirname, '../')
+      },
+      onBeforeSetupMiddleware(devServer) {
+        devServer.app.use(hotMiddleware);
+        devServer.middleware.waitUntilValid(() => {
           resolve();
         });
       }

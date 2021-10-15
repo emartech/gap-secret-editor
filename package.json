@@ -147,7 +147,7 @@
     "vue2-ace-editor": "0.0.15",
     "webpack": "5.58.2",
     "webpack-cli": "4.9.0",
-    "webpack-dev-server": "3.11.2",
+    "webpack-dev-server": "4.3.1",
     "webpack-hot-middleware": "2.25.1",
     "webpack-merge": "5.8.0"
   }

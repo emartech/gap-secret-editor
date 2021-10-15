@@ -42,7 +42,10 @@ const mainConfig = {
   target: 'electron-main',
   optimization: {
     emitOnErrors: true
-  }
+  },
+  ignoreWarnings: [
+    { message: /Critical dependency: the request of a dependency is an expression/ }
+  ]
 };
 
 /**
