@@ -15,7 +15,7 @@
     "build:dir": "node .electron-vue/build.js && electron-builder --dir",
     "build:clean": "cross-env BUILD_TARGET=clean node .electron-vue/build.js",
     "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
+    "start-dev": "node .electron-vue/dev-runner.js",
     "lint": "eslint --ext .js -f ./node_modules/eslint-friendly-formatter src .electron-vue test-helpers",
     "lint:fix": "eslint --ext .js -f ./node_modules/eslint-friendly-formatter --fix src .electron-vue",
     "pack": "npm run pack:main && npm run pack:renderer",
