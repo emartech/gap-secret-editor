@@ -1,15 +1,12 @@
 {
-  "exceptions": [
-    "https://npmjs.com/advisories/785",
-    "https://npmjs.com/advisories/1066",
-    "https://npmjs.com/advisories/1067",
-    "https://npmjs.com/advisories/1751",
-    "https://npmjs.com/advisories/1755",
-    "https://npmjs.com/advisories/1769",
-    "https://npmjs.com/advisories/1770",
-    "https://npmjs.com/advisories/1771",
-    "https://npmjs.com/advisories/1773",
-    "https://npmjs.com/advisories/1774",
-    "https://npmjs.com/advisories/1776"
-  ]
+  "1002401" : { "active": true },
+  "1002536" : { "active": true },
+  "1002548" : { "active": true },
+  "1003013" : { "active": true },
+  "1003016" : { "active": true },
+  "1003421" : { "active": true },
+  "1003422" : { "active": true },
+  "1004282" : { "active": true },
+  "1004323" : { "active": true },
+  "1004741" : { "active": true }
 }
