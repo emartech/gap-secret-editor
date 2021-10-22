@@ -35,21 +35,24 @@ const createWindow = async () => {
     show: false
   });
 
-  await Promise.all([
-    mainWindow.loadURL(getUrl('index.html')),
-    waitForSplashAnimationToFinish()
-  ]);
+  await mainWindow.loadURL(getUrl('index.html'));
+  showMainWindowInPlaceOfSplashWindow(splashWindow, mainWindow);
 
-  splashWindow.destroy();
-  mainWindow.show();
   logger.info('window-opened');
 };
 
-const waitForSplashAnimationToFinish = () => {
-  const isFirstWindowOpening = BrowserWindow.getAllWindows().length === 2;
-  return isFirstWindowOpening
-    ? new Promise(resolve => setTimeout(resolve, 4500))
-    : Promise.resolve();
+const showMainWindowInPlaceOfSplashWindow = (splashWindow, mainWindow) => {
+  mainWindow.setBounds(splashWindow.getNormalBounds());
+  mainWindow.setFullScreen(splashWindow.isFullScreen());
+  if (splashWindow.isMaximized()) {
+    mainWindow.maximize();
+  }
+  if (splashWindow.isMinimized()) {
+    mainWindow.minimize();
+  }
+
+  splashWindow.destroy();
+  mainWindow.show();
 };
 
 const addNewWindowCommandToDefaultMenus = () => {
