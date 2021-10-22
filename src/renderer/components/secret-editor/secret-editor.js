@@ -54,10 +54,10 @@ export default {
     },
     _updateHiddenFields() {
       this.keysOfHiddenFields = this.fields
-        .filter(field => this.searchTerm
-          ? !stringMatches(field.key, this.searchTerm) && !stringMatches(field.value, this.searchTerm)
-          : false
-        )
+        .filter(field => {
+          if (!this.searchTerm || (field.key === '' && field.value === '')) return false;
+          return !stringMatches(field.key, this.searchTerm) && !stringMatches(field.value, this.searchTerm);
+        })
         .map(field => field.key);
     }
   },

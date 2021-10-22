@@ -18,60 +18,67 @@ describe('SecretEditor', () => {
       ]);
     });
 
-    it('should return matching field when key equals searchTerm', () => {
+    it('should return matching field with an extra empty field when key equals searchTerm', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'name' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'name', value: 'James Bond', index: 0 }
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching field when key contains searchTerm', () => {
+    it('should return matching field with an extra empty field when key contains searchTerm', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'od' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching field when key contains searchTerm with different casing', () => {
+    it('should return matching field with an empty field when key contains searchTerm with different casing', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'OD' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching field when value equals searchTerm', () => {
+    it('should return matching field with an extra empty field when value equals searchTerm', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'James Bond' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'name', value: 'James Bond', index: 0 }
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching field when value contains searchTerm', () => {
+    it('should return matching field with an extra empty field when value contains searchTerm', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'Bond' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'name', value: 'James Bond', index: 0 }
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching field when value contains searchTerm with different casing', () => {
+    it('should return matching field with an empty field when value contains searchTerm with different casing', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'bOND' } });
 
       expect(vm.filteredFields).to.eql([
-        { key: 'name', value: 'James Bond', index: 0 }
+        { key: 'name', value: 'James Bond', index: 0 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
-    it('should return matching fields when more fields are matching with searchTerm', () => {
+    it('should return matching fields with an extra empty field when more fields are matching with searchTerm', () => {
       const { vm } = mountWithStore(SecretEditor, { propsData: { value: fields(), searchTerm: 'o' } });
 
       expect(vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
@@ -80,14 +87,16 @@ describe('SecretEditor', () => {
 
       expect(wrapper.vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
 
       wrapper.setProps({ value: fields(), searchTerm: 'code' });
       await wrapper.vm.$nextTick();
 
       expect(wrapper.vm.filteredFields).to.eql([
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
     });
 
@@ -96,7 +105,8 @@ describe('SecretEditor', () => {
 
       expect(wrapper.vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bond', index: 0 },
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
 
       const secret = fields();
@@ -106,7 +116,8 @@ describe('SecretEditor', () => {
 
       expect(wrapper.vm.filteredFields).to.eql([
         { key: 'name', value: 'James Bandi', index: 0 },
-        { key: 'code', value: '007', index: 1 }
+        { key: 'code', value: '007', index: 1 },
+        { key: '', value: '', index: 2 }
       ]);
     });
   });
@@ -149,9 +160,9 @@ describe('SecretEditor', () => {
     await vm.$nextTick();
 
     const renderedKeys = Array.from(vm.$el.querySelectorAll('.secret-key')).map(input => input.value);
-    expect(renderedKeys).to.eql(['name']);
+    expect(renderedKeys).to.eql(['name', '']);
     const renderedValues = Array.from(vm.$el.querySelectorAll('.secret-value')).map(input => input.value);
-    expect(renderedValues).to.eql(['James Bond']);
+    expect(renderedValues).to.eql(['James Bond', '']);
   });
 
   it('should display delete buttons for every field, and disable the last one', () => {

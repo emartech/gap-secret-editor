@@ -180,7 +180,7 @@ describe('App - Integration', () => {
 
       const renderedSecretKeys = wrapper.findAll('#secret-editor .secret-key').wrappers
         .map(wrapper => wrapper.element.value);
-      expect(renderedSecretKeys).to.eql(['SUPER_SECRET_JSON']);
+      expect(renderedSecretKeys).to.eql(['SUPER_SECRET_JSON', '']);
     });
 
     it('should display error notification when secret loading fails', async () => {
