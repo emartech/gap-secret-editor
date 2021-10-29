@@ -105,9 +105,15 @@ export default {
       await this.initializeNamespacesAndSecrets();
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = this.context;
     },
-    async selectNamespace(namespace) {
+    async selectNamespace(newNamespace) {
+      const currentNamespace = this.secretNamespace;
+      this.secretNamespace = newNamespace;
+      if (this.hasSecretChanged && !(await notificationDisplayer.shouldChangesBeDiscarded())) {
+        this.secretNamespace = currentNamespace;
+        return;
+      }
+
       this.clearSecret();
-      this.secretNamespace = namespace;
       this.loading.nameList = true;
       try {
         this.nameList = await kubernetesClient.listSecrets(this.secretNamespace);

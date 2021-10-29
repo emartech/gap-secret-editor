@@ -228,6 +228,18 @@ describe('App', () => {
   });
 
   describe('#selectNamespace', () => {
+    it('should set namespace field on component', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'whatever';
+
+      await vm.selectNamespace('team1');
+
+      expect(vm.secretNamespace).to.eql('team1');
+    });
+
     it('should store selection to local storage when secret list loading succeeds', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
@@ -257,6 +269,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
       const { vm } = await loadApp();
+      vm.originalSecret = { doesnt: 'matter' };
       vm.secret = [{ key: 'doesnt', value: 'matter' }];
       vm.secretLoaded = true;
 
@@ -264,6 +277,36 @@ describe('App', () => {
 
       expect(vm.secret).to.eql([]);
       expect(vm.secretLoaded).to.be.false;
+    });
+
+    it('should not set namespace when user cancels a change', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(false);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'team1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectNamespace('team2');
+
+      expect(vm.secretNamespace).to.eql('team1');
+    });
+
+    it('should set namespace when user discards unsaved changes', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'team1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectNamespace('team2');
+
+      expect(vm.secretNamespace).to.eql('team2');
     });
   });
 
