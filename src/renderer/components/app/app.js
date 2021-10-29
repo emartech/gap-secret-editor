@@ -149,6 +149,7 @@ export default {
       notificationDisplayer.backupSuccess();
     },
     clearSecret() {
+      this.originalSecret = {};
       this.secret = [];
       this.secretLoaded = false;
     },
@@ -180,7 +181,6 @@ export default {
         await this.loadBackups();
       } catch (e) {
         notificationDisplayer.loadFailed(e.message);
-        this.originalSecret = {};
         this.clearSecret();
         logger.warn('load-failed', { namespace: this.secretNamespace, name: this.secretName }, e);
       }
