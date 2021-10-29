@@ -225,6 +225,24 @@ describe('App', () => {
 
       expect(vm.context).to.eql('production');
     });
+
+    it('should not ask for user confirmation when there are no changes in the secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded');
+      const { vm } = await loadApp();
+      vm.context = 'staging';
+      vm.secretNamespace = 'namespace1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secretLoaded = true;
+
+      vm.secret = [{ key: 'FIELD', value: 'value' }];
+
+      await vm.selectContext('production');
+
+      expect(notificationDisplayer.shouldChangesBeDiscarded).to.not.have.been.called;
+    });
   });
 
   describe('#selectNamespace', () => {
@@ -307,6 +325,21 @@ describe('App', () => {
       await vm.selectNamespace('team2');
 
       expect(vm.secretNamespace).to.eql('team2');
+    });
+
+    it('should not ask for user confirmation when there are no changes in the secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['team1', 'team2']);
+      sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded');
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'team1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'value' }];
+
+      await vm.selectNamespace('team2');
+
+      expect(notificationDisplayer.shouldChangesBeDiscarded).to.not.have.been.called;
     });
   });
 
@@ -398,6 +431,22 @@ describe('App', () => {
       await vm.selectName('other-app');
 
       expect(vm.secretName).to.eql('other-app');
+    });
+
+    it('should not ask for user confirmation when there are no changes in the secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'some-namespace';
+      vm.secretName = 'cool-app';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'value' }];
+
+      await vm.selectName('other-app');
+
+      expect(notificationDisplayer.shouldChangesBeDiscarded).to.not.have.been.called;
     });
   });
 
