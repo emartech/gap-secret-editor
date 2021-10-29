@@ -141,7 +141,9 @@ export default {
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
       await this.loadSecret();
     },
-    loadSelectedBackup(backup) {
+    async loadSelectedBackup(backup) {
+      if (this.hasSecretChanged && !(await notificationDisplayer.shouldChangesBeDiscarded())) return;
+
       this.secret = objectToKeyValueArray(backup.data);
       this.selectedBackupTime = backup.backupTime;
       notificationDisplayer.backupSuccess();

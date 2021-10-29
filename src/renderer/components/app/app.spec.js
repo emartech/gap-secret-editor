@@ -455,11 +455,12 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
-      vm.secret = [{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }];
+      vm.originalSecret = { FIELD1: 'val1', FIELD2: 'val2' };
+      vm.secret = [{ key: 'FIELD1', value: 'val1' }, { key: 'FIELD2', value: 'val2' }];
 
-      vm.loadSelectedBackup({ data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' });
+      await vm.loadSelectedBackup({ data: { FIELD1: 'val0', FIELD3: 'val3' }, backupTime: '2020-09-19T22:17:01.891Z' });
 
-      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value0' }, { key: 'FIELD3', value: 'value3' }]);
+      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'val0' }, { key: 'FIELD3', value: 'val3' }]);
     });
 
     it('should update selected backup time', async () => {
@@ -467,7 +468,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
 
-      vm.loadSelectedBackup({ data: { FIELD1: 'value0', FIELD3: 'value3' }, backupTime: '2020-09-19T22:17:01.891Z' });
+      await vm.loadSelectedBackup({ data: { FIELD1: 'val0', FIELD3: 'val3' }, backupTime: '2020-09-19T22:17:01.891Z' });
 
       expect(vm.selectedBackupTime).to.eql('2020-09-19T22:17:01.891Z');
     });
@@ -481,6 +482,46 @@ describe('App', () => {
       vm.loadSelectedBackup({ data: { FIELD1: 'value0' }, backupTime: '2020-09-19T00:00:00.000Z' });
 
       expect(notificationDisplayer.backupSuccess).to.have.been.called;
+    });
+
+    it('should not replace secret when user cancels a change', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(false);
+      const { vm } = await loadApp();
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'modified-value' }];
+
+      await vm.loadSelectedBackup({ data: { FIELD: 'backup-value' }, backupTime: '2020-09-19T22:17:01.891Z' });
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'modified-value' }]);
+    });
+
+    it('should replace secret when user discards unsaved changes', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'modified-value' }];
+
+      await vm.loadSelectedBackup({ data: { FIELD: 'backup-value' }, backupTime: '2020-09-19T22:17:01.891Z' });
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'backup-value' }]);
+    });
+
+    it('should replace secret without confirmation when there are no changes in the secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded');
+      const { vm } = await loadApp();
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'original-value' }];
+
+      await vm.loadSelectedBackup({ data: { FIELD: 'backup-value' }, backupTime: '2020-09-19T22:17:01.891Z' });
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'backup-value' }]);
+      expect(notificationDisplayer.shouldChangesBeDiscarded).to.not.have.been.called;
     });
   });
 
