@@ -72,8 +72,7 @@ export default {
     },
     saveEnabled() {
       const hasDuplicatedKey = this.secret.length !== uniqBy(this.secret, 'key').length;
-      const secretChanged = !isEqual(this.originalSecret, this.secretAsObject);
-      return this.secretLoaded && secretChanged && !hasDuplicatedKey && !this.loading.secretSave;
+      return this.secretLoaded && this.hasSecretChanged && !hasDuplicatedKey && !this.loading.secretSave;
     },
     backupEnabled() {
       return this.secretLoaded;
@@ -83,6 +82,9 @@ export default {
     },
     secretAsObject() {
       return keyValueArrayToObject(this.secret);
+    },
+    hasSecretChanged() {
+      return !isEqual(this.originalSecret, this.secretAsObject);
     }
   },
   methods: {
@@ -90,12 +92,18 @@ export default {
     openFeedbackDialog() {
       this.$refs.feedbackDialog.open();
     },
-    async selectContext(context) {
+    async selectContext(newContext) {
+      const currentContext = this.context;
+      this.context = newContext;
+      if (this.hasSecretChanged && !(await notificationDisplayer.shouldChangesBeDiscarded())) {
+        this.context = currentContext;
+        return;
+      }
+
       this.clearSecret();
-      this.context = context;
-      await kubernetesClient.setContext(context);
+      await kubernetesClient.setContext(this.context);
       await this.initializeNamespacesAndSecrets();
-      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = context;
+      localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT] = this.context;
     },
     async selectNamespace(namespace) {
       this.clearSecret();

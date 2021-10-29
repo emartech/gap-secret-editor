@@ -180,6 +180,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       sinon.stub(kubernetesClient, 'listSecrets').resolves([]);
       const { vm } = await loadApp();
+      vm.originalSecret = { doesnt: 'matter' };
       vm.secret = [{ key: 'doesnt', value: 'matter' }];
       vm.secretLoaded = true;
 
@@ -187,6 +188,42 @@ describe('App', () => {
 
       expect(vm.secret).to.eql([]);
       expect(vm.secretLoaded).to.be.false;
+    });
+
+    it('should not set kubernetes context when user cancels a change', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(false);
+      const { vm } = await loadApp();
+      vm.context = 'staging';
+      vm.secretNamespace = 'namespace1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secretLoaded = true;
+
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectContext('production');
+
+      expect(vm.context).to.eql('staging');
+    });
+
+    it('should set context when user discards unsaved changes', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves(['staging', 'production']);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves(['namespace1', 'namespace2']);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.context = 'staging';
+      vm.secretNamespace = 'namespace1';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secretLoaded = true;
+
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectContext('production');
+
+      expect(vm.context).to.eql('production');
     });
   });
 

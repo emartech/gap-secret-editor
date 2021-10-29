@@ -78,4 +78,21 @@ export default {
       type: 'danger',
       autoClose: true
     });
-  } };
+  },
+  shouldChangesBeDiscarded: () => {
+    return new Promise(resolve => {
+      window.e.utils.openDestructiveConfirmationDialog({
+        headline: 'Discard changes?',
+        content: 'By loading a secret, all your unsaved changes will be lost.',
+        confirm: {
+          label: 'Discard & Load',
+          callback: () => resolve(true)
+        },
+        cancel: {
+          label: 'Cancel',
+          callback: () => resolve(false)
+        }
+      });
+    });
+  }
+};
