@@ -48,7 +48,7 @@
             <div class="e-grid e-grid-small">
               <div class="e-cell e-cell-small">
                 <e-tooltip content="Reload secret">
-                  <div id="reload-button" class="e-btn" @click="loadSecret()" :disabled="!loadEnabled">
+                  <div id="reload-button" class="e-btn" @click="reloadSecret()" :disabled="!loadEnabled">
                     <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretLoad }">
                       <e-spinner data-size="small"></e-spinner>
                       <e-icon icon="e-refresh"></e-icon>

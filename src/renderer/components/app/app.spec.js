@@ -484,6 +484,57 @@ describe('App', () => {
     });
   });
 
+  describe('#reloadSecret', () => {
+    it('should not load secret when user cancels a change', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'loaded-value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(false);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'changed-value' }];
+
+      await vm.reloadSecret();
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'changed-value' }]);
+    });
+
+    it('should load secret when user discards unsaved changes', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'loaded-value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'changed-value' }];
+
+      await vm.reloadSecret();
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'loaded-value' }]);
+    });
+
+    it('should load secret without confirmation when there are no changes in the secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD: 'loaded-value' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded');
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'space';
+      vm.secretName = 'name';
+      vm.originalSecret = { FIELD: 'original-value' };
+      vm.secret = [{ key: 'FIELD', value: 'original-value' }];
+
+      await vm.reloadSecret();
+
+      expect(vm.secret).to.eql([{ key: 'FIELD', value: 'loaded-value' }]);
+      expect(notificationDisplayer.shouldChangesBeDiscarded).to.not.have.been.called;
+    });
+  });
+
   describe('#loadSecret', () => {
     it('should not load secret when no secret is selected', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);

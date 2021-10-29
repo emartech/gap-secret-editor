@@ -162,6 +162,11 @@ export default {
       this.setBackups(backups);
       this.selectedBackupTime = backups.length > 0 ? backups[0].backupTime : null;
     },
+    async reloadSecret() {
+      if (!this.hasSecretChanged || await notificationDisplayer.shouldChangesBeDiscarded()) {
+        await this.loadSecret();
+      }
+    },
     async loadSecret() {
       if (!this.loadEnabled) return;
 
