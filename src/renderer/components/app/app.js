@@ -129,9 +129,15 @@ export default {
       }
       this.loading.nameList = false;
     },
-    async selectName(name) {
+    async selectName(newName) {
+      const currentName = this.secretName;
+      this.secretName = newName;
+      if (this.hasSecretChanged && !(await notificationDisplayer.shouldChangesBeDiscarded())) {
+        this.secretName = currentName;
+        return;
+      }
+
       this.clearSecret();
-      this.secretName = name;
       localStorage[LOCALSTORAGE_KEY_LAST_SELECTED_NAME] = this.secretName;
       await this.loadSecret();
     },

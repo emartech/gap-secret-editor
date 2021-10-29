@@ -311,6 +311,29 @@ describe('App', () => {
   });
 
   describe('#selectName', () => {
+    it('should set name field on component', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      const { vm } = await loadApp();
+      vm.secretName = 'whatever';
+
+      await vm.selectName('cool-app');
+
+      expect(vm.secretName).to.eql('cool-app');
+    });
+
+    it('should load selected secret', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'some-namespace';
+
+      await vm.selectName('cool-app');
+
+      expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }]);
+    });
+
     it('should store selection to local storage', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
@@ -329,6 +352,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'loadSecret').returns(loadPromise);
       const { vm } = await loadApp();
       vm.secretNamespace = 'some-nice-namespace';
+      vm.originalSecret = { doesnt: 'matter' };
       vm.secret = [{ key: 'doesnt', value: 'matter' }];
       vm.secretLoaded = true;
 
@@ -342,6 +366,38 @@ describe('App', () => {
 
       expect(vm.secret).to.eql([{ key: 'FIELD1', value: 'value1' }, { key: 'FIELD2', value: 'value2' }]);
       expect(vm.secretLoaded).to.be.true;
+    });
+
+    it('should not set name field when user cancels a change', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(false);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'some-namespace';
+      vm.secretName = 'cool-app';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectName('other-app');
+
+      expect(vm.secretName).to.eql('cool-app');
+    });
+
+    it('should set name field when user discards unsaved changes', async () => {
+      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
+      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
+      sinon.stub(kubernetesClient, 'loadSecret').resolves({ FIELD1: 'value1', FIELD2: 'value2' });
+      sinon.stub(notificationDisplayer, 'shouldChangesBeDiscarded').resolves(true);
+      const { vm } = await loadApp();
+      vm.secretNamespace = 'some-namespace';
+      vm.secretName = 'cool-app';
+      vm.originalSecret = { FIELD: 'value' };
+      vm.secret = [{ key: 'FIELD', value: 'new-value' }];
+
+      await vm.selectName('other-app');
+
+      expect(vm.secretName).to.eql('other-app');
     });
   });
 
