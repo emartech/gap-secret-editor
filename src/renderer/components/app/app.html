@@ -68,18 +68,6 @@
               </div>
 
               <div class="e-cell e-cell-small">
-                <e-tooltip content="Save secret">
-                  <div id="save-button" class="e-btn" @click="openSaveConfirmationDialog()" :disabled="!saveEnabled">
-                    <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
-                      <e-spinner data-size="small"></e-spinner>
-                      <e-icon icon="floppy-o"></e-icon>
-                    </div>
-                    Save
-                  </div>
-                </e-tooltip>
-              </div>
-
-              <div class="e-cell e-cell-small">
                 <e-tooltip content="Load backup to editor">
                   <backup-selector
                     :selected-time="selectedBackupTime"
@@ -97,6 +85,19 @@
                       <e-icon icon="e-signout"></e-icon>
                     </div>
                     Restart
+                  </div>
+                </e-tooltip>
+              </div>
+
+              <div class="e-cell e-cell-small">
+                <e-tooltip content="Save secret">
+                  <div id="save-button" class="e-btn e-btn-primary" @click="openSaveConfirmationDialog()"
+                       :disabled="!saveEnabled">
+                    <div class="e-btn__loading" :class="{ 'e-btn__loading-active': loading.secretSave }">
+                        <e-spinner data-size="small"></e-spinner>
+                        <e-icon icon="floppy-o"></e-icon>
+                    </div>
+                    Save
                   </div>
                 </e-tooltip>
               </div>
