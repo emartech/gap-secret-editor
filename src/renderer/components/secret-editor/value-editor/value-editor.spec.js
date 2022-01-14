@@ -21,7 +21,7 @@ describe('ValueEditor', () => {
       const { vm } = mountWithStore(ValueEditor, { propsData: { value: '{"some":"thing"}' } });
       vm.$store.state.isDarkModeActive = true;
 
-      expect(vm.editorTheme).to.eql('dracula');
+      expect(vm.editorTheme).to.eql('tomorrow_night');
     });
 
     it('should return light theme if dark mode is inactive', () => {

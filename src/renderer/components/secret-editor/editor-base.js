@@ -1,7 +1,7 @@
 import { mapState } from 'vuex';
 
 require('brace/theme/github');
-require('brace/theme/dracula');
+require('brace/theme/tomorrow_night');
 require('brace/mode/text');
 require('brace/mode/json');
 
@@ -16,7 +16,7 @@ export default {
   computed: {
     ...mapState(['isDarkModeActive']),
     editorTheme() {
-      return this.isDarkModeActive ? 'dracula' : 'github';
+      return this.isDarkModeActive ? 'tomorrow_night' : 'github';
     }
   },
   watch: {
