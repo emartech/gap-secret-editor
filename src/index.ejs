@@ -9,6 +9,9 @@
         require('module').globalPaths.push('<%= htmlWebpackPlugin.options.nodeModules.replace(/\\/g, '\\\\') %>')
       </script>
     <% } %>
+    <script>
+      window.uiFlippers = ['ui_dark_mode'];
+    </script>
     <script src="https://redirector.eservice.emarsys.net/ui/latest/js/app.js"></script>
     <link rel="stylesheet" href="https://redirector.eservice.emarsys.net/ui/latest/css/app.css" />
     <link rel="stylesheet" type="text/css" href="<%= require('diff2html/bundles/css/diff2html.min.css') %>" />
