@@ -1,9 +1,6 @@
 import AceEditor from 'vue2-ace-editor';
 import EditorBase from '../editor-base';
 
-require('brace/theme/github');
-require('brace/mode/text');
-
 export default {
   name: 'key-editor',
   template: require('./key-editor.html'),

@@ -5,9 +5,11 @@ Vue.use(Vuex);
 
 export default () => new Vuex.Store({
   state: {
-    backups: []
+    backups: [],
+    isDarkModeActive: false
   },
   mutations: {
-    setBackups: (state, backups) => { state.backups = backups; }
+    setBackups: (state, backups) => { state.backups = backups; },
+    setIsDarkModeActive: (state, isDarkModeActive) => { state.isDarkModeActive = isDarkModeActive; }
   }
 });

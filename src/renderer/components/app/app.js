@@ -16,6 +16,7 @@ const logger = log.scope('app');
 export const LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT = 'lastSelectedContext';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
+export const LOCALSTORAGE_KEY_UI_COLOR_THEME = 'e.ui.colorTheme';
 
 export default {
   name: 'app',
@@ -88,9 +89,13 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setBackups']),
+    ...mapMutations(['setBackups', 'setIsDarkModeActive']),
     openFeedbackDialog() {
       this.$refs.feedbackDialog.open();
+    },
+    async updateIsDarkModeActiveState() {
+      await this.$nextTick();
+      this.setIsDarkModeActive(localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] === 'dark');
     },
     async selectContext(newContext) {
       const currentContext = this.context;
@@ -225,6 +230,8 @@ export default {
       this.loading.serviceRestart = false;
     },
     async initialize() {
+      await this.updateIsDarkModeActiveState();
+
       this.loading.contextList = true;
       this.contextList = await kubernetesClient.listContexts();
       this.loading.contextList = false;

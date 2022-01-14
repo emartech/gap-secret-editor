@@ -1,3 +1,10 @@
+import { mapState } from 'vuex';
+
+require('brace/theme/github');
+require('brace/theme/dracula');
+require('brace/mode/text');
+require('brace/mode/json');
+
 export default {
   props: {
     value: { type: String, required: true, default: '' },
@@ -6,6 +13,12 @@ export default {
   data: () => ({
     editor: null
   }),
+  computed: {
+    ...mapState(['isDarkModeActive']),
+    editorTheme() {
+      return this.isDarkModeActive ? 'dracula' : 'github';
+    }
+  },
   watch: {
     async value() {
       await this.updateHighlights();

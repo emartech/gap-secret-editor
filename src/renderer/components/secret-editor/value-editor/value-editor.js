@@ -4,10 +4,6 @@ import EditorBase from '../editor-base';
 import JsonFormatButton from './json-format-button/json-format-button';
 import ChangeHistoryButton from './change-history-button/change-history-button';
 
-require('brace/theme/github');
-require('brace/mode/text');
-require('brace/mode/json');
-
 export default {
   name: 'value-editor',
   template: require('./value-editor.html'),

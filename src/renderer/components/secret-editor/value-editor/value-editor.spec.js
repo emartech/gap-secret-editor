@@ -16,6 +16,22 @@ describe('ValueEditor', () => {
     });
   });
 
+  describe('#editorTheme', () => {
+    it('should return dark theme if dark mode is active', () => {
+      const { vm } = mountWithStore(ValueEditor, { propsData: { value: '{"some":"thing"}' } });
+      vm.$store.state.isDarkModeActive = true;
+
+      expect(vm.editorTheme).to.eql('dracula');
+    });
+
+    it('should return light theme if dark mode is inactive', () => {
+      const { vm } = mountWithStore(ValueEditor, { propsData: { value: '{"some":"thing"}' } });
+      vm.$store.state.isDarkModeActive = false;
+
+      expect(vm.editorTheme).to.eql('github');
+    });
+  });
+
   describe('toolbar buttons', () => {
     it('should emit change event when a JSON field is minified', () => {
       const wrapper = mountWithStore(ValueEditor, { propsData: { value: '{\n"some":"thing"\n}' } });

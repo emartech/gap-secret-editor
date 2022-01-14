@@ -4,7 +4,7 @@
         <h1 class="e-layout__title">GAP Secret Editor</h1>
         <div class="e-header__button">
             <div class="e-buttongroup" style="padding-top: 0.5em;">
-                <e-theme-switcher></e-theme-switcher>
+                <e-theme-switcher @click="updateIsDarkModeActiveState()"></e-theme-switcher>
                 <div class="e-clickable e-padding-left-m">
                     <e-tooltip content="Give us feedback">
                         <e-icon icon="e-bullhorn" @click="openFeedbackDialog()"></e-icon>
