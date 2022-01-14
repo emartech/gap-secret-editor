@@ -28,7 +28,7 @@ nvm use
 npm ci
 
 # start application locally
-npm run dev
+npm run start-dev
 
 # run all tests (with npm audit and linter checks)
 npm test
