@@ -20,7 +20,7 @@
   top: 0;
   right: 0;
   z-index: 1;
-  background-color: #e8e8e8;
+  background-color: var(--color-gray-200);
   border-radius: 0 8px 0 8px;
   margin: 1px;
   transition: opacity 0.2s ease-in-out;
@@ -36,9 +36,38 @@
   opacity: 0
 }
 
-/* fix border of compare result */
+/* compare result */
 .d2h-file-side-diff {
   margin-bottom: -7px;
+}
+.d2h-file-wrapper {
+  border-color: var(--color-gray-250);
+}
+.d2h-file-header {
+  background-color: var(--color-gray-100);
+  border-color: var(--color-gray-150);
+}
+.d2h-info, .d2h-code-side-linenumber {
+  background-color: var(--color-gray-050);
+  border-color: var(--color-gray-150);
+  color: var(--color-gray-400);
+}
+.d2h-code-side-emptyplaceholder, .d2h-emptyplaceholder {
+  background-color: var(--color-gray-050);
+}
+.d2h-ins {
+  background-color: var(--color-mint-200);
+  border-color: var(--color-mint-300);
+}
+.d2h-ins ins {
+  background-color: var(--color-mint-300);
+}
+.d2h-del {
+  background-color: var(--color-red-200);
+  border-color: var(--color-red-300);
+}
+.d2h-del del {
+  background-color: var(--color-red-300);
 }
 
 /* ACE editor adjustments */
@@ -57,5 +86,5 @@
 .searchHighlight {
   position: absolute;
   z-index: 20;
-  background-color: #fdeea1;
+  background-color: var(--color-yellow-200);
 }
