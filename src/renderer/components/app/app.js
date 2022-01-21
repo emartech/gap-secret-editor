@@ -16,7 +16,6 @@ const logger = log.scope('app');
 export const LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT = 'lastSelectedContext';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE = 'lastSelectedNamespace';
 export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
-export const LOCALSTORAGE_KEY_UI_COLOR_THEME = 'e.ui.colorTheme';
 
 export default {
   name: 'app',
@@ -93,9 +92,8 @@ export default {
     openFeedbackDialog() {
       this.$refs.feedbackDialog.open();
     },
-    async updateIsDarkModeActiveState() {
-      await this.$nextTick();
-      this.setIsDarkModeActive(localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] === 'dark');
+    updateIsDarkModeActiveState() {
+      this.setIsDarkModeActive(get(this.$refs.themeSwitcher, 'state.colorTheme') === 'dark');
     },
     async selectContext(newContext) {
       const currentContext = this.context;

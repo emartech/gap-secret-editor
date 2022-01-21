@@ -6,8 +6,7 @@ import notificationDisplayer from '../../lib/notification-displayer';
 import App, {
   LOCALSTORAGE_KEY_LAST_SELECTED_CONTEXT,
   LOCALSTORAGE_KEY_LAST_SELECTED_NAMESPACE,
-  LOCALSTORAGE_KEY_LAST_SELECTED_NAME,
-  LOCALSTORAGE_KEY_UI_COLOR_THEME
+  LOCALSTORAGE_KEY_LAST_SELECTED_NAME
 } from './app';
 
 describe('App', () => {
@@ -905,42 +904,22 @@ describe('App', () => {
       expect(vm.secretNamespace).to.eql('namespace2');
       expect(vm.secretName).to.eql('secret1');
     });
-
-    it('should set isDarkModeActive state to TRUE if colorTheme local storage value is dark', async () => {
-      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
-      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
-      localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] = 'dark';
-      const { vm } = await loadApp();
-
-      await vm.initialize();
-
-      expect(vm.$store.state.isDarkModeActive).to.eql(true);
-    });
-
-    it('should set isDarkModeActive state to FALSE if colorTheme local storage value is light', async () => {
-      sinon.stub(kubernetesClient, 'listContexts').resolves([]);
-      sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
-      localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] = 'light';
-      const { vm } = await loadApp();
-
-      await vm.initialize();
-
-      expect(vm.$store.state.isDarkModeActive).to.eql(false);
-    });
   });
 
   describe('#updateIsDarkModeActiveState', () => {
     it('should set isDarkModeActive state after initialization', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
-      localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] = 'dark';
-      const { vm } = await loadApp();
+      const wrapper = await loadApp();
+      const themeSwitcher = wrapper.find('e-theme-switcher');
 
-      await vm.initialize();
-      localStorage[LOCALSTORAGE_KEY_UI_COLOR_THEME] = 'light';
-      await vm.updateIsDarkModeActiveState();
+      themeSwitcher.element.state = { colorTheme: 'light' };
+      themeSwitcher.trigger('change');
+      expect(wrapper.vm.$store.state.isDarkModeActive).to.eql(false);
 
-      expect(vm.$store.state.isDarkModeActive).to.eql(false);
+      themeSwitcher.element.state = { colorTheme: 'dark' };
+      themeSwitcher.trigger('change');
+      expect(wrapper.vm.$store.state.isDarkModeActive).to.eql(true);
     });
   });
 
