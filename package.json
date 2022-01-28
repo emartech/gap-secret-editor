@@ -53,14 +53,15 @@
     },
     "mac": {
       "icon": "build/icons/settings.png",
-      "publish": {
-        "provider": "github",
-        "private": false
-      },
+      "publish": ["github"],
       "hardenedRuntime": true,
       "gatekeeperAssess": false,
       "entitlements": "build/entitlements.mac.plist",
       "entitlementsInherit": "build/entitlements.mac.plist"
+    },
+    "win": {
+      "icon": "build/icons/settings.png",
+      "publish": ["github"]
     },
     "afterSign": "scripts/notarize.js"
   },
