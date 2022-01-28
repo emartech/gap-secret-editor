@@ -67,8 +67,10 @@ const addNewWindowCommandToDefaultMenus = () => {
   fileMenu.submenu.insert(0, new MenuItem(newWindowMenuItemDefinition));
   Menu.setApplicationMenu(appMenu);
 
-  const dockMenu = Menu.buildFromTemplate([newWindowMenuItemDefinition]);
-  app.dock.setMenu(dockMenu);
+  if (process.platform === 'darwin') {
+    const dockMenu = Menu.buildFromTemplate([newWindowMenuItemDefinition]);
+    app.dock.setMenu(dockMenu);
+  }
 };
 
 app.on('ready', () => {
