@@ -1,5 +1,7 @@
 name: build
 on: [push]
+env:
+  SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 jobs:
   test:
     runs-on: macos-latest
@@ -12,6 +14,18 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,author,job,took
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
+
+  release:
+    needs: test
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - run: npm ci
+      - run: npm run release
+      - uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          fields: repo,message,author,job,took
         if: always()
