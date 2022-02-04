@@ -2,6 +2,11 @@ name: build
 on: [push]
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  CSC_LINK: ${{ secrets.CSC_LINK }}
+  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+  APPLEID: ${{ secrets.APPLEID }}
+  APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+  GH_TOKEN: ${{ secrets.GH_TOKEN }}
 jobs:
   test:
     runs-on: macos-latest
