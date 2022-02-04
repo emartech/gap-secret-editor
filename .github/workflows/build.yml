@@ -36,4 +36,6 @@ jobs:
         with:
           status: ${{ job.status }}
           fields: repo,message,author,job,took
+        env:
+          MATRIX_CONTEXT: ${{ toJson(matrix) }}
         if: always()
