@@ -24,7 +24,7 @@ describe('App', () => {
       const { vm } = await loadApp();
       vm.context = 'some-prefix_useless-middle-part_gap-stage';
 
-      expect(vm.availableContexts).not.to.eql([
+      expect(vm.availableContexts).to.eql([
         { type: 'option', content: 'gap-stage', value: 'some-prefix_useless-middle-part_gap-stage', selected: true },
         { type: 'option', content: 'gap-prod', value: 'some-prefix_useless-middle-part_gap-prod', selected: false }
       ]);
