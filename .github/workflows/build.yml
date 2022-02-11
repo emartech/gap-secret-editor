@@ -23,6 +23,7 @@ jobs:
 
   release:
 #    needs: test
+    if: startsWith(github.event.head_commit.message, 'release v')
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
