@@ -50,7 +50,24 @@ npm run release
 
 ```
 
-#### Releasing a new version
+### Releasing a new version using CI
+
+Increase the version number in [package.json](package.json) and [package-lock.json](package-lock.json) then commit it.
+The commit message must begin with `release v` (e.g. `release v1.2.3`). Push the commit and wait for the CI to test and
+build the app. At the end, the CI will create a draft release under the [releases](https://github.com/emartech/gap-secret-editor/releases)
+page, which you have to edit and publish manually.
+
+**Note:** The actual release number is based on the value in [package.json](package.json), but it sounds a good idea to
+use the same value in the commit message, as well.
+
+#### Secrets used in CI for releasing
+
+[Secrets](https://github.com/emartech/gap-secret-editor/settings/secrets/actions) are set following the steps described
+in [Releasing a new version locally](#releasing-a-new-version-locally) with one exception: the value of `CSC_LINK` is
+not the path to the certificate, but the base64 encoded certificate itself.
+[More info](https://www.electron.build/code-signing.html#travis-appveyor-and-other-ci-servers)
+
+### Releasing a new version locally
 
 To build the application locally, you only need to run `npm run build`.
 However, to sign and release it, some additional setup is required:
