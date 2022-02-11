@@ -125,7 +125,7 @@
     "file-loader": "6.2.0",
     "flush-promises": "1.0.2",
     "html-webpack-plugin": "5.5.0",
-    "karma": "6.3.12",
+    "karma": "6.3.14",
     "karma-chai": "0.1.0",
     "karma-electron": "7.0.0",
     "karma-mocha": "2.0.1",
