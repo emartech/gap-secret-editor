@@ -17,16 +17,20 @@ describe('App', () => {
   describe('#availableContexts', () => {
     it('should return available contexts in UI Kit select format and with a short name', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([
-        'some-prefix_useless-middle-part_gap-stage',
-        'some-prefix_useless-middle-part_gap-prod'
+        'prefix_gap-stage_postfix',
+        'prefix_gap-prod_postfix',
+        'prefix_custom-team-stage_postfix',
+        'prefix_custom-team-prod_postfix'
       ]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
-      vm.context = 'some-prefix_useless-middle-part_gap-stage';
+      vm.context = 'prefix_gap-stage_postfix';
 
       expect(vm.availableContexts).to.eql([
-        { type: 'option', content: 'gap-stage', value: 'some-prefix_useless-middle-part_gap-stage', selected: true },
-        { type: 'option', content: 'gap-prod', value: 'some-prefix_useless-middle-part_gap-prod', selected: false }
+        { type: 'option', content: 'gap-stage', value: 'prefix_gap-stage_postfix', selected: true },
+        { type: 'option', content: 'gap-prod', value: 'prefix_gap-prod_postfix', selected: false },
+        { type: 'option', content: 'custom-team-stage', value: 'prefix_custom-team-stage_postfix', selected: false },
+        { type: 'option', content: 'custom-team-prod', value: 'prefix_custom-team-prod_postfix', selected: false }
       ]);
     });
   });

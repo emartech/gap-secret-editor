@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 import log from 'electron-log';
-import { get, isEqual, last, uniqBy } from 'lodash';
+import { get, isEqual, uniqBy } from 'lodash';
 import { mapMutations } from 'vuex';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
@@ -46,7 +46,7 @@ export default {
     availableContexts() {
       return this.contextList.map(context => ({
         type: 'option',
-        content: last(context.split('_')),
+        content: context.split('_')[1],
         value: context,
         selected: context === this.context
       }));
