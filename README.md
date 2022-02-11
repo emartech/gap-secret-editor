@@ -13,10 +13,13 @@ Download the application from the [releases](https://github.com/emartech/gap-sec
 repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
+For Windows download the .exe file and double-click on it.
 
 ## Logging
 
-Application logs can be found in the `~/Library/Logs/gap-secret-editor/` directory.
+Application logs can be found in the following directory:
+- For macOS: `~/Library/Logs/gap-secret-editor/`
+- For Windows: `%USERPROFILE%\AppData\Roaming\gap-secret-editor\logs`
 
 ## For developers
 
