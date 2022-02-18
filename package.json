@@ -65,7 +65,8 @@
       "icon": "build/icons/settings.png",
       "publish": [
         "github"
-      ]
+      ],
+      "verifyUpdateCodeSignature": false
     },
     "afterSign": "scripts/notarize.js"
   },
