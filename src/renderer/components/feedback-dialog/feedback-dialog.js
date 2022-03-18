@@ -12,6 +12,14 @@ export default {
     feedback: '',
     feedbackSendingInProgress: false
   }),
+  computed: {
+    placeholder() {
+      return [
+        'Enter a detailed description of your feedback or suggestion',
+        'If you want to report a bug, please leave some contact info, so we can reach you in case we have questions'
+      ].join('\n\n');
+    }
+  },
   methods: {
     open() {
       this.opened = true;
@@ -37,4 +45,3 @@ export default {
     }
   }
 };
-

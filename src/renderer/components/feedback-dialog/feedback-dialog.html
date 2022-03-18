@@ -8,9 +8,10 @@
   <div class="e-field">
     <div class="e-field__label">Your feedback</div>
     <textarea
-      class="e-input e-input-textarea"
+      class="e-input e-input-textarea e-input-auto_height"
       v-model="feedback"
-      placeholder="Enter a detailed description of your feedback or suggestion"
+      :placeholder="placeholder"
+      rows="4"
     ></textarea>
   </div>
 
