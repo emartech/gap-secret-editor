@@ -44,12 +44,15 @@ export default {
   }),
   computed: {
     availableContexts() {
-      return this.contextList.map(context => ({
-        type: 'option',
-        content: context.split('_')[1],
-        value: context,
-        selected: context === this.context
-      }));
+      return this.contextList.map(context => {
+        const displayValue = context.split('_')[1];
+        return {
+          type: 'option',
+          content: displayValue || context,
+          value: context,
+          selected: context === this.context
+        };
+      });
     },
     namespaces() {
       return this.namespaceList.map(namespace => ({

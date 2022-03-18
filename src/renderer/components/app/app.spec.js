@@ -20,7 +20,8 @@ describe('App', () => {
         'prefix_gap-stage_postfix',
         'prefix_gap-prod_postfix',
         'prefix_custom-team-stage_postfix',
-        'prefix_custom-team-prod_postfix'
+        'prefix_custom-team-prod_postfix',
+        'full-custom-context'
       ]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const { vm } = await loadApp();
@@ -30,7 +31,8 @@ describe('App', () => {
         { type: 'option', content: 'gap-stage', value: 'prefix_gap-stage_postfix', selected: true },
         { type: 'option', content: 'gap-prod', value: 'prefix_gap-prod_postfix', selected: false },
         { type: 'option', content: 'custom-team-stage', value: 'prefix_custom-team-stage_postfix', selected: false },
-        { type: 'option', content: 'custom-team-prod', value: 'prefix_custom-team-prod_postfix', selected: false }
+        { type: 'option', content: 'custom-team-prod', value: 'prefix_custom-team-prod_postfix', selected: false },
+        { type: 'option', content: 'full-custom-context', value: 'full-custom-context', selected: false }
       ]);
     });
   });
