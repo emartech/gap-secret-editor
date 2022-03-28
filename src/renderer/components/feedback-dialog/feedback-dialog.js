@@ -10,16 +10,12 @@ export default {
   data: () => ({
     opened: false,
     feedback: '',
-    feedbackSendingInProgress: false
+    feedbackSendingInProgress: false,
+    placeholder: [
+      'Enter a detailed description of your feedback or suggestion',
+      'If you want to report a bug, please leave some contact info, so we can reach you in case we have questions'
+    ].join('\n\n')
   }),
-  computed: {
-    placeholder() {
-      return [
-        'Enter a detailed description of your feedback or suggestion',
-        'If you want to report a bug, please leave some contact info, so we can reach you in case we have questions'
-      ].join('\n\n');
-    }
-  },
   methods: {
     open() {
       this.opened = true;
