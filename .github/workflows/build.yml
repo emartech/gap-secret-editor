@@ -35,7 +35,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
       - run: npm ci
       - run: npm run release
       - uses: 8398a7/action-slack@v3
