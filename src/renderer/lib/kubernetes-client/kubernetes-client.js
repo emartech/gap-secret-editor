@@ -10,19 +10,18 @@ import {
 import { get, mapValues } from 'lodash';
 import KubernetesError from './kubernetes-error';
 
-const kubeConfig = new KubeConfig();
-kubeConfig.loadFromDefault();
+let kubeConfig;
 
 export default {
   listContexts: async () => mapErrorToKubernetesError(() => {
-    return kubeConfig.getContexts()
+    return getKubeConfig().getContexts()
       .map(context => context.name);
   }),
   getContext: async () => mapErrorToKubernetesError(() => {
-    return kubeConfig.getCurrentContext();
+    return getKubeConfig().getCurrentContext();
   }),
   setContext: async context => mapErrorToKubernetesError(() => {
-    kubeConfig.setCurrentContext(context);
+    getKubeConfig().setCurrentContext(context);
   }),
   listNamespaces: async () => mapErrorToKubernetesError(async () => {
     const { body } = await getCoreApiClient().listNamespace();
@@ -89,6 +88,14 @@ export default {
   })
 };
 
+const getKubeConfig = () => {
+  if (!kubeConfig) {
+    kubeConfig = new KubeConfig();
+    kubeConfig.loadFromDefault();
+  }
+  return kubeConfig;
+};
+
 const generateDeploymentPatch = () => {
   const patch = new V1Deployment();
   patch.spec = new V1DeploymentSpec();
@@ -101,11 +108,11 @@ const generateDeploymentPatch = () => {
 };
 
 const getCoreApiClient = () => {
-  return kubeConfig.makeApiClient(CoreV1Api);
+  return getKubeConfig().makeApiClient(CoreV1Api);
 };
 
 const getAppsApiClient = () => {
-  return kubeConfig.makeApiClient(AppsV1Api);
+  return getKubeConfig().makeApiClient(AppsV1Api);
 };
 
 const mapErrorToKubernetesError = async func => {
