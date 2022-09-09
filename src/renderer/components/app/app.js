@@ -269,9 +269,16 @@ export default {
       this.$refs.searchInput.select();
     }
   },
+  errorCaptured(error) {
+    logger.error('unhandled-error', { namespace: this.secretNamespace, name: this.secretName }, error);
+  },
   async mounted() {
-    await this.initialize();
-    ipcRenderer.send('ui-ready');
-    logger.info('ui-ready');
+    try {
+      await this.initialize();
+      ipcRenderer.send('ui-ready');
+      logger.info('ui-ready');
+    } catch (error) {
+      logger.error('app-initialization-failed', error);
+    }
   }
 };

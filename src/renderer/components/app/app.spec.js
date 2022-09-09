@@ -1,5 +1,6 @@
 import flushPromises from 'flush-promises';
 import { mountWithStore, shallowMountWithStore } from '../../../../test-helpers/mount-helpers';
+import { usesFakeLogger } from '../../../../test-helpers/logger';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
 
@@ -13,6 +14,15 @@ describe('App', () => {
   beforeEach(() => {
     localStorage.clear();
   });
+
+  it('should log error when app cannot be mounted', usesFakeLogger(async getLoggedMessages => {
+    const error = new Error('pitty-putty');
+    sinon.stub(kubernetesClient, 'listContexts').rejects(error);
+
+    await loadApp();
+
+    expect(getLoggedMessages()).to.eql([{ level: 'error', data: ['app-initialization-failed', error] }]);
+  }));
 
   describe('#availableContexts', () => {
     it('should return available contexts in UI Kit select format and with a short name', async () => {
