@@ -30,7 +30,11 @@ const createWindow = async () => {
     height,
     useContentSize: true,
     webPreferences: {
-      nodeIntegration: true
+      contextIsolation: false,
+      enableRemoteModule: true,
+      nodeIntegration: true,
+      nodeIntegrationInWorker: true,
+      webviewTag: true
     },
     show: false
   });
