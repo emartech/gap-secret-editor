@@ -1,6 +1,5 @@
 const { merge } = require('webpack-merge');
 const webpack = require('webpack');
-const path = require('path');
 
 const baseConfig = require('../.electron-vue/webpack.renderer.config');
 
@@ -34,10 +33,14 @@ module.exports = config => {
       'visibleElectron': {
         base: 'Electron',
         flags: ['--headless'],
-        require: path.join('test-helpers', 'test-setup-workaround.js'),
         browserWindowOptions: {
           webPreferences: {
-            nativeWindowOpen: false
+            nativeWindowOpen: false,
+            contextIsolation: false,
+            enableRemoteModule: true,
+            nodeIntegration: true,
+            nodeIntegrationInWorker: true,
+            webviewTag: true
           }
         }
       }
