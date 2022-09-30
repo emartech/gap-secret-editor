@@ -35,7 +35,6 @@ module.exports = config => {
         flags: ['--headless'],
         browserWindowOptions: {
           webPreferences: {
-            nativeWindowOpen: false,
             contextIsolation: false,
             enableRemoteModule: true,
             nodeIntegration: true,
