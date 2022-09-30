@@ -1,0 +1,19 @@
+<div class="e-emptystate e-emptystate-horizontal e-emptystate-error">
+  <e-icon class="e-emptystate__icon" icon="warning"></e-icon>
+  <div class="e-emptystate__content" style="max-width: 430px">
+    <div class="e-emptystate__title">Initialization failed</div>
+
+    <div class="e-emptystate__lead">
+      Failed to initialize the application.
+      For more info check the <a href="#" @click="openLink('https://github.com/emartech/gap-secret-editor#logging')">log files</a>.
+
+      <br />
+
+      Make sure your Kubernetes clusters are properly
+      <a href="#" @click="openLink('https://gap-docs.gservice.emarsys.net/development-environment-setup-guide.html#google-cloud-sdk')">configured</a>.
+    </div>
+    <div class="e-emptystate__button e-btn e-btn-primary" @click="restart()">
+      Clear settings & Restart
+    </div>
+  </div>
+</div>

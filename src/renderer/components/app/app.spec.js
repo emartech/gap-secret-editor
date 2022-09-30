@@ -1,5 +1,5 @@
 import flushPromises from 'flush-promises';
-import { mountWithStore, shallowMountWithStore } from '../../../../test-helpers/mount-helpers';
+import { mountWithStore } from '../../../../test-helpers/mount-helpers';
 import { usesFakeLogger } from '../../../../test-helpers/logger';
 import kubernetesClient from '../../lib/kubernetes-client/kubernetes-client';
 import notificationDisplayer from '../../lib/notification-displayer';
@@ -15,12 +15,14 @@ describe('App', () => {
     localStorage.clear();
   });
 
-  it('should log error when app cannot be mounted', usesFakeLogger(async getLoggedMessages => {
+  it('should show error state and log error when app cannot be mounted', usesFakeLogger(async getLoggedMessages => {
     const error = new Error('pitty-putty');
     sinon.stub(kubernetesClient, 'listContexts').rejects(error);
 
-    await loadApp();
+    const wrapper = await loadApp();
 
+    expect(wrapper.html()).to.not.contain('GAP Secret Editor');
+    expect(wrapper.html()).to.contain('Initialization failed');
     expect(getLoggedMessages()).to.eql([{ level: 'error', data: ['app-initialization-failed', error] }]);
   }));
 
@@ -743,8 +745,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mountWithStore(App);
-      await flushPromises();
+      const wrapper = await loadApp();
       wrapper.vm.secretLoaded = true;
       wrapper.vm.secret = [{ key: 'NEW_FIELD', value: 'new value' }];
 
@@ -757,8 +758,7 @@ describe('App', () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
 
-      const wrapper = await mountWithStore(App);
-      await flushPromises();
+      const wrapper = await loadApp();
       wrapper.vm.secretLoaded = false;
 
       await wrapper.vm.openSaveConfirmationDialog();
@@ -1008,7 +1008,7 @@ describe('App', () => {
 });
 
 const loadApp = async () => {
-  const wrapper = shallowMountWithStore(App);
+  const wrapper = mountWithStore(App);
   await flushPromises();
   return wrapper;
 };

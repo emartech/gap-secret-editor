@@ -10,6 +10,7 @@ import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
 import FeedbackDialog from '../feedback-dialog/feedback-dialog';
+import ErrorState from '../error-state/error-state';
 
 const logger = log.scope('app');
 
@@ -20,7 +21,14 @@ export const LOCALSTORAGE_KEY_LAST_SELECTED_NAME = 'lastSelectedName';
 export default {
   name: 'app',
   template: require('./app.html'),
-  components: { SecretEditor, BackupSelector, SaveConfirmationDialog, AutoUpdateConfirmation, FeedbackDialog },
+  components: {
+    SecretEditor,
+    BackupSelector,
+    SaveConfirmationDialog,
+    AutoUpdateConfirmation,
+    FeedbackDialog,
+    ErrorState
+  },
   data: () => ({
     secretName: '',
     secretNamespace: '',
@@ -40,7 +48,8 @@ export default {
     contextList: [],
     context: '',
     searchTerm: '',
-    selectedBackupTime: null
+    selectedBackupTime: null,
+    inErrorState: false
   }),
   computed: {
     availableContexts() {
@@ -278,6 +287,7 @@ export default {
       ipcRenderer.send('ui-ready');
       logger.info('ui-ready');
     } catch (error) {
+      this.inErrorState = true;
       logger.error('app-initialization-failed', error);
     }
   }

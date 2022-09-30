@@ -1,5 +1,7 @@
 <div id="app" @keydown.meta.f="activateSearch()" tabindex="-1" style="height: inherit; outline: none;">
-  <div class="e-layout e-layout-without_navigation e-fullheight" style="display: flex;">
+  <error-state v-if="inErrorState" />
+
+  <div v-if="!inErrorState" class="e-layout e-layout-without_navigation e-fullheight" style="display: flex;">
     <header class="e-layout__header">
         <h1 class="e-layout__title">GAP Secret Editor</h1>
         <div class="e-header__button">

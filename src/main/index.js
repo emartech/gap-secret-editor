@@ -105,3 +105,8 @@ ipcMain.on('ui-ready', () => {
 ipcMain.handle('send-feedback', async (event, feedback) => {
   await postFeedbackToGoogleForm(feedback);
 });
+
+ipcMain.on('restart', () => {
+  app.relaunch();
+  app.exit();
+});
