@@ -1,4 +1,4 @@
-import { BrowserWindow, ipcMain, powerMonitor } from 'electron';
+import { BrowserWindow, powerMonitor } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import schedule from 'node-schedule';
@@ -29,18 +29,6 @@ const initializeUpdateEventListeners = () => {
     BrowserWindow.getAllWindows().forEach(window =>
       window.webContents.send('confirm-update', updateInfo)
     );
-  });
-
-  ipcMain.on('confirm-update-response', (event, isConfirmed) => {
-    logger.info('confirm-update-response', { isConfirmed });
-    if (isConfirmed) {
-      autoUpdater.downloadUpdate();
-    }
-  });
-
-  autoUpdater.on('update-downloaded', () => {
-    logger.info('update-downloaded');
-    autoUpdater.quitAndInstall();
   });
 };
 
