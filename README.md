@@ -45,7 +45,7 @@ npm run test:watch
 # build electron application
 npm run build
 
-# build, sign and release electron application
+# build and release electron application
 npm run release
 
 ```
@@ -60,39 +60,12 @@ page, which you have to edit and publish manually.
 **Note:** The actual release number is based on the value in [package.json](package.json), but it sounds a good idea to
 use the same value in the commit message, as well.
 
-#### Secrets used in CI for releasing
-
-[Secrets](https://github.com/emartech/gap-secret-editor/settings/secrets/actions) are set following the steps described
-in [Releasing a new version locally](#releasing-a-new-version-locally) with one exception: the value of `CSC_LINK` is
-not the path to the certificate, but the base64 encoded certificate itself.
-[More info](https://www.electron.build/code-signing.html#travis-appveyor-and-other-ci-servers)
-
 ### Releasing a new version locally
 
-To build the application locally, you only need to run `npm run build`.
-However, to sign and release it, some additional setup is required:
-* to sign the application you need a certificate
-  * download the certificate from [secret server](https://secret.emarsys.net/cred/detail/7636/)
-    * DO NOT download into the project directory, so you will not commit it accidentally
-  * set the `CSC_LINK` environment variable to the path of the downloaded certificate
-  * set the `CSC_KEY_PASSWORD` environment variable to the password of the certificate
-* after the application is signed, it has to be notarized by apple
-  * make sure you have a personal [Apple ID](https://appleid.apple.com), and with that you are a member of the team
-    (at https://developer.apple.com) who issued the certificate above
-  * set the `APPLEID` environment variable to your apple id
-  * set the `APPLEIDPASS` environment variable to the password of your apple id
-    * it is highly recommended to [generate](https://appleid.apple.com/account/manage) and use an application specific
-      password
-  * install the latest Xcode
-* after the application is signed and notarized, you have to publish it as a new release
-  * set the `GH_TOKEN` environment variable to you [GitHub Token](https://github.com/settings/tokens)
-    * make sure the token has access to the *repo* role (and all its sub-roles)
+Set the `GH_TOKEN` environment variable to your [GitHub Token](https://github.com/settings/tokens)
+(make sure the token has access to the *repo* role and all its sub-roles).
 
-If you set all the environment variables above, increase the version number in [package.json](package.json)
-and run `npm run release`.
-
-(Note: the scripts usually hangs for a couple of minutes at the notarization step (just after "signing"),
-be patient and wait for the apple servers to do their job)
+Increase the version number in [package.json](package.json) and run `npm run release`.
 
 The script will create a draft release under the [releases](https://github.com/emartech/gap-secret-editor/releases)
 page, which you have to edit and publish manually.
