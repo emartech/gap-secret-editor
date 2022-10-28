@@ -14,7 +14,7 @@ export default {
     }
   },
   mounted() {
-    ipcRenderer.on('confirm-update', async (event, updateInfo) => {
+    ipcRenderer.on('update-notification', async (event, updateInfo) => {
       this.version = updateInfo.version;
       this.releaseNotes = updateInfo.releaseNotes;
       this.dialogOpened = true;

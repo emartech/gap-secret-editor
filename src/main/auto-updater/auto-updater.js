@@ -27,7 +27,7 @@ const initializeUpdateEventListeners = () => {
   autoUpdater.on('update-available', (updateInfo) => {
     logger.info('update-available', updateInfo);
     BrowserWindow.getAllWindows().forEach(window =>
-      window.webContents.send('confirm-update', updateInfo)
+      window.webContents.send('update-notification', updateInfo)
     );
   });
 };

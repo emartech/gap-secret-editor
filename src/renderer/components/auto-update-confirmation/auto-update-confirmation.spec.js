@@ -3,12 +3,12 @@ import { ipcRenderer, shell } from 'electron';
 import AutoUpdateConfirmation from './auto-update-confirmation';
 
 describe('AutoUpdateConfirmation', () => {
-  it('should display dialog with version and release notes when confirm-update event arrives', () => {
+  it('should display dialog with version and release notes when update-notification event arrives', () => {
     const fakeEvent = {};
     const { vm } = mount(AutoUpdateConfirmation);
     expect(vm.dialogOpened).to.be.false;
 
-    ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
+    ipcRenderer.emit('update-notification', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
 
     expect(vm.dialogOpened).to.be.true;
     expect(vm.version).to.eql('1.2.3');
@@ -19,7 +19,7 @@ describe('AutoUpdateConfirmation', () => {
     sinon.stub(shell, 'openExternal');
     const fakeEvent = {};
     const wrapper = mount(AutoUpdateConfirmation);
-    ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
+    ipcRenderer.emit('update-notification', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
 
     await wrapper.find('.e-btn').trigger('click');
 
