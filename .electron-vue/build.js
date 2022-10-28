@@ -16,7 +16,7 @@ const okayLog = chalk.bgBlue.white(' OKAY ') + ' ';
 const isCI = process.env.CI || false;
 
 const clean = () => {
-  del.sync(['build/*', '!build/icons', '!build/icons/icon.*', '!build/entitlements.mac.plist']);
+  del.sync(['build/*', '!build/icons', '!build/icons/icon.*']);
   console.log(`\n${doneLog}\n`);
   process.exit();
 };

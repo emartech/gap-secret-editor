@@ -24,7 +24,7 @@
     "test": "npm run audit && npm run lint && npm run test:once",
     "test:once": "karma start test-helpers/karma.conf.js --single-run",
     "test:watch": "karma start test-helpers/karma.conf.js",
-    "release": "node .electron-vue/build.js && electron-builder --publish always"
+    "release": "npm run build -- --publish always"
   },
   "build": {
     "productName": "GAP Secret Editor",
@@ -36,7 +36,6 @@
       "dist/electron/**/*"
     ],
     "dmg": {
-      "sign": false,
       "contents": [
         {
           "x": 410,
@@ -55,11 +54,7 @@
       "icon": "build/icons/settings.png",
       "publish": [
         "github"
-      ],
-      "hardenedRuntime": true,
-      "gatekeeperAssess": false,
-      "entitlements": "build/entitlements.mac.plist",
-      "entitlementsInherit": "build/entitlements.mac.plist"
+      ]
     },
     "win": {
       "icon": "build/icons/settings.png",
@@ -67,8 +62,7 @@
         "github"
       ],
       "verifyUpdateCodeSignature": false
-    },
-    "afterSign": "scripts/notarize.js"
+    }
   },
   "dependencies": {
     "prettier": "2.7.1",
@@ -119,7 +113,6 @@
     "electron-debug": "3.2.0",
     "electron-devtools-installer": "3.2.0",
     "electron-log": "4.4.8",
-    "electron-notarize": "1.2.1",
     "electron-updater": "5.2.1",
     "eslint": "8.24.0",
     "eslint-config-emarsys": "5.1.0",
