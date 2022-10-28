@@ -1,10 +1,10 @@
 import { mount } from '@vue/test-utils';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import AutoUpdateConfirmation from './auto-update-confirmation';
 
 describe('AutoUpdateConfirmation', () => {
   it('should display dialog with version and release notes when confirm-update event arrives', () => {
-    const fakeEvent = { sender: { send: sinon.stub() } };
+    const fakeEvent = {};
     const { vm } = mount(AutoUpdateConfirmation);
     expect(vm.dialogOpened).to.be.false;
 
@@ -15,49 +15,15 @@ describe('AutoUpdateConfirmation', () => {
     expect(vm.releaseNotes).to.eql('nice, new feature');
   });
 
-  describe('#installNow', () => {
-    it('should send true as confirm response', () => {
-      const fakeEvent = { sender: { send: sinon.stub() } };
-      const { vm } = mount(AutoUpdateConfirmation);
-      ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
+  it('should open download page when button clicked', async () => {
+    sinon.stub(shell, 'openExternal');
+    const fakeEvent = {};
+    const wrapper = mount(AutoUpdateConfirmation);
+    ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
 
-      vm.installNow();
+    await wrapper.find('.e-btn').trigger('click');
 
-      expect(fakeEvent.sender.send).to.have.been.calledWith('confirm-update-response', true);
-    });
-
-    it('should close dialog and display loading indicator', () => {
-      const fakeEvent = { sender: { send: sinon.stub() } };
-      const { vm } = mount(AutoUpdateConfirmation);
-      ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
-
-      vm.installNow();
-
-      expect(vm.dialogOpened).to.be.false;
-      expect(vm.updateInProgress).to.be.true;
-    });
-  });
-
-  describe('#installLater', () => {
-    it('should send false as confirm response', () => {
-      const fakeEvent = { sender: { send: sinon.stub() } };
-      const { vm } = mount(AutoUpdateConfirmation);
-      ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
-
-      vm.installLater();
-
-      expect(fakeEvent.sender.send).to.have.been.calledWith('confirm-update-response', false);
-    });
-
-    it('should close dialog with no loading indicator', () => {
-      const fakeEvent = { sender: { send: sinon.stub() } };
-      const { vm } = mount(AutoUpdateConfirmation);
-      ipcRenderer.emit('confirm-update', fakeEvent, { version: '1.2.3', releaseNotes: 'nice, new feature' });
-
-      vm.installLater();
-
-      expect(vm.dialogOpened).to.be.false;
-      expect(vm.updateInProgress).to.be.false;
-    });
+    expect(shell.openExternal)
+      .to.have.been.calledWith('https://github.com/emartech/gap-secret-editor/releases/tag/v1.2.3');
   });
 });
