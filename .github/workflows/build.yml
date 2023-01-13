@@ -3,6 +3,13 @@ on:
   push:
     branches:
       - master
+  workflow_dispatch:
+    inputs:
+      forceRelease:
+        description: 'Create a new release / Update an existing release'
+        required: false
+        default: false
+        type: boolean
 env:
   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
   GH_TOKEN: ${{ secrets.GH_TOKEN }}
@@ -24,7 +31,7 @@ jobs:
 
   release:
     needs: test
-    if: startsWith(github.event.head_commit.message, 'release v')
+    if: inputs.forceRelease || startsWith(github.event.head_commit.message, 'release v')
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
