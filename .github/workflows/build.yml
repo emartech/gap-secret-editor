@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       forceRelease:
-        description: 'Create a new release / Update an existing release'
+        description: 'Create a new release'
         required: false
         default: false
         type: boolean
