@@ -14,12 +14,14 @@ repository.
 
 For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
 For Windows download the .exe file and double-click on it.
+For Linux download the .AppImage file, make it runnable (chmod +x), and run it.
 
 ## Logging
 
 Application logs can be found in the following directory:
 - For macOS: `~/Library/Logs/gap-secret-editor/`
 - For Windows: `%USERPROFILE%\AppData\Roaming\gap-secret-editor\logs`
+- For Linux: `~/.config/gap-secret-editor/logs/`
 
 ## For developers
 
