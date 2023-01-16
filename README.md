@@ -12,9 +12,9 @@ clusters. More info in [GAP docs](https://gap-docs.gservice.emarsys.net/developm
 Download the application from the [releases](https://github.com/emartech/gap-secret-editor/releases) page of the GitHub
 repository.
 
-For macOS download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
-For Windows download the .exe file and double-click on it.
-For Linux download the .AppImage file, make it runnable (chmod +x), and run it.
+- For macOS: download the .dmg file, double-click on it, and drag the "GAP Secret Editor" icon onto "Applications".
+- For Windows: download the .exe file and double-click on it.
+- For Linux: download the .AppImage file, make it runnable (chmod +x), and run it.
 
 ## Logging
 
