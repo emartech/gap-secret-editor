@@ -118,7 +118,10 @@ const getAppsApiClient = () => {
 const mapErrorToKubernetesError = async func => {
   try {
     return await func();
-  } catch (e) {
-    throw new KubernetesError(e);
+  } catch (error) {
+    if (error.response) {
+      throw new KubernetesError(error.response);
+    }
+    throw error;
   }
 };

@@ -1,8 +1,8 @@
 
 export default class KubernetesError extends Error {
-  constructor(error) {
-    super(error.response.body.message);
+  constructor(errorResponse) {
+    super(errorResponse.body?.message || 'Unknown Kubernetes error');
     this.name = 'KubernetesError';
-    this.data = error.response.body;
+    this.data = errorResponse.body;
   }
 }

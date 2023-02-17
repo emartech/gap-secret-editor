@@ -57,6 +57,20 @@ describe('KubernetesClient', () => {
         expect(e).to.be.an.instanceof(KubernetesError);
       }
     });
+
+    it('should throw original error, when it is not kubernetes specific', async () => {
+      const dummyError = new Error('my leg hurts');
+      KubeConfig.prototype.makeApiClient.returns({
+        listNamespace: sinon.stub().rejects(dummyError)
+      });
+
+      try {
+        await kubernetesClient.listNamespaces();
+        expect.fail('exception should have been thrown');
+      } catch (e) {
+        expect(e).to.eql(dummyError);
+      }
+    });
   });
 
   describe('#listSecrets', () => {
