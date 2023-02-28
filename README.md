@@ -72,6 +72,21 @@ Increase the version number in [package.json](package.json) and run `npm run rel
 The script will create a draft release under the [releases](https://github.com/emartech/gap-secret-editor/releases)
 page, which you have to edit and publish manually.
 
+### Troubleshooting
+
+After install on Mac machines an error will pop up:
+
+![Open Error](images/openerror.png)
+
+To bypass the error message go to Settings and within Privacy&Settings click on 'Open Anyway'.
+
+![Privacy Settings](images/privacysetting.png)
+
+If the below error greets you on startup, do a computer restart.
+If it still presents clone this repository and start the application with `start-dev`.
+
+![Application Error](images/apperror.png)
+
 ---
 
 This project was generated with [electron-vue](https://github.com/SimulatedGREG/electron-vue)@[45a3e22](https://github.com/SimulatedGREG/electron-vue/tree/45a3e224e7bb8fc71909021ccfdcfec0f461f634) using [vue-cli](https://github.com/vuejs/vue-cli). Documentation about the original structure can be found [here](https://simulatedgreg.gitbooks.io/electron-vue/content/index.html).
