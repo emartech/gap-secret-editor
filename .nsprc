@@ -1,22 +1,7 @@
 {
-  "1085719": {
-    "active": true,
-    "notes": "Ignored since we don't have any update for vue-html-loader, because it is DEPRECATED since Jan 6, 2018.\nIt uses the hardcoded version of html-minifier ^2.1.5.\nIt uses the hardcoded version of clean-css 3.4.x.\nThe fix would be in clean-css 4.1.11.",
-    "expiry": "2023-05-31"
-  },
-  "1086450": {
-    "active": true,
-    "notes": "Ignored since we don't have any update for devtron, because it is UNMAINTAINED since 2016.\nIt uses the hardcoded vrsion of highlight.js ^9.3.0.\nThe fix would be in 10.4.1.\nMore details: https://github.com/electron-userland/devtron/issues/200",
-    "expiry": "2023-05-31"
-  },
-  "1086840": {
-    "active": true,
-    "notes": "Ignored since we don't have any update for multispinner, because the last commit was on Jan 5, 2016.\nIt uses the hardcoded version of lodash.merge ^3.3.2.\nThe fix would be in lodash.merge 4.6.1.",
-    "expiry": "2023-05-31"
-  },
-  "1086841": {
-    "active": true,
-    "notes": "Ignored since we don't have any update for multispinner, because the last commit was on Jan 5, 2016.\nIt uses the hardcoded version of lodash.merge ^3.3.2.\nThe fix would be in lodash.merge 4.6.2.",
-    "expiry": "2023-05-31"
-  }
+  "1086450": { "active": true },
+  "1086840": { "active": true },
+  "1086841": { "active": true },
+  "1091669": { "active": true },
+  "1091459": { "active": true }
 }
