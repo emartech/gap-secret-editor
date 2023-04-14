@@ -1,5 +1,6 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
+import path from 'path';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 import { postFeedbackToGoogleForm } from './feedback/feedback';
 
@@ -10,7 +11,7 @@ const logger = log.scope('main');
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
  */
 if (process.env.NODE_ENV !== 'development') {
-  global.__static = require('path').join(__dirname, '/static').replace(/\\/g, '\\\\');
+  global.__static = path.join(__dirname, '/static').replace(/\\/g, '\\\\');
 }
 
 const getUrl = page =>
@@ -77,6 +78,11 @@ const addNewWindowCommandToDefaultMenus = () => {
   }
 };
 
+const addGoogleCloudSdkExecutablesToPATH = () => {
+  const gcloudPath = path.join(app.getPath('home'), 'google-cloud-sdk', 'bin');
+  process.env.PATH = [gcloudPath, process.env.PATH].join(path.delimiter);
+};
+
 app.on('ready', () => {
   addNewWindowCommandToDefaultMenus();
   createWindow();
@@ -110,3 +116,5 @@ ipcMain.on('restart', () => {
   app.relaunch();
   app.exit();
 });
+
+addGoogleCloudSdkExecutablesToPATH();
