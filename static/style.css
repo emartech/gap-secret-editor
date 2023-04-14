@@ -88,3 +88,11 @@
   z-index: 20;
   background-color: var(--color-yellow-200);
 }
+.ace-github {
+  background-color: var(--color-neutral-100) !important;
+  background-position: center calc(100% + 2px) !important;
+  background-repeat: repeat-x !important;
+  background-size: 100% 2px !important;
+  border: 2px solid transparent !important;
+  background-image: linear-gradient(180deg,transparent 0,transparent calc(100% - 2px),var(--color-neutral-500) calc(100% - 2px),var(--color-neutral-500) 100%) !important;
+}
