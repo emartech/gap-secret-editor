@@ -83,7 +83,7 @@ To bypass the error message go to Settings and within Privacy&Settings click on 
 ![Privacy Settings](images/privacysetting.png)
 
 If the below error greets you on startup, do a computer restart.
-If it still presents clone this repository and start the application with `start-dev`.
+If it still presents, try starting the app from the terminal with `open /Applications/GAP\ Secret\ Editor.app`.
 
 ![Application Error](images/apperror.png)
 
