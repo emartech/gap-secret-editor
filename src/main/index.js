@@ -79,8 +79,13 @@ const addNewWindowCommandToDefaultMenus = () => {
 };
 
 const addGoogleCloudSdkExecutablesToPATH = () => {
-  const gcloudPath = path.join(app.getPath('home'), 'google-cloud-sdk', 'bin');
-  process.env.PATH = [gcloudPath, process.env.PATH].join(path.delimiter);
+  if (process.platform === 'darwin') {
+    const possibleGcloudPaths = [
+      path.join(app.getPath('home'), 'google-cloud-sdk', 'bin'),
+      path.join('opt', 'homebrew', 'bin')
+    ];
+    process.env.PATH = [...possibleGcloudPaths, process.env.PATH].join(path.delimiter);
+  }
 };
 
 app.on('ready', () => {
