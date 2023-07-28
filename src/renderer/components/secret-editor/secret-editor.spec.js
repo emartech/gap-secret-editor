@@ -1,5 +1,12 @@
+import { range } from 'lodash';
+import LazyComponent from 'v-lazy-component/vue2';
 import SecretEditor from './secret-editor';
-import { mountWithFakeAceEditor, mountWithStore, shallowMountWithStore } from '../../../../test-helpers/mount-helpers';
+import {
+  mountWithFakeAceEditor,
+  mountWithFakeLazyComponent,
+  mountWithStore,
+  shallowMountWithStore
+} from '../../../../test-helpers/mount-helpers';
 
 describe('SecretEditor', () => {
   const fields = () => [
@@ -258,6 +265,33 @@ describe('SecretEditor', () => {
       expect(wrapper.emitted()).to.eql({ input: [[[
         { key: 'name', value: 'James Bond' }
       ]]] });
+    });
+  });
+
+  describe('lazy loading', () => {
+    it('should display only the first 30 fields and show loading indicator for the rest', () => {
+      const fields = range(35).map(i => ({ key: `key_${i}`, value: `value_${i}` }));
+      const { vm } = mountWithFakeLazyComponent(SecretEditor, { propsData: { value: fields } });
+
+      const renderedValues = vm.$el.querySelectorAll('.secret-value');
+      expect(renderedValues.length).to.eql(30);
+
+      const renderedLoadingIndicators = vm.$el.querySelectorAll('e-spinner');
+      expect(renderedLoadingIndicators.length).to.eql(6);
+    });
+
+    it('should display the remaining fields when the user scrolls to them', async () => {
+      const fields = range(35).map(i => ({ key: `key_${i}`, value: `value_${i}` }));
+      const wrapper = mountWithFakeLazyComponent(SecretEditor, { propsData: { value: fields } });
+
+      wrapper.findAllComponents(LazyComponent).wrappers.forEach(wrapper => wrapper.vm.handleBecomingVisible());
+      await wrapper.vm.$nextTick();
+
+      const renderedValues = wrapper.vm.$el.querySelectorAll('.secret-value');
+      expect(renderedValues.length).to.eql(36);
+
+      const renderedLoadingIndicators = wrapper.vm.$el.querySelectorAll('e-spinner');
+      expect(renderedLoadingIndicators.length).to.eql(0);
     });
   });
 });

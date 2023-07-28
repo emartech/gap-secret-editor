@@ -1,10 +1,11 @@
+import LazyComponent from 'v-lazy-component/vue2';
 import KeyEditor from './key-editor/key-editor';
 import ValueEditor from './value-editor/value-editor';
 
 export default {
   name: 'secret-editor',
   template: require('./secret-editor.html'),
-  components: { KeyEditor, ValueEditor },
+  components: { KeyEditor, ValueEditor, LazyComponent },
   props: {
     value: { type: Array, required: true, default: () => [] },
     searchTerm: { type: String, required: false, default: () => '' }
@@ -31,6 +32,9 @@ export default {
     }
   },
   methods: {
+    shouldBeRenderedInitially(index) {
+      return index < 30;
+    },
     isDuplicatedField(key) {
       return this.value.filter(field => field.key === key).length > 1;
     },

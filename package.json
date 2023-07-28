@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "prettier": "2.8.8",
+    "v-lazy-component": "3.0.9",
     "vue": "2.7.14",
     "vue-electron": "1.0.6",
     "vuex": "3.6.2"
