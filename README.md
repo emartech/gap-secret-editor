@@ -5,7 +5,7 @@
 ## Prerequisites
 
 Install (or update) [gcloud](https://cloud.google.com/sdk/docs/quickstarts), and connect to the staging and production
-clusters. More info in [GAP docs](https://gap-docs.gservice.emarsys.net/development-environment-setup-guide.html#gcloud).
+clusters. More info in [GAP docs](https://gap-docs.gservice.emarsys.net/Getting-started/development-environment-setup-guide/#google-cloud-sdk).
 
 ## Installation
 
