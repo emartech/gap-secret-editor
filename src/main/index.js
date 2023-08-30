@@ -82,7 +82,7 @@ const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
     const possibleGcloudPaths = [
       path.join(app.getPath('home'), 'google-cloud-sdk', 'bin'),
-      path.join('opt', 'homebrew', 'bin')
+      path.join('/opt', 'homebrew', 'bin')
     ];
     process.env.PATH = [...possibleGcloudPaths, process.env.PATH].join(path.delimiter);
   }
