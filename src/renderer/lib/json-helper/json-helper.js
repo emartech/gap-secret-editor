@@ -1,5 +1,4 @@
-import prettier from 'prettier/standalone';
-import babelParser from 'prettier/parser-babel';
+import { neatJSON } from 'neatjson';
 
 export const isValidJson = (data) => {
   if (!looksLikeJson(data)) return false;
@@ -28,9 +27,7 @@ export const minify = (json) => {
 };
 
 export const prettify = (json) => {
-  return prettier
-    .format(json, { parser: 'json', printWidth: 80, plugins: [babelParser] })
-    .slice(0, -1);
+  return neatJSON(JSON.parse(json), { objectPadding: 1, afterColon: 1, afterComma: 1 });
 };
 
 export const isJsonMinified = (jsonString) => {
