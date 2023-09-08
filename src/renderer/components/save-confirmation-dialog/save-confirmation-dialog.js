@@ -17,6 +17,9 @@ export default {
       return Object.keys(this.originalSecret).some(key =>
         isValidJson(this.originalSecret[key]) && this.currentSecret[key] && !isValidJson(this.currentSecret[key])
       );
+    },
+    hasUntrimmedValue() {
+      return Object.values(this.currentSecret).some(value => value !== value.trim());
     }
   },
   methods: {

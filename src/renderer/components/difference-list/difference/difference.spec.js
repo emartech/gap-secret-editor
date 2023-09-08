@@ -22,22 +22,34 @@ describe('Difference', () => {
   describe('#invalidatedJsonMessage', () => {
     it('should return some message when a valid json changed to invalid', () => {
       const { vm } = mount(Difference, { propsData: { originalValue: '{"key":"value"}', currentValue: '{"key"}' } });
-      expect(vm.invalidatedJsonMessage).to.include('JSON');
+      expect(vm.content).to.include('JSON became invalid');
     });
 
     it('should return empty string when a valid json remained valid', () => {
       const { vm } = mount(Difference, { propsData: { originalValue: '{"key":"value"}', currentValue: '{"k":"v"}' } });
-      expect(vm.invalidatedJsonMessage).to.eql('');
+      expect(vm.content).not.to.include('JSON became invalid');
     });
 
     it('should return empty string when an invalid json remained invalid', () => {
       const { vm } = mount(Difference, { propsData: { originalValue: '{"key"}', currentValue: '{"value"}' } });
-      expect(vm.invalidatedJsonMessage).to.eql('');
+      expect(vm.content).not.to.include('JSON became invalid');
     });
 
     it('should return empty string when a valid json is removed', () => {
       const { vm } = mount(Difference, { propsData: { originalValue: '{"key":"value"}', currentValue: null } });
-      expect(vm.invalidatedJsonMessage).to.eql('');
+      expect(vm.content).not.to.include('JSON became invalid');
+    });
+  });
+
+  describe('#untrimmedValueMessage', () => {
+    it('should return some message when the current value can be trimmed', () => {
+      const { vm } = mount(Difference, { propsData: { originalValue: '', currentValue: ' Duck Tales' } });
+      expect(vm.content).to.include('Value is not trimmed properly');
+    });
+
+    it('should return empty string when the current value cannot be trimmed', () => {
+      const { vm } = mount(Difference, { propsData: { originalValue: '', currentValue: 'Duck Tales' } });
+      expect(vm.content).not.to.include('Value is not trimmed properly');
     });
   });
 });

@@ -23,7 +23,7 @@ export default {
           'generic-file-path':
             `<span>${this.label}</span>
              <span class="e-padding-left-l text-color-gray-400">${this.changeType}</span>
-             ${this.invalidatedJsonMessage}`,
+             ${this.invalidatedJsonMessage} ${this.untrimmedValueMessage}`,
           'generic-empty-diff':
             `<tr>
               <td class="{{CSSLineClass.INFO}}">
@@ -48,6 +48,14 @@ export default {
       return `<span class="e-padding-left-xl text-color-warning">
                 <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
                 JSON became invalid
+              </span>`;
+    },
+    untrimmedValueMessage() {
+      if (!this.currentValue || this.currentValue === this.currentValue.trim()) return '';
+
+      return `<span class="e-padding-left-xl text-color-warning">
+                <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
+                Value is not trimmed properly
               </span>`;
     }
   },

@@ -24,6 +24,12 @@
           One of the valid JSON fields became invalid.
         </div>
       </div>
+      <div v-if="hasUntrimmedValue" class="e-cell e-cell-small">
+        <div class="text-color-warning">
+          <e-icon class="e-padding-right-2xs" icon="warning" color="warning"></e-icon>
+          One of the fields is not trimmed properly.
+        </div>
+      </div>
     </div>
   </div>
 </e-dialog>
