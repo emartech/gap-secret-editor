@@ -3,12 +3,13 @@ import { looksLikeJson } from '../../../lib/json-helper/json-helper';
 import EditorBase from '../editor-base';
 import JsonFormatButton from './json-format-button/json-format-button';
 import ChangeHistoryButton from './change-history-button/change-history-button';
+import TrimButton from './trim-button/trim-button';
 
 export default {
   name: 'value-editor',
   template: require('./value-editor.html'),
   mixins: [EditorBase],
-  components: { AceEditor, JsonFormatButton, ChangeHistoryButton },
+  components: { AceEditor, JsonFormatButton, ChangeHistoryButton, TrimButton },
   props: {
     fieldKey: String
   },

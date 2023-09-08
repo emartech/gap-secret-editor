@@ -9,6 +9,10 @@
   />
 
   <div class="editor-toolbar">
+    <trim-button
+      :text="value"
+      @trim="emitChange($event)"
+    />
     <json-format-button
       v-if="editorLanguage === 'json'"
       :text="value"

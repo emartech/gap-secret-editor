@@ -53,6 +53,12 @@ describe('ValueEditor', () => {
 
       expect(wrapper.emitted()).to.eql({ change: [['something else']] });
     });
+
+    it('should emit change event when a field is trimmed', () => {
+      const wrapper = mountWithStore(ValueEditor, { propsData: { value: ' Dr Bubo ' } });
+      wrapper.find('.editor-toolbar .trim .e-btn').trigger('click');
+      expect(wrapper.emitted()).to.eql({ change: [['Dr Bubo']] });
+    });
   });
 });
 
