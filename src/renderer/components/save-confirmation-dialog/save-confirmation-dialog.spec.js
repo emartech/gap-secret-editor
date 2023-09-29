@@ -49,7 +49,7 @@ describe('SaveConfirmationDialog', () => {
       expect(vm.hasUntrimmedValue).to.be.false;
     });
 
-    it('should return true when there is a current value which is not trimmed properly', () => {
+    it('should return true when there is a currently changed value which is not trimmed properly', () => {
       const { vm } = mount(SaveConfirmationDialog, {
         propsData: {
           originalSecret: {},
@@ -60,6 +60,16 @@ describe('SaveConfirmationDialog', () => {
       expect(vm.hasUntrimmedValue).to.be.true;
     });
 
+    it('should return false when there is a currently not changed value which is not trimmed properly', () => {
+      const { vm } = mount(SaveConfirmationDialog, {
+        propsData: {
+          originalSecret: { father: 'Maris', mother: ' Paula', girl: 'Kriszta', boy: 'Aladar', relative: 'MZ/X' },
+          currentSecret: { father: 'Geza', mother: ' Paula', girl: 'Kriszta', boy: 'Aladar', relative: 'MZ/X' }
+        }
+      });
+
+      expect(vm.hasUntrimmedValue).to.be.false;
+    });
   });
 
   describe('#confirm', () => {

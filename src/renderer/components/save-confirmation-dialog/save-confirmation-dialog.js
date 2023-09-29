@@ -19,7 +19,10 @@ export default {
       );
     },
     hasUntrimmedValue() {
-      return Object.values(this.currentSecret).some(value => value !== value.trim());
+      return Object.keys(this.currentSecret).some(key =>
+        this.currentSecret[key] !== this.originalSecret[key] &&
+        this.currentSecret[key] !== this.currentSecret[key].trim()
+      );
     }
   },
   methods: {
