@@ -923,18 +923,16 @@ describe('App', () => {
   });
 
   describe('#updateIsDarkModeActiveState', () => {
-    it('should set isDarkModeActive state after initialization', async () => {
+    it('should set isDarkModeActive state after theme switcher is used', async () => {
       sinon.stub(kubernetesClient, 'listContexts').resolves([]);
       sinon.stub(kubernetesClient, 'listNamespaces').resolves([]);
       const wrapper = await loadApp();
       const themeSwitcher = wrapper.find('e-theme-switcher');
 
-      themeSwitcher.element.state = { colorTheme: 'light' };
-      themeSwitcher.trigger('change');
+      themeSwitcher.trigger('change', { detail: { colorTheme: 'morningHorizon' } });
       expect(wrapper.vm.$store.state.isDarkModeActive).to.eql(false);
 
-      themeSwitcher.element.state = { colorTheme: 'dark' };
-      themeSwitcher.trigger('change');
+      themeSwitcher.trigger('change', { detail: { colorTheme: 'eveningHorizon' } });
       expect(wrapper.vm.$store.state.isDarkModeActive).to.eql(true);
     });
   });
