@@ -20,7 +20,7 @@
   top: 0;
   right: 0;
   z-index: 1;
-  background-color: var(--color-gray-200);
+  background-color: var(--token-gray-200);
   border-radius: 0 8px 0 8px;
   margin: 1px;
   transition: opacity 0.2s ease-in-out;
@@ -41,33 +41,33 @@
   margin-bottom: -7px;
 }
 .d2h-file-wrapper {
-  border-color: var(--color-gray-250);
+  border-color: var(--token-gray-250);
 }
 .d2h-file-header {
-  background-color: var(--color-gray-100);
-  border-color: var(--color-gray-150);
+  background-color: var(--token-gray-100);
+  border-color: var(--token-gray-150);
 }
 .d2h-info, .d2h-code-side-linenumber {
-  background-color: var(--color-gray-050);
-  border-color: var(--color-gray-150);
-  color: var(--color-gray-400);
+  background-color: var(--token-gray-050);
+  border-color: var(--token-gray-150);
+  color: var(--token-gray-400);
 }
 .d2h-code-side-emptyplaceholder, .d2h-emptyplaceholder {
-  background-color: var(--color-gray-050);
+  background-color: var(--token-gray-050);
 }
 .d2h-ins {
-  background-color: var(--color-mint-200);
-  border-color: var(--color-mint-300);
+  background-color: var(--token-mint-200);
+  border-color: var(--token-mint-300);
 }
 .d2h-ins ins {
-  background-color: var(--color-mint-300);
+  background-color: var(--token-mint-300);
 }
 .d2h-del {
-  background-color: var(--color-red-200);
-  border-color: var(--color-red-300);
+  background-color: var(--token-red-200);
+  border-color: var(--token-red-300);
 }
 .d2h-del del {
-  background-color: var(--color-red-300);
+  background-color: var(--token-red-300);
 }
 
 /* ACE editor adjustments */
@@ -86,13 +86,13 @@
 .searchHighlight {
   position: absolute;
   z-index: 20;
-  background-color: var(--color-yellow-200);
+  background-color: var(--token-yellow-200);
 }
 .ace-github {
-  background-color: var(--color-neutral-100) !important;
+  background-color: var(--token-neutral-100) !important;
   background-position: center calc(100% + 2px) !important;
   background-repeat: repeat-x !important;
   background-size: 100% 2px !important;
   border: 2px solid transparent !important;
-  background-image: linear-gradient(180deg,transparent 0,transparent calc(100% - 2px),var(--color-neutral-500) calc(100% - 2px),var(--color-neutral-500) 100%) !important;
+  background-image: linear-gradient(180deg,transparent 0,transparent calc(100% - 2px),var(--token-neutral-500) calc(100% - 2px),var(--token-neutral-500) 100%) !important;
 }
