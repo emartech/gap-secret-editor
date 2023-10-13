@@ -10,6 +10,7 @@ import BackupSelector from '../backup-selector/backup-selector';
 import SaveConfirmationDialog from '../save-confirmation-dialog/save-confirmation-dialog';
 import AutoUpdateConfirmation from '../auto-update-confirmation/auto-update-confirmation';
 import FeedbackDialog from '../feedback-dialog/feedback-dialog';
+import SettingsDialog from '../settings-dialog/settings-dialog';
 import ErrorState from '../error-state/error-state';
 
 const logger = log.scope('app');
@@ -28,6 +29,7 @@ export default {
     SaveConfirmationDialog,
     AutoUpdateConfirmation,
     FeedbackDialog,
+    SettingsDialog,
     ErrorState
   },
   data: () => ({

@@ -1,0 +1,17 @@
+<div>
+  <e-dialog
+    :opened="dialogOpened"
+    v-on="{ 'dialog.close': () => { dialogOpened = false } }"
+    headline="Settings"
+  >
+    winter is coming
+
+    <div class="e-dialog__footer">
+      <div class="e-grid e-grid-small">
+        <div class="e-cell e-cell-small">
+          <div class="e-btn e-btn-primary" @click="save()">Save</div>
+        </div>
+      </div>
+    </div>
+  </e-dialog>
+</div>

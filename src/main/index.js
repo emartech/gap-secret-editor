@@ -78,6 +78,21 @@ const addNewWindowCommandToDefaultMenus = () => {
   }
 };
 
+const addSettingsCommandToDefaultMenus = () => {
+  const settingsMenuItemDefinition = {
+    label: 'Settings',
+    accelerator: 'CommandOrControl+,',
+    click: () => {
+      BrowserWindow.getAllWindows().forEach(window => window.webContents.send('show-settings'));
+    }
+  };
+
+  const appMenu = Menu.getApplicationMenu();
+  const fileMenu = appMenu.items.find(item => item.label === 'File');
+  fileMenu.submenu.insert(1, new MenuItem(settingsMenuItemDefinition));
+  Menu.setApplicationMenu(appMenu);
+};
+
 const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
     const possibleGcloudPaths = [
@@ -90,6 +105,7 @@ const addGoogleCloudSdkExecutablesToPATH = () => {
 
 app.on('ready', () => {
   addNewWindowCommandToDefaultMenus();
+  addSettingsCommandToDefaultMenus();
   createWindow();
 });
 
