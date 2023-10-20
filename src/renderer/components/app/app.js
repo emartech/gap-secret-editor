@@ -107,6 +107,9 @@ export default {
     openFeedbackDialog() {
       this.$refs.feedbackDialog.open();
     },
+    openSettingsDialog() {
+      this.$refs.settingsDialog.open();
+    },
     updateIsDarkModeActiveState(theme) {
       this.setIsDarkModeActive(theme === 'eveningHorizon');
     },

@@ -14,13 +14,16 @@ export default {
     save() {
       setSync(SETTING_FILE_NAME, { gcloudPath: this.gcloudPath });
       ipcRenderer.send('restart');
+    },
+    open() {
+      this.dialogOpened = true;
     }
   },
   mounted() {
     ipcRenderer.on('show-settings', (event, path) => {
       setDataPath(path);
       this.gcloudPath = loadSettings().gcloudPath || '';
-      this.dialogOpened = true;
+      this.open();
     });
   }
 };

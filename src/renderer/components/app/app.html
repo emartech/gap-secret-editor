@@ -15,6 +15,11 @@
                 </e-theme-switcher>
 
                 <div class="e-clickable e-padding-left-m">
+                    <e-tooltip content="Settings">
+                        <e-icon icon="cog" @click="openSettingsDialog()"></e-icon>
+                    </e-tooltip>
+                </div>
+                <div class="e-clickable e-padding-left-m">
                     <e-tooltip content="Give us feedback">
                         <e-icon icon="e-bullhorn" @click="openFeedbackDialog()"></e-icon>
                     </e-tooltip>
@@ -153,6 +158,6 @@
 
     <feedback-dialog ref="feedbackDialog" />
 
-    <settings-dialog />
+    <settings-dialog ref="settingsDialog" />
   </div>
 </div>
