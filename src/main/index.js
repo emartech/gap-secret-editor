@@ -1,8 +1,10 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
+import { setDataPath, getSync } from 'electron-json-storage';
 import path from 'path';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 import { postFeedbackToGoogleForm } from './feedback/feedback';
+import { SETTING_FILE_NAME } from '../renderer/components/settings-dialog/settings-dialog';
 
 const logger = log.scope('main');
 
@@ -97,11 +99,23 @@ const addSettingsCommandToDefaultMenus = () => {
 
 const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
-    const possibleGcloudPaths = [
-      path.join(app.getPath('home'), 'google-cloud-sdk', 'bin'),
-      path.join('/opt', 'homebrew', 'bin')
-    ];
+    const gcloudPathFromSettings = loadGcloudPathFromSettings();
+    const possibleGcloudPaths = gcloudPathFromSettings
+      ? [gcloudPathFromSettings]
+      : [
+        path.join(app.getPath('home'), 'google-cloud-sdk', 'bin'),
+        path.join('/opt', 'homebrew', 'bin')
+      ];
     process.env.PATH = [...possibleGcloudPaths, process.env.PATH].join(path.delimiter);
+  }
+};
+
+const loadGcloudPathFromSettings = () => {
+  try {
+    setDataPath(app.getPath('userData'));
+    return getSync(SETTING_FILE_NAME).gcloudPath;
+  } catch (error) {
+    return undefined;
   }
 };
 
