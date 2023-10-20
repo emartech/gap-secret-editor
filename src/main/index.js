@@ -4,7 +4,6 @@ import { setDataPath, getSync } from 'electron-json-storage';
 import path from 'path';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 import { postFeedbackToGoogleForm } from './feedback/feedback';
-import { SETTING_FILE_NAME } from '../renderer/components/settings-dialog/settings-dialog';
 
 const logger = log.scope('main');
 
@@ -113,7 +112,7 @@ const addGoogleCloudSdkExecutablesToPATH = () => {
 const loadGcloudPathFromSettings = () => {
   try {
     setDataPath(app.getPath('userData'));
-    return getSync(SETTING_FILE_NAME).gcloudPath;
+    return getSync('secret-editor-settings').gcloudPath;
   } catch (error) {
     return undefined;
   }
