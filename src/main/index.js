@@ -83,7 +83,9 @@ const addSettingsCommandToDefaultMenus = () => {
     label: 'Settings',
     accelerator: 'CommandOrControl+,',
     click: () => {
-      BrowserWindow.getAllWindows().forEach(window => window.webContents.send('show-settings'));
+      BrowserWindow.getAllWindows().forEach(window => {
+        window.webContents.send('show-settings', app.getPath('userData'));
+      });
     }
   };
 

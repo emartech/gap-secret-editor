@@ -4,12 +4,18 @@
     v-on="{ 'dialog.close': () => { dialogOpened = false } }"
     headline="Settings"
   >
-    winter is coming
+    <div class="e-field">
+      <label class="e-field__label">
+        Gcloud Path
+        <e-tooltip content="Enter the output of the following command: <strong>whereis gcloud</strong>" type="helper" has-action></e-tooltip>
+      </label>
+      <input id="gcloud-path" class="e-input" type="text" v-model="gcloudPath" placeholder="Enter gcloud path here..." />
+    </div>
 
     <div class="e-dialog__footer">
       <div class="e-grid e-grid-small">
         <div class="e-cell e-cell-small">
-          <div class="e-btn e-btn-primary" @click="save()">Save</div>
+          <div id="saveButton" class="e-btn e-btn-primary" @click="save()">Save</div>
         </div>
       </div>
     </div>
