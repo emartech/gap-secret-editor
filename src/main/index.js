@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
 import path from 'path';
+import { dirname } from 'node:path';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 import { postFeedbackToGoogleForm } from './feedback/feedback';
 import { SettingsStore } from './settings-store/settings-store';
@@ -100,7 +101,7 @@ const addSettingsCommandToDefaultMenus = () => {
 
 const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
-    const gcloudPathFromSettings = settingsStore.load().gcloudPath;
+    const gcloudPathFromSettings = dirname(settingsStore.load().gcloudPath);
     const possibleGcloudPaths = gcloudPathFromSettings
       ? [gcloudPathFromSettings]
       : [
