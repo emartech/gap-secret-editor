@@ -1,11 +1,13 @@
 import { app, BrowserWindow, ipcMain, Menu, MenuItem } from 'electron';
 import log from 'electron-log';
-import { setDataPath, getSync } from 'electron-json-storage';
 import path from 'path';
 import { startWatchingForUpdates } from './auto-updater/auto-updater';
 import { postFeedbackToGoogleForm } from './feedback/feedback';
+import { SettingsStore } from './settings-store/settings-store';
 
 const logger = log.scope('main');
+
+const settingsStore = new SettingsStore(app.getPath('userData'));
 
 /**
  * Set `__static` path to static files in production
@@ -85,7 +87,7 @@ const addSettingsCommandToDefaultMenus = () => {
     accelerator: 'CommandOrControl+,',
     click: () => {
       BrowserWindow.getAllWindows().forEach(window => {
-        window.webContents.send('show-settings', app.getPath('userData'));
+        window.webContents.send('show-settings');
       });
     }
   };
@@ -98,7 +100,7 @@ const addSettingsCommandToDefaultMenus = () => {
 
 const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
-    const gcloudPathFromSettings = loadGcloudPathFromSettings();
+    const gcloudPathFromSettings = settingsStore.load().gcloudPath;
     const possibleGcloudPaths = gcloudPathFromSettings
       ? [gcloudPathFromSettings]
       : [
@@ -106,15 +108,6 @@ const addGoogleCloudSdkExecutablesToPATH = () => {
         path.join('/opt', 'homebrew', 'bin')
       ];
     process.env.PATH = [...possibleGcloudPaths, process.env.PATH].join(path.delimiter);
-  }
-};
-
-const loadGcloudPathFromSettings = () => {
-  try {
-    setDataPath(app.getPath('userData'));
-    return getSync('secret-editor-settings').gcloudPath;
-  } catch (error) {
-    return undefined;
   }
 };
 
@@ -151,6 +144,14 @@ ipcMain.handle('send-feedback', async (event, feedback) => {
 ipcMain.on('restart', () => {
   app.relaunch();
   app.exit();
+});
+
+ipcMain.handle('load-settings', () => {
+  return settingsStore.load();
+});
+
+ipcMain.handle('save-settings', (event, settings) => {
+  settingsStore.save(settings);
 });
 
 addGoogleCloudSdkExecutablesToPATH();

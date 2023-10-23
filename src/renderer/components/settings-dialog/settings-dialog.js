@@ -1,7 +1,4 @@
 import { ipcRenderer } from 'electron';
-import { setDataPath, getSync, setSync } from 'electron-json-storage';
-
-export const SETTING_FILE_NAME = 'secret-editor-settings';
 
 export default {
   name: 'settings-dialog',
@@ -11,27 +8,17 @@ export default {
     gcloudPath: ''
   }),
   methods: {
-    save() {
-      setSync(SETTING_FILE_NAME, { gcloudPath: this.gcloudPath });
+    async save() {
+      await ipcRenderer.invoke('save-settings', { gcloudPath: this.gcloudPath });
       ipcRenderer.send('restart');
     },
-    open() {
+    async open() {
+      const settings = await ipcRenderer.invoke('load-settings');
+      this.gcloudPath = settings.gcloudPath || '';
       this.dialogOpened = true;
     }
   },
   mounted() {
-    ipcRenderer.on('show-settings', (event, path) => {
-      setDataPath(path);
-      this.gcloudPath = loadSettings().gcloudPath || '';
-      this.open();
-    });
-  }
-};
-
-const loadSettings = () => {
-  try {
-    return getSync(SETTING_FILE_NAME);
-  } catch (error) {
-    return {};
+    ipcRenderer.on('show-settings', this.open);
   }
 };

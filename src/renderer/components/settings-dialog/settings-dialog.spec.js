@@ -1,93 +1,80 @@
 import { mount } from '@vue/test-utils';
-import { rmSync, writeFileSync } from 'fs';
-import SettingsDialog, { SETTING_FILE_NAME } from './settings-dialog';
 import { ipcRenderer } from 'electron';
-import { getDataPath, getSync, setDataPath, setSync } from 'electron-json-storage';
+import SettingsDialog from './settings-dialog';
 
 describe('SettingsDialog', () => {
   const settingsFilePath = '/tmp/secret-editor-test/';
 
-  context('when show-settings event arrives', () => {
-    it('should display dialog', async () => {
+  it('should open dialog when show-settings event arrives', async () => {
+    sinon.stub(ipcRenderer, 'invoke').resolves({});
+    const wrapper = mount(SettingsDialog);
+    expect(wrapper.vm.dialogOpened).to.be.false;
+
+    ipcRenderer.emit('show-settings', {}, settingsFilePath);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.dialogOpened).to.be.true;
+  });
+
+  describe('#open', () => {
+    it('should open dialog', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves({});
       const wrapper = mount(SettingsDialog);
       expect(wrapper.vm.dialogOpened).to.be.false;
 
-      await emitShowSettings(wrapper);
+      await wrapper.vm.open();
 
       expect(wrapper.vm.dialogOpened).to.be.true;
     });
 
-    it('should call setDataPath on electron-storage-json', async () => {
+    it('should fetch settings from main process', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves({});
       const wrapper = mount(SettingsDialog);
-      setDataPath('/oldTestPath');
+      expect(wrapper.vm.dialogOpened).to.be.false;
 
-      await emitShowSettings(wrapper);
+      await wrapper.vm.open();
 
-      expect(getDataPath()).to.eql(settingsFilePath);
+      expect(ipcRenderer.invoke).to.have.been.calledWith('load-settings');
     });
 
-    it('should initialise settings when settings file does not exist', async () => {
-      rmSync(settingsFilePath, { force: true, recursive: true });
+    it('should initialise glcoud path when path is not set', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves({});
       const wrapper = mount(SettingsDialog);
 
-      await emitShowSettings(wrapper);
+      await wrapper.vm.open();
 
       expect(wrapper.find('#gcloud-path').element.value).to.eql('');
     });
 
-    it('should initialise glcoud path when settings file exists but path is not set', async () => {
-      setSync(SETTING_FILE_NAME, {}, { dataPath: settingsFilePath });
+    it('should initialise glcoud path when path is set', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves({ gcloudPath: '/some-interesting-path' });
       const wrapper = mount(SettingsDialog);
 
-      await emitShowSettings(wrapper);
-
-      expect(wrapper.find('#gcloud-path').element.value).to.eql('');
-    });
-
-    it('should initialise glcoud path when settings file contains invalid json', async () => {
-      writeFileSync(`${settingsFilePath}/${SETTING_FILE_NAME}.json`, 'INVALID');
-      const wrapper = mount(SettingsDialog);
-
-      await emitShowSettings(wrapper);
-
-      expect(wrapper.find('#gcloud-path').element.value).to.eql('');
-    });
-
-    it('should initialise glcoud path when settings file exists and path is set', async () => {
-      setSync(SETTING_FILE_NAME, { gcloudPath: '/some-interesting-path' }, { dataPath: settingsFilePath });
-      const wrapper = mount(SettingsDialog);
-
-      await emitShowSettings(wrapper);
+      await wrapper.vm.open();
 
       expect(wrapper.find('#gcloud-path').element.value).to.eql('/some-interesting-path');
     });
   });
 
   describe('#save', () => {
-    it('should update settings file', async () => {
-      setSync(SETTING_FILE_NAME, { gcloudPath: '/some-interesting-path' }, { dataPath: settingsFilePath });
+    it('should send message to main process to save settings', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves();
       const wrapper = mount(SettingsDialog);
-      await emitShowSettings(wrapper);
 
-      await wrapper.find('#gcloud-path').setValue('/an-even-more-interesting-path');
+      await wrapper.find('#gcloud-path').setValue('/some-interesting-path');
       await wrapper.find('#saveButton').trigger('click');
 
-      expect(getSync(SETTING_FILE_NAME)).to.eql({ gcloudPath: '/an-even-more-interesting-path' });
+      expect(ipcRenderer.invoke).to.have.been.calledWith('save-settings', { gcloudPath: '/some-interesting-path' });
     });
 
     it('should send restart message to main process when save button clicked', async () => {
+      sinon.stub(ipcRenderer, 'invoke').resolves();
       sinon.stub(ipcRenderer, 'send');
       const wrapper = mount(SettingsDialog);
-      await emitShowSettings(wrapper);
 
       await wrapper.find('#saveButton').trigger('click');
 
       expect(ipcRenderer.send).to.have.been.calledWith('restart');
     });
   });
-
-  const emitShowSettings = async (wrapper) => {
-    ipcRenderer.emit('show-settings', {}, settingsFilePath);
-    await wrapper.vm.$nextTick();
-  };
 });
