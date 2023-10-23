@@ -113,7 +113,9 @@ const addGoogleCloudSdkExecutablesToPATH = () => {
 
 app.on('ready', () => {
   addNewWindowCommandToDefaultMenus();
-  addSettingsCommandToDefaultMenus();
+  if (process.platform === 'darwin') {
+    addSettingsCommandToDefaultMenus();
+  }
   createWindow();
 });
 

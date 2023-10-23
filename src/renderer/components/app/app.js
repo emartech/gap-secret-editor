@@ -100,6 +100,9 @@ export default {
     },
     hasSecretChanged() {
       return !isEqual(this.originalSecret, this.secretAsObject);
+    },
+    shouldShowSettingsDialog() {
+      return process.platform === 'darwin';
     }
   },
   methods: {

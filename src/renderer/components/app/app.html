@@ -14,7 +14,7 @@
                   </div>
                 </e-theme-switcher>
 
-                <div class="e-clickable e-padding-left-m">
+                <div v-if="shouldShowSettingsDialog" class="e-clickable e-padding-left-m">
                     <e-tooltip content="Settings">
                         <e-icon icon="cog" @click="openSettingsDialog()"></e-icon>
                     </e-tooltip>
