@@ -101,9 +101,9 @@ const addSettingsCommandToDefaultMenus = () => {
 
 const addGoogleCloudSdkExecutablesToPATH = () => {
   if (process.platform === 'darwin') {
-    const gcloudPathFromSettings = dirname(settingsStore.load().gcloudPath);
+    const gcloudPathFromSettings = settingsStore.load().gcloudPath;
     const possibleGcloudPaths = gcloudPathFromSettings
-      ? [gcloudPathFromSettings]
+      ? [dirname(gcloudPathFromSettings)]
       : [
         path.join(app.getPath('home'), 'google-cloud-sdk', 'bin'),
         path.join('/opt', 'homebrew', 'bin')
