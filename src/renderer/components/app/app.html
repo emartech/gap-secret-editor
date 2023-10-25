@@ -117,18 +117,20 @@
               </div>
 
               <div class="e-cell e-cell-small" style="margin-left: auto">
-                <div style="position: relative">
-                  <input
-                    id="search-input"
-                    ref="searchInput"
-                    class="e-input e-input-large"
-                    type="search"
-                    placeholder="Search"
-                    v-model="searchTerm"
-                    style="padding-left: 40px"
-                  />
-                  <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
-                </div>
+                <e-confetti ref="confetti">
+                  <div style="position: relative">
+                    <input
+                      id="search-input"
+                      ref="searchInput"
+                      class="e-input e-input-large"
+                      type="search"
+                      placeholder="Search"
+                      v-model="searchTerm"
+                      style="padding-left: 40px"
+                    />
+                    <e-icon icon="search" color="disabled" style="position: absolute; left: 12px; top: 7px;" />
+                  </div>
+                </e-confetti>
               </div>
             </div>
           </div>

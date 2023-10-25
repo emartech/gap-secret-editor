@@ -287,6 +287,13 @@ export default {
       this.$refs.searchInput.select();
     }
   },
+  watch: {
+    searchTerm(term) {
+      if (term === 'magic') {
+        this.$refs.confetti.fire();
+      }
+    }
+  },
   errorCaptured(error) {
     logger.error('unhandled-error', { namespace: this.secretNamespace, name: this.secretName }, error);
   },
