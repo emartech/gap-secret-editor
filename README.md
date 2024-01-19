@@ -1,8 +1,10 @@
 # GAP Secret Editor
 
-> Secret and config editor with GUI for Emarsys applications in Google Application Platform
+## Description
 
-## Prerequisites
+Secret and config editor with GUI for Emarsys applications in Google Application Platform
+
+## Requirements
 
 Install (or update) [gcloud](https://cloud.google.com/sdk/docs/quickstarts), and connect to the staging and production
 clusters. More info in [GAP docs](https://gap-docs.gservice.emarsys.net/Getting-started/development-environment-setup-guide/#google-cloud-sdk).
@@ -23,7 +25,7 @@ Application logs can be found in the following directory:
 - For Windows: `%USERPROFILE%\AppData\Roaming\gap-secret-editor\logs`
 - For Linux: `~/.config/gap-secret-editor/logs/`
 
-## For developers
+## Contributing
 
 ``` bash
 # set appropriate NodeJS version
@@ -86,6 +88,14 @@ If the below error greets you on startup, do a computer restart.
 If it still presents, try starting the app from the terminal with `open /Applications/GAP\ Secret\ Editor.app`.
 
 ![Application Error](images/apperror.png)
+
+## Code of Conduct
+
+Always keep in your mind and heart the codex of SAP standards.
+
+## Licensing
+
+See the LICENSE file.
 
 ---
 
