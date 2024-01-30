@@ -14,6 +14,11 @@ describe('ValueEditor', () => {
       const { vm } = mountWithStore(ValueEditor, { propsData: { value: 'something' } });
       expect(vm.editorLanguage).to.eql('text');
     });
+
+    it('should return text when value is null', () => {
+      const { vm } = mountWithStore(ValueEditor, { propsData: { value: null } });
+      expect(vm.editorLanguage).to.eql('text');
+    });
   });
 
   describe('#editorTheme', () => {

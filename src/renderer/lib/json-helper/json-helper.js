@@ -1,4 +1,5 @@
 import { neatJSON } from 'neatjson';
+import { isEmpty } from 'lodash';
 
 export const isValidJson = (data) => {
   if (!looksLikeJson(data)) return false;
@@ -15,6 +16,9 @@ export const isJsonWithErrors = (value) => {
 };
 
 export const looksLikeJson = (value) => {
+  if (isEmpty(value)) {
+    return false;
+  }
   const valueWithoutSpaces = value.toString().replace(/\s/g, '');
   return (
     (valueWithoutSpaces.startsWith('{') && valueWithoutSpaces.endsWith('}')) ||
