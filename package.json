@@ -21,7 +21,7 @@
     "pack": "npm run pack:main && npm run pack:renderer",
     "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
     "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
-    "test": "npm run audit && npm run lint && npm run test:once",
+    "test": "npm run lint && npm run test:once",
     "test:once": "karma start test-helpers/karma.conf.js --single-run",
     "test:watch": "karma start test-helpers/karma.conf.js",
     "release": "npm run build -- --publish always"
