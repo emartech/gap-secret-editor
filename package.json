@@ -2,7 +2,7 @@
   "name": "gap-secret-editor",
   "version": "1.17.5",
   "author": "Emarsys",
-  "description": "An electron-vue project",
+  "description": "A tool to edit GAP secrets",
   "repository": {
     "type": "git",
     "url": "https://github.com/emartech/gap-secret-editor.git"
