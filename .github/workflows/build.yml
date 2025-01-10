@@ -34,7 +34,7 @@ jobs:
     if: inputs.forceRelease || startsWith(github.event.head_commit.message, 'release v')
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
+        os: [macos-latest, windows-latest, ubuntu-latest, macos-13]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
