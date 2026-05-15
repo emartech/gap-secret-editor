@@ -84,6 +84,16 @@ To bypass the error message go to Settings and within Privacy&Settings click on 
 
 ![Privacy Settings](images/privacysetting.png)
 
+If macOS says the app is damaged and should be moved to the Trash:
+
+![Damaged Error](images/damaged.png)
+
+Run the following command in Terminal to remove the quarantine attribute:
+
+```bash
+xattr -d com.apple.quarantine /Applications/GAP\ Secret\ Editor.app
+```
+
 If the below error greets you on startup, do a computer restart.
 If it still presents, try starting the app from the terminal with `open /Applications/GAP\ Secret\ Editor.app`.
 
